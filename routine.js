@@ -250,73 +250,8 @@ window.ROUTINE = {
   },
 
   day4: {
-    title: 'SQUAT VOLUME',
-    day: 'THU',
-    tag: 'LOWER · 스쿼트 볼륨/테크닉',
-    color: '#00ff88',
-    sections: [
-      {
-        title: '워밍업',
-        meta: '관절 풀기',
-        rest: 60,
-        sets: [
-          { label: 'W1', name: '스쿼트 워밍업', weight: 'BAR', unit: 'kg', reps: '10' },
-          { label: 'W2', name: '스쿼트 워밍업', weight: '60', unit: 'kg', reps: '5' },
-          { label: 'W3', name: '스쿼트 워밍업', weight: '100', unit: 'kg', reps: '3' },
-          { label: 'W4', name: '스쿼트 워밍업', weight: '130', unit: 'kg', reps: '2' },
-        ]
-      },
-      {
-        title: '포즈 로우바 스쿼트',
-        meta: '바텀 2초 정지',
-        rest: 180,
-        sets: [
-          { label: 'M1', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-          { label: 'M2', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-          { label: 'M3', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-          { label: 'M4', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-          { label: 'M5', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-        ]
-      },
-      {
-        title: '하이바 스쿼트',
-        meta: '쿼드·코어 강화',
-        rest: 150,
-        sets: [
-          { label: 'H1', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
-          { label: 'H2', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
-          { label: 'H3', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
-        ]
-      },
-      {
-        title: '레그 프레스',
-        meta: '머신 · 헤비',
-        rest: 90,
-        sets: [
-          { label: 'LP1', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP2', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP3', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP4', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-        ]
-      },
-      {
-        title: '카프 레이즈',
-        meta: '종아리',
-        rest: 60,
-        sets: [
-          { label: 'CF1', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
-          { label: 'CF2', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
-          { label: 'CF3', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
-          { label: 'CF4', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
-          { label: 'CF5', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
-        ]
-      }
-    ]
-  },
-
-  day5: {
     title: 'BENCH INTENSITY',
-    day: 'FRI',
+    day: 'THU',
     tag: 'UPPER · 벤치 강도 + 파워',
     color: '#c77dff',
     sections: [
@@ -395,6 +330,71 @@ window.ROUTINE = {
           { label: 'RD3', name: '리어델트 머신', weight: '', unit: '', reps: '15' },
           { label: 'RD4', name: '리어델트 머신', weight: '', unit: '', reps: '15' },
           { label: 'RD5', name: '리어델트 머신', weight: '', unit: '', reps: '15' },
+        ]
+      }
+    ]
+  },
+
+  day5: {
+    title: 'SQUAT VOLUME',
+    day: 'FRI',
+    tag: 'LOWER · 스쿼트 볼륨/테크닉',
+    color: '#00ff88',
+    sections: [
+      {
+        title: '워밍업',
+        meta: '관절 풀기',
+        rest: 60,
+        sets: [
+          { label: 'W1', name: '스쿼트 워밍업', weight: 'BAR', unit: 'kg', reps: '10' },
+          { label: 'W2', name: '스쿼트 워밍업', weight: '60', unit: 'kg', reps: '5' },
+          { label: 'W3', name: '스쿼트 워밍업', weight: '100', unit: 'kg', reps: '3' },
+          { label: 'W4', name: '스쿼트 워밍업', weight: '130', unit: 'kg', reps: '2' },
+        ]
+      },
+      {
+        title: '포즈 로우바 스쿼트',
+        meta: '바텀 2초 정지',
+        rest: 180,
+        sets: [
+          { label: 'M1', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M2', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M3', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M4', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M5', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+        ]
+      },
+      {
+        title: '하이바 스쿼트',
+        meta: '쿼드·코어 강화',
+        rest: 150,
+        sets: [
+          { label: 'H1', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'H2', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'H3', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+        ]
+      },
+      {
+        title: '레그 프레스',
+        meta: '머신 · 헤비',
+        rest: 90,
+        sets: [
+          { label: 'LP1', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
+          { label: 'LP2', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
+          { label: 'LP3', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
+          { label: 'LP4', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
+        ]
+      },
+      {
+        title: '카프 레이즈',
+        meta: '종아리',
+        rest: 60,
+        sets: [
+          { label: 'CF1', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF2', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF3', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF4', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF5', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
         ]
       }
     ]
