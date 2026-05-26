@@ -90,53 +90,50 @@ window.ROUTINE = {
   },
 
   day2: {
-    title: 'BENCH VOLUME + UPPER',
+    title: 'UPPER HYPER',
     day: 'TUE',
-    tag: 'DAY1 보충 · 강도 보정',
+    tag: 'UPPER · 상체 비대',
     color: '#3da5ff',
     sections: [
       {
-        title: '벤치프레스',
-        meta: 'day1 미수행분 · RPE 8',
+        title: 'OHP',
+        meta: '메인 프레스 · 폼 유지',
         rest: 180,
         sets: [
-          { label: 'W1', name: '벤치 워밍업', weight: '60', unit: 'kg', reps: '5' },
-          { label: 'W2', name: '벤치 워밍업', weight: '80', unit: 'kg', reps: '3' },
-          { label: 'W3', name: '벤치 워밍업', weight: '90', unit: 'kg', reps: '1' },
-          { label: 'M1', name: '벤치프레스', weight: '102.5', unit: 'kg', reps: '6' },
-          { label: 'M2', name: '벤치프레스', weight: '102.5', unit: 'kg', reps: '6' },
-          { label: 'M3', name: '벤치프레스', weight: '102.5', unit: 'kg', reps: '6' },
-          { label: 'M4', name: '벤치프레스', weight: '102.5', unit: 'kg', reps: '6' },
-          { label: 'M5', name: '벤치프레스', weight: '102.5', unit: 'kg', reps: '6' },
-        ]
-      },
-      {
-        title: 'OHP',
-        meta: '보조 프레스 · 강도 유지',
-        rest: 150,
-        sets: [
           { label: 'W1', name: 'OHP 워밍업', weight: 'BAR', unit: 'kg', reps: '10' },
-          { label: 'W2', name: 'OHP 워밍업', weight: '40', unit: 'kg', reps: '5' },
+          { label: 'W2', name: 'OHP 워밍업', weight: '50', unit: 'kg', reps: '5' },
           { label: 'W3', name: 'OHP 워밍업', weight: '60', unit: 'kg', reps: '3' },
-          { label: 'M1', name: 'OHP', weight: '70', unit: 'kg', reps: '6' },
-          { label: 'M2', name: 'OHP', weight: '70', unit: 'kg', reps: '6' },
-          { label: 'M3', name: 'OHP', weight: '70', unit: 'kg', reps: '6' },
+          { label: 'M1', name: 'OHP', weight: '72.5', unit: 'kg', reps: '6' },
+          { label: 'M2', name: 'OHP', weight: '72.5', unit: 'kg', reps: '6' },
+          { label: 'M3', name: 'OHP', weight: '72.5', unit: 'kg', reps: '6' },
+          { label: 'M4', name: 'OHP', weight: '72.5', unit: 'kg', reps: '6' },
         ]
       },
       {
-        title: '가중 풀업',
+        title: '풀업',
         meta: '컨트롤된 풀 ROM',
         rest: 120,
         sets: [
-          { label: 'PU1', name: '가중 풀업', weight: '+5', unit: 'kg', reps: '8–10' },
-          { label: 'PU2', name: '가중 풀업', weight: '+5', unit: 'kg', reps: '8–10' },
-          { label: 'PU3', name: '가중 풀업', weight: '+5', unit: 'kg', reps: '8–10' },
-          { label: 'PU4', name: '가중 풀업', weight: '+5', unit: 'kg', reps: '8–10' },
+          { label: 'PU1', name: '풀업', weight: 'BW', unit: '', reps: '10–12' },
+          { label: 'PU2', name: '풀업', weight: 'BW', unit: '', reps: '10–12' },
+          { label: 'PU3', name: '풀업', weight: 'BW', unit: '', reps: '10–12' },
+          { label: 'PU4', name: '풀업', weight: 'BW', unit: '', reps: '10–12' },
+        ]
+      },
+      {
+        title: '인클라인 벤치',
+        meta: '상부 가슴',
+        rest: 120,
+        sets: [
+          { label: 'I1', name: '인클라인 벤치', weight: '80', unit: 'kg', reps: '8' },
+          { label: 'I2', name: '인클라인 벤치', weight: '80', unit: 'kg', reps: '8' },
+          { label: 'I3', name: '인클라인 벤치', weight: '80', unit: 'kg', reps: '8' },
+          { label: 'I4', name: '인클라인 벤치', weight: '80', unit: 'kg', reps: '8' },
         ]
       },
       {
         title: '체스트 서포티드 로우',
-        meta: 'day1 펜들레이 대체 · 허리 보존',
+        meta: '머신 · 헤비',
         rest: 90,
         sets: [
           { label: 'R1', name: '체스트 서포티드 로우', weight: 'HEAVY', unit: '', reps: '10' },
@@ -147,13 +144,14 @@ window.ROUTINE = {
       },
       {
         title: '케이블 레터럴',
-        meta: '가볍게 펌핑',
+        meta: '어깨 비대',
         rest: 60,
         sets: [
           { label: 'LT1', name: '케이블 레터럴 레이즈', weight: '', unit: '', reps: '15' },
           { label: 'LT2', name: '케이블 레터럴 레이즈', weight: '', unit: '', reps: '15' },
           { label: 'LT3', name: '케이블 레터럴 레이즈', weight: '', unit: '', reps: '15' },
           { label: 'LT4', name: '케이블 레터럴 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'LT5', name: '케이블 레터럴 레이즈', weight: '', unit: '', reps: '15' },
         ]
       },
       {
@@ -196,7 +194,7 @@ window.ROUTINE = {
           { label: 'W2', name: '데드리프트', weight: '100', unit: 'kg', reps: '3' },
           { label: 'W3', name: '데드리프트', weight: '140', unit: 'kg', reps: '2' },
           { label: 'W4', name: '데드리프트', weight: '180', unit: 'kg', reps: '1' },
-          { label: 'W5', name: '데드리프트', weight: '205', unit: 'kg', reps: '1' },
+          { label: 'W5', name: '데드리프트', weight: '200', unit: 'kg', reps: '1' },
         ]
       },
       {
@@ -204,7 +202,7 @@ window.ROUTINE = {
         meta: 'RPE 8~9 · 허리 컨디션 우선',
         rest: 300,
         sets: [
-          { label: 'TOP', name: '데드리프트', weight: '225', unit: 'kg', reps: '1' },
+          { label: 'TOP', name: '데드리프트', weight: '220', unit: 'kg', reps: '1' },
         ]
       },
       {
@@ -212,9 +210,9 @@ window.ROUTINE = {
         meta: '볼륨 절대 과하게 X',
         rest: 240,
         sets: [
-          { label: 'B1', name: '데드리프트', weight: '195', unit: 'kg', reps: '3' },
-          { label: 'B2', name: '데드리프트', weight: '195', unit: 'kg', reps: '3' },
-          { label: 'B3', name: '데드리프트', weight: '195', unit: 'kg', reps: '3' },
+          { label: 'B1', name: '데드리프트', weight: '190', unit: 'kg', reps: '3' },
+          { label: 'B2', name: '데드리프트', weight: '190', unit: 'kg', reps: '3' },
+          { label: 'B3', name: '데드리프트', weight: '190', unit: 'kg', reps: '3' },
         ]
       },
       {
@@ -222,9 +220,9 @@ window.ROUTINE = {
         meta: '후면사슬',
         rest: 150,
         sets: [
-          { label: 'S1', name: '스티프 레그 데드', weight: '125', unit: 'kg', reps: '8' },
-          { label: 'S2', name: '스티프 레그 데드', weight: '130', unit: 'kg', reps: '8' },
-          { label: 'S3', name: '스티프 레그 데드', weight: '135', unit: 'kg', reps: '8' },
+          { label: 'S1', name: '스티프 레그 데드', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'S2', name: '스티프 레그 데드', weight: '125', unit: 'kg', reps: '8' },
+          { label: 'S3', name: '스티프 레그 데드', weight: '130', unit: 'kg', reps: '8' },
         ]
       },
       {
@@ -267,7 +265,7 @@ window.ROUTINE = {
           { label: 'W3', name: '벤치 워밍업', weight: '60', unit: 'kg', reps: '3' },
           { label: 'W4', name: '벤치 워밍업', weight: '80', unit: 'kg', reps: '2' },
           { label: 'W5', name: '벤치 워밍업', weight: '100', unit: 'kg', reps: '1' },
-          { label: 'W6', name: '벤치 워밍업', weight: '117.5', unit: 'kg', reps: '1' },
+          { label: 'W6', name: '벤치 워밍업', weight: '115', unit: 'kg', reps: '1' },
         ]
       },
       {
@@ -275,7 +273,7 @@ window.ROUTINE = {
         meta: 'RPE 8~9 · 폼 무너지면 STOP',
         rest: 240,
         sets: [
-          { label: 'TOP', name: '컴페티션 벤치', weight: '125', unit: 'kg', reps: '1' },
+          { label: 'TOP', name: '컴페티션 벤치', weight: '122.5', unit: 'kg', reps: '1' },
         ]
       },
       {
@@ -283,11 +281,11 @@ window.ROUTINE = {
         meta: '폭발적으로',
         rest: 180,
         sets: [
-          { label: 'B1', name: '컴페티션 벤치', weight: '107.5', unit: 'kg', reps: '4' },
-          { label: 'B2', name: '컴페티션 벤치', weight: '107.5', unit: 'kg', reps: '4' },
-          { label: 'B3', name: '컴페티션 벤치', weight: '107.5', unit: 'kg', reps: '4' },
-          { label: 'B4', name: '컴페티션 벤치', weight: '107.5', unit: 'kg', reps: '4' },
-          { label: 'B5', name: '컴페티션 벤치', weight: '107.5', unit: 'kg', reps: '4' },
+          { label: 'B1', name: '컴페티션 벤치', weight: '105', unit: 'kg', reps: '4' },
+          { label: 'B2', name: '컴페티션 벤치', weight: '105', unit: 'kg', reps: '4' },
+          { label: 'B3', name: '컴페티션 벤치', weight: '105', unit: 'kg', reps: '4' },
+          { label: 'B4', name: '컴페티션 벤치', weight: '105', unit: 'kg', reps: '4' },
+          { label: 'B5', name: '컴페티션 벤치', weight: '105', unit: 'kg', reps: '4' },
         ]
       },
       {
@@ -295,10 +293,10 @@ window.ROUTINE = {
         meta: '삼두 강화',
         rest: 150,
         sets: [
-          { label: 'CG1', name: '클로즈그립 벤치', weight: '97.5', unit: 'kg', reps: '6' },
-          { label: 'CG2', name: '클로즈그립 벤치', weight: '97.5', unit: 'kg', reps: '6' },
-          { label: 'CG3', name: '클로즈그립 벤치', weight: '97.5', unit: 'kg', reps: '6' },
-          { label: 'CG4', name: '클로즈그립 벤치', weight: '97.5', unit: 'kg', reps: '6' },
+          { label: 'CG1', name: '클로즈그립 벤치', weight: '95', unit: 'kg', reps: '6' },
+          { label: 'CG2', name: '클로즈그립 벤치', weight: '95', unit: 'kg', reps: '6' },
+          { label: 'CG3', name: '클로즈그립 벤치', weight: '95', unit: 'kg', reps: '6' },
+          { label: 'CG4', name: '클로즈그립 벤치', weight: '95', unit: 'kg', reps: '6' },
         ]
       },
       {
@@ -306,10 +304,10 @@ window.ROUTINE = {
         meta: '등 볼륨',
         rest: 120,
         sets: [
-          { label: 'BR1', name: '바벨 로우', weight: '110', unit: 'kg', reps: '8' },
-          { label: 'BR2', name: '바벨 로우', weight: '110', unit: 'kg', reps: '8' },
-          { label: 'BR3', name: '바벨 로우', weight: '110', unit: 'kg', reps: '8' },
-          { label: 'BR4', name: '바벨 로우', weight: '110', unit: 'kg', reps: '8' },
+          { label: 'BR1', name: '바벨 로우', weight: '105', unit: 'kg', reps: '8' },
+          { label: 'BR2', name: '바벨 로우', weight: '105', unit: 'kg', reps: '8' },
+          { label: 'BR3', name: '바벨 로우', weight: '105', unit: 'kg', reps: '8' },
+          { label: 'BR4', name: '바벨 로우', weight: '105', unit: 'kg', reps: '8' },
         ]
       },
       {
@@ -359,11 +357,11 @@ window.ROUTINE = {
         meta: '바텀 2초 정지',
         rest: 180,
         sets: [
-          { label: 'M1', name: '포즈 로우바 스쿼트', weight: '150', unit: 'kg', reps: '5' },
-          { label: 'M2', name: '포즈 로우바 스쿼트', weight: '150', unit: 'kg', reps: '5' },
-          { label: 'M3', name: '포즈 로우바 스쿼트', weight: '150', unit: 'kg', reps: '5' },
-          { label: 'M4', name: '포즈 로우바 스쿼트', weight: '150', unit: 'kg', reps: '5' },
-          { label: 'M5', name: '포즈 로우바 스쿼트', weight: '150', unit: 'kg', reps: '5' },
+          { label: 'M1', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M2', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M3', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M4', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
+          { label: 'M5', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
         ]
       },
       {
@@ -371,9 +369,9 @@ window.ROUTINE = {
         meta: '쿼드·코어 강화',
         rest: 150,
         sets: [
-          { label: 'H1', name: '하이바 스쿼트', weight: '125', unit: 'kg', reps: '8' },
-          { label: 'H2', name: '하이바 스쿼트', weight: '125', unit: 'kg', reps: '8' },
-          { label: 'H3', name: '하이바 스쿼트', weight: '125', unit: 'kg', reps: '8' },
+          { label: 'H1', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'H2', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'H3', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
         ]
       },
       {
