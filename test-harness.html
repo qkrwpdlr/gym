@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Phase1 E2E Harness</title></head>
+<body>
+<iframe id="f" src="./index.html#/today/1" style="width:400px;height:800px"></iframe>
+<pre id="out">RUNNING</pre>
+<script>
+const results = [];
+function t(name, cond) { results.push((cond ? 'PASS' : 'FAIL') + ' ' + name); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function run() {
+  const f = document.getElementById('f');
+  await sleep(1500);
+  let w = f.contentWindow, d = f.contentDocument;
+  w.confirm = () => true; // confirm 자동 수락
+  w.prompt = () => '테스트 메모'; // prompt 자동 입력
+
+  try {
+    // ---- 1. 오늘 화면 렌더 ----
+    t('today: header renders', d.querySelector('.header-title') && d.querySelector('.header-title').textContent.includes('DAY 01'));
+    t('today: day strip has 5 chips', d.querySelectorAll('.day-chip').length === 5);
+    t('today: tabbar has 3 tabs', d.querySelectorAll('#tabbar .tab').length === 3);
+    t('today: sections render', d.querySelectorAll('.section').length >= 5);
+    t('today: set rows render', d.querySelectorAll('.set-row').length > 20);
+
+    // ---- 2. 체크 = 자동 실측 복사 ----
+    const firstRow = d.querySelector('.set-row');
+    firstRow.querySelector('.checkbox').click();
+    await sleep(300);
+    let log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    t('check: log created', !!log);
+    t('check: entry done', log && log.sets.length === 1 && log.sets[0].done === true);
+    t('check: actual auto-copied', log && log.sets[0].actualW === log.sets[0].targetW && log.sets[0].actualR === log.sets[0].targetR);
+    t('check: log index updated', JSON.parse(w.localStorage.getItem('gym-v4-log-index') || '[]').includes(today()));
+    t('check: row shows done', d.querySelector('.set-row').classList.contains('done'));
+    t('check: rest timer overlay active', d.getElementById('timerOverlay').classList.contains('active'));
+
+    // 타이머 정지
+    d.getElementById('timerClose').click();
+    await sleep(100);
+
+    // ---- 3. 체크 해제 → 엔트리 제거 + 빈 로그 삭제 ----
+    d.querySelector('.set-row').querySelector('.checkbox').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()) || 'null');
+    t('uncheck: empty log deleted', log === null);
+    t('uncheck: index cleaned', !JSON.parse(w.localStorage.getItem('gym-v4-log-index') || '[]').includes(today()));
+
+    // ---- 4. 실측 시트 (숫자 무게 행: W2 60kg) ----
+    d.querySelectorAll('.set-row')[1].querySelector('.set-content').click();
+    await sleep(300);
+    t('sheet: opens', d.getElementById('actualSheet').classList.contains('active'));
+    t('sheet: weight prefilled', d.getElementById('wVal').value === '60');
+    // 무게 +2.5 두 번, RPE 8 선택
+    d.getElementById('wPlus').click();
+    d.getElementById('wPlus').click();
+    const rpe8 = [...d.querySelectorAll('.rpe-chip')].find(c => c.dataset.rpe === '8');
+    if (rpe8) rpe8.click();
+    d.getElementById('sheetSave').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    t('sheet: saved with edited weight', log && log.sets[0].done && log.sets[0].actualW === '65' && log.sets[0].targetW === '60');
+    t('sheet: rpe saved', log && log.sets[0].rpe === 8);
+    t('sheet: edited shown yellow', !!d.querySelector('.set-weight.edited'));
+    t('sheet: old value struck', !!d.querySelector('.set-old'));
+    d.getElementById('timerClose').click();
+
+    // ---- 5. 스킵 ----
+    const rows = d.querySelectorAll('.set-row');
+    rows[2].querySelector('.set-content').click();
+    await sleep(200);
+    d.getElementById('sheetSkip').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    const skipEntry = log.sets.find(en => en.skipped);
+    t('skip: entry skipped, not done', !!skipEntry && !skipEntry.done && skipEntry.actualW === null);
+    t('skip: SKIP tag shown', !!d.querySelector('.set-skip-tag'));
+
+    // ---- 6. 다른 day로 교체 (confirm 자동 수락) ----
+    w.location.hash = '#/today/3';
+    await sleep(400);
+    t('day3: renders', d.querySelector('.header-title').textContent.includes('DAY 03'));
+    d.querySelector('.set-row .checkbox').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    t('replace: log switched to slot 3', log && log.daySlot === 3 && log.sets.length === 1);
+    d.getElementById('timerClose').click();
+
+    // ---- 7. 세션 메모 ----
+    d.getElementById('memoBtn').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    t('memo: saved', log && log.note === '테스트 메모');
+
+    // ---- 8. 달력 ----
+    w.location.hash = '#/log';
+    await sleep(400);
+    t('cal: renders', !!d.querySelector('.cal-grid'));
+    t('cal: today has log dot', !!d.querySelector('.cal-cell.has-log'));
+    t('cal: today ring', !!d.querySelector('.cal-cell.today'));
+    t('cal: partial dot (1/N sets)', !!d.querySelector('.cal-cell.has-log.partial'));
+    t('cal: summary shows 출석 1일', d.querySelector('.cal-summary').textContent.includes('1일'));
+    // 날짜 탭 → 카드
+    d.querySelector('.cal-cell.has-log').click();
+    await sleep(300);
+    t('cal: day card appears', !!d.querySelector('.cal-day-card'));
+    // 상세 이동
+    d.querySelector('.cal-day-card .go').click();
+    await sleep(400);
+    t('detail: renders', w.location.hash.includes('#/log/' + today()) && d.querySelector('.header-tag').textContent.includes('D3'));
+    t('detail: note shown', d.body.textContent.includes('테스트 메모'));
+    // 뒤로
+    d.getElementById('backBtn').click();
+    await sleep(300);
+    t('detail: back to calendar', !!d.querySelector('.cal-grid'));
+
+    // ---- 9. 설정 ----
+    w.location.hash = '#/settings';
+    await sleep(400);
+    t('settings: renders', !!d.getElementById('exportBtn'));
+
+    // ---- 10. 레거시 리다이렉트 ----
+    w.location.hash = '#/day2';
+    await sleep(400);
+    t('legacy: #/day2 redirects to today/2', w.location.hash === '#/today/2' && d.querySelector('.header-title').textContent.includes('DAY 02'));
+
+    // ---- 11. 집중 모드 ----
+    w.location.hash = '#/today/3';
+    await sleep(400);
+    d.getElementById('startFocusBtn').click();
+    await sleep(300);
+    t('focus: opens', d.getElementById('focusMode').classList.contains('active'));
+    t('focus: starts at first unrecorded set', d.getElementById('focusCurrent').textContent === '2'); // day3 로그는 세트1만 done → 시작 idx=1 → current=2
+    t('focus: alt button exists', !!d.getElementById('focusAltBtn'));
+    // DONE·NEXT → 자동 기록 + 휴식
+    const before = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today())).sets.length;
+    d.getElementById('focusNextBtn').click();
+    await sleep(300);
+    log = JSON.parse(w.localStorage.getItem('gym-v4-log-' + today()));
+    t('focus: DONE records set', log.sets.length === before + 1);
+    t('focus: rest screen shown', !!d.getElementById('focusRestTimer'));
+    // SKIP REST → 다음 세트
+    d.getElementById('focusSkipRestBtn').click();
+    await sleep(300);
+    t('focus: advances to next exercise', !!d.getElementById('focusNextBtn'));
+    // 다르게 했어요 → 시트
+    d.getElementById('focusAltBtn').click();
+    await sleep(300);
+    t('focus: alt opens sheet', d.getElementById('actualSheet').classList.contains('active'));
+    d.getElementById('wMinus').click();
+    d.getElementById('sheetSave').click();
+    await sleep(300);
+    t('focus: sheet save → rest', !!d.getElementById('focusRestTimer'));
+    // EXIT
+    d.getElementById('focusExit').click();
+    await sleep(300);
+    t('focus: exit works', !d.getElementById('focusMode').classList.contains('active'));
+
+    // ---- 12. 마이그레이션 (v3 키 시드 후 강제 리로드) ----
+    w.localStorage.removeItem('gym-v4-migrated');
+    w.localStorage.setItem('gym-v3-day1-checks', '{"0-0":true}');
+    w.localStorage.setItem('gym-v3-last-day', 'day2');
+    w.localStorage.setItem('gym-v3-timer', '{"endTime":1}');
+    f.src = './index.html?mig=1#/today/1';
+    await sleep(1500);
+    w = f.contentWindow; d = f.contentDocument;
+    t('migration: flag set', w.localStorage.getItem('gym-v4-migrated') === '1');
+    t('migration: v3 checks removed', w.localStorage.getItem('gym-v3-day1-checks') === null);
+    t('migration: v3 last-day removed', w.localStorage.getItem('gym-v3-last-day') === null);
+    t('migration: v3 timer removed', w.localStorage.getItem('gym-v3-timer') === null);
+    t('migration: v4 log survives', !!w.localStorage.getItem('gym-v4-log-' + today()));
+
+    // ---- 13. 유령 세션 방지 (START → EXIT 시 로그 미생성) ----
+    w.localStorage.removeItem('gym-v4-log-' + today());
+    w.localStorage.setItem('gym-v4-log-index', '[]');
+    f.src = './index.html?ghost#/today/1';
+    await sleep(1500);
+    w = f.contentWindow; d = f.contentDocument;
+    w.confirm = () => true;
+    d.getElementById('startFocusBtn').click();
+    await sleep(300);
+    t('ghost: focus opened', d.getElementById('focusMode').classList.contains('active'));
+    t('ghost: no log saved on enter', w.localStorage.getItem('gym-v4-log-' + today()) === null);
+    d.getElementById('focusExit').click();
+    await sleep(300);
+    t('ghost: still no log after exit', w.localStorage.getItem('gym-v4-log-' + today()) === null);
+
+    // ---- 14. skipped 완료 판정 통일 (done+skipped = 완료) ----
+    const tdy = today();
+    w.localStorage.setItem('gym-v4-log-' + tdy, JSON.stringify({schemaVersion:1,date:tdy,programId:null,week:null,daySlot:1,dayTitle:'X',color:'#ff2d2d',totalSets:2,startedAt:tdy+'T10:00:00+09:00',endedAt:tdy+'T11:00:00+09:00',note:null,adjusted:null,sets:[
+      {s:0,i:0,sec:'a',name:'n',label:'L1',unit:'kg',targetW:'100',targetR:'5',actualW:'100',actualR:'5',done:true,skipped:false,rpe:null},
+      {s:0,i:1,sec:'a',name:'n',label:'L2',unit:'kg',targetW:'100',targetR:'5',actualW:null,actualR:null,done:false,skipped:true,rpe:null}]}));
+    w.localStorage.setItem('gym-v4-log-index', JSON.stringify([tdy]));
+    f.src = './index.html?skipc#/log';
+    await sleep(1500);
+    w = f.contentWindow; d = f.contentDocument;
+    const todayCell = d.querySelector('.cal-cell.has-log');
+    t('skipcomplete: calendar dot not partial', !!todayCell && !todayCell.classList.contains('partial'));
+    t('skipcomplete: today tab complete dot', !!d.querySelector('#tabbar .tab.complete'));
+
+    // ---- 15. 다른 day 화면에서 메모해도 세션 미교체 ----
+    let confirmCalls = 0;
+    w.confirm = () => { confirmCalls++; return true; };
+    w.prompt = () => '메모 추가';
+    w.location.hash = '#/today/3';
+    await sleep(400);
+    d.getElementById('memoBtn').click();
+    await sleep(300);
+    let mlog = JSON.parse(w.localStorage.getItem('gym-v4-log-' + tdy));
+    t('memo-other-day: session not replaced', mlog && mlog.daySlot === 1 && mlog.note === '메모 추가');
+    t('memo-other-day: no confirm asked', confirmCalls === 0);
+
+    // ---- 16. 빈 무게 세트의 실측 표시 ----
+    w.location.hash = '#/today/1';
+    await sleep(400);
+    // day1 마지막 섹션들에 weight '' 세트 존재 (레그 익스텐션). 해당 행 찾기
+    const emptyRow = [...d.querySelectorAll('.set-row')].find(r => {
+      const s = parseInt(r.dataset.s, 10), i = parseInt(r.dataset.i, 10);
+      const day = w.ROUTINE[Object.keys(w.ROUTINE)[0]];
+      return day.sections[s] && day.sections[s].sets[i] && day.sections[s].sets[i].weight === '';
+    });
+    if (emptyRow) {
+      emptyRow.querySelector('.set-content').click();
+      await sleep(300);
+      d.getElementById('wVal').value = 50;
+      d.getElementById('sheetSave').click();
+      await sleep(400);
+      const row2 = [...d.querySelectorAll('.set-row')].find(r => r.dataset.s === emptyRow.dataset.s && r.dataset.i === emptyRow.dataset.i);
+      t('empty-weight: actual shown in yellow', !!row2 && !!row2.querySelector('.set-weight.edited') && row2.querySelector('.set-weight.edited').textContent === '50');
+      const tm = d.getElementById('timerClose'); if (d.getElementById('timerOverlay').classList.contains('active')) tm.click();
+    } else {
+      t('empty-weight: (no empty-weight set found)', false);
+    }
+
+  } catch (e) {
+    results.push('ERROR ' + e.message + ' @ ' + (e.stack || '').split('\n')[1]);
+  }
+
+  function today() {
+    const dt = new Date();
+    return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+  }
+  function parseNum(s) { const m = String(s ?? '').match(/\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; }
+
+  document.getElementById('out').textContent =
+    'DONE\n' + results.join('\n') + '\nTOTAL ' + results.length +
+    ' / FAIL ' + results.filter(r => !r.startsWith('PASS')).length;
+}
+
+// iframe 내 localStorage 초기화 후 시작
+const f = document.getElementById('f');
+f.addEventListener('load', function once() {
+  f.removeEventListener('load', once);
+  f.contentWindow.localStorage.clear();
+  f.src = './index.html#/today/1';
+  setTimeout(run, 100);
+});
+</script>
+</body>
+</html>

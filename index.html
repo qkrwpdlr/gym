@@ -46,7 +46,7 @@
 
   /* ==================== LAYOUT ==================== */
   .app {
-    background-image: 
+    background-image:
       radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 50%),
       radial-gradient(circle at 80% 100%, rgba(255, 221, 0, 0.04) 0%, transparent 50%);
     background-attachment: fixed;
@@ -278,6 +278,9 @@
   .set-row:active { background: var(--bg-elevated); }
   .set-row.done { opacity: 0.42; }
   .set-row.done .set-weight, .set-row.done .set-reps { text-decoration: line-through; }
+  .set-row.done .set-weight.edited,
+  .set-row.done .set-reps.edited { text-decoration: none; }
+  .set-row.skipped { opacity: 0.42; }
 
   .checkbox {
     width: 24px;
@@ -327,6 +330,8 @@
     line-height: 1;
   }
 
+  .set-weight.edited { color: var(--yellow); }
+
   .set-unit {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
@@ -344,6 +349,33 @@
   }
 
   .set-reps .num { color: var(--text); font-size: 16px; }
+  .set-reps.edited .num { color: var(--yellow); }
+
+  .set-old {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-decoration: line-through;
+    align-self: center;
+  }
+
+  .set-skip-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-faint);
+    letter-spacing: 0.12em;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 5px;
+    align-self: center;
+  }
+
+  .set-rpe-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    align-self: center;
+  }
 
   .timer-btn {
     width: 34px;
@@ -367,6 +399,395 @@
   }
 
   .timer-btn svg { width: 14px; height: 14px; }
+
+  /* ==================== DAY STRIP ==================== */
+  .day-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 18px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .day-strip::-webkit-scrollbar { display: none; }
+
+  .day-chip {
+    flex: 1 0 auto;
+    min-width: 58px;
+    padding: 8px 10px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .day-chip .d {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text-dim);
+  }
+
+  .day-chip .wd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+  }
+
+  .day-chip.active {
+    border-color: var(--chip-color, var(--accent));
+    background: var(--bg-elevated);
+  }
+
+  .day-chip.active .d { color: var(--chip-color, var(--accent)); }
+
+  .day-chip .day-dot { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
+  .day-chip.in-progress .day-dot { background: var(--chip-color, var(--accent)); }
+  .day-chip.completed .day-dot { background: var(--green); box-shadow: 0 0 4px var(--green); }
+
+  /* ==================== ACTUAL EDIT SHEET (실측 기록) ==================== */
+  .sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 120;
+    display: none;
+  }
+
+  .sheet-backdrop.active { display: block; }
+
+  .sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-elevated);
+    border-top: 2px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+    z-index: 121;
+    transform: translateY(110%);
+    transition: transform 0.22s ease;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .sheet.active { transform: translateY(0); }
+
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 0 auto 14px;
+  }
+
+  .sheet-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .stepper-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 6px;
+  }
+
+  .stepper-btn {
+    width: 60px;
+    height: 56px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .stepper-btn:active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .stepper-val {
+    width: 120px;
+    background: none;
+    border: none;
+    color: var(--text);
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 54px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .stepper-val:focus { outline: none; color: var(--yellow); }
+  .stepper-val::-webkit-outer-spin-button,
+  .stepper-val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .stepper-val[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+  .stepper-unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  .rpe-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 4px 0 18px;
+  }
+
+  .rpe-chip {
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rpe-chip.on { border-color: var(--yellow); color: var(--yellow); }
+
+  .sheet-actions { display: flex; gap: 10px; }
+
+  .sheet-btn {
+    flex: 1;
+    padding: 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sheet-btn.save { background: var(--accent); color: var(--bg); flex: 2; }
+  .sheet-btn.skip {
+    background: var(--bg-card);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  /* ==================== CALENDAR (기록 탭) ==================== */
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .cal-month {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px;
+    letter-spacing: 0.04em;
+  }
+
+  .cal-nav { display: flex; gap: 8px; }
+
+  .cal-nav button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cal-nav button:active { background: var(--bg-elevated); }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  .cal-wd {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-faint);
+    padding: 6px 0;
+    letter-spacing: 0.1em;
+  }
+
+  .cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 8px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+  }
+
+  .cal-cell.empty { cursor: default; }
+  .cal-cell.today { border-color: var(--accent); color: var(--text); }
+  .cal-cell.selected { background: var(--bg-elevated); border-color: var(--border); }
+
+  .cal-cell .cal-dot { width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+  .cal-cell.has-log .cal-dot { background: var(--log-color, var(--accent)); }
+  .cal-cell.has-log.partial .cal-dot { opacity: 0.45; }
+
+  .cal-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-card);
+    margin-bottom: 14px;
+  }
+
+  .cal-day-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .cal-day-card .t { font-weight: 900; margin-bottom: 6px; font-size: 15px; }
+
+  .cal-day-card .m {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .cal-day-card .go {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 36px 0;
+    letter-spacing: 0.08em;
+    line-height: 2.2;
+  }
+
+  /* ==================== LOG DETAIL ==================== */
+  .detail-back {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    margin-bottom: 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .note-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--yellow);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  /* ==================== SETTINGS ==================== */
+  .settings-item {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .settings-item:active { background: var(--bg-elevated); }
+
+  .settings-item .hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  /* ==================== ACTION ROW (memo/reset) ==================== */
+  .action-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
 
   /* ==================== TIMER OVERLAY (체크리스트 모드용) ==================== */
   .timer-overlay {
@@ -432,7 +853,6 @@
   /* ==================== RESET ==================== */
   .reset-btn {
     display: block;
-    margin: 20px auto 0;
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-dim);
@@ -767,6 +1187,22 @@
     box-shadow: none;
   }
 
+  .focus-alt-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    padding: 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .focus-alt-btn:active { color: var(--yellow); }
+
   /* Completion Screen */
   .focus-complete {
     flex: 1;
@@ -824,7 +1260,7 @@
 </head>
 <body>
 
-<!-- ============ MAIN APP (체크리스트 모드) ============ -->
+<!-- ============ MAIN APP ============ -->
 <div class="app" id="app">
   <!-- 동적 렌더링 -->
 </div>
@@ -844,6 +1280,30 @@
   <!-- 동적 렌더링 -->
 </nav>
 
+<!-- ============ ACTUAL EDIT SHEET (실측 기록) ============ -->
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="actualSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="sheetTitle">—</div>
+  <div class="stepper-row">
+    <button class="stepper-btn" id="wMinus">−2.5</button>
+    <input class="stepper-val" id="wVal" type="number" inputmode="decimal" step="0.5">
+    <button class="stepper-btn" id="wPlus">+2.5</button>
+  </div>
+  <div class="stepper-unit" id="wUnit">KG</div>
+  <div class="stepper-row">
+    <button class="stepper-btn" id="rMinus">−1</button>
+    <input class="stepper-val" id="rVal" type="number" inputmode="numeric" step="1">
+    <button class="stepper-btn" id="rPlus">+1</button>
+  </div>
+  <div class="stepper-unit">REPS</div>
+  <div class="rpe-row" id="rpeRow"></div>
+  <div class="sheet-actions">
+    <button class="sheet-btn skip" id="sheetSkip">스킵</button>
+    <button class="sheet-btn save" id="sheetSave">기록 ✓</button>
+  </div>
+</div>
+
 <!-- ============ FOCUS MODE ============ -->
 <div class="focus-mode" id="focusMode">
   <div class="focus-header">
@@ -862,66 +1322,61 @@
 <script>
   'use strict';
 
-  const STORAGE_PREFIX = 'gym-v3-';
-  const TIMER_KEY = 'gym-v3-timer';
-  const LAST_DAY_KEY = 'gym-v3-last-day';
+  // ============ CONSTANTS ============
+  const V4 = 'gym-v4-';
+  const TIMER_KEY = 'gym-v4-timer';
+  const LOG_INDEX_KEY = 'gym-v4-log-index';
+  const DEFAULT_ACCENT = '#ff2d2d';
 
-  const days = Object.keys(ROUTINE); // ['day1','day2','day3','day4','day5']
+  const days = Object.keys(ROUTINE); // ['day1', ..., 'dayN'] — slot N = days[N-1]
 
-  // ============ ROUTER ============
-  function currentDayId() {
-    const hash = location.hash.replace('#/', '').replace('#', '');
-    if (days.includes(hash)) return hash;
-    return localStorage.getItem(LAST_DAY_KEY) || 'day1';
+  // ============ MIGRATION (v3 → v4) ============
+  // 기존 체크 상태는 날짜 정보가 없는 휘발성 데이터라 승계하지 않고 폐기한다.
+  (function migrateV3() {
+    if (localStorage.getItem(V4 + 'migrated')) return;
+    try {
+      days.forEach(d => localStorage.removeItem('gym-v3-' + d + '-checks'));
+      localStorage.removeItem('gym-v3-last-day');
+      localStorage.removeItem('gym-v3-timer');
+      localStorage.setItem(V4 + 'migrated', '1');
+    } catch (e) {}
+  })();
+
+  // ============ HELPERS ============
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
-  window.addEventListener('hashchange', render);
-  window.addEventListener('popstate', render);
-
-  function navigate(dayId) {
-    localStorage.setItem(LAST_DAY_KEY, dayId);
-    location.hash = '#/' + dayId;
+  function parseNum(str) {
+    const m = String(str ?? '').match(/\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
   }
 
-  // ============ STATE ============
-  function getCheckedKey(dayId) {
-    return STORAGE_PREFIX + dayId + '-checks';
+  function fmtNum(n) {
+    return (n === null || n === undefined || isNaN(n)) ? '' : String(Math.round(n * 100) / 100);
   }
 
-  function loadChecks(dayId) {
-    try { return JSON.parse(localStorage.getItem(getCheckedKey(dayId)) || '{}'); }
-    catch(e) { return {}; }
+  function lsGet(key, fallback) {
+    try {
+      const v = JSON.parse(localStorage.getItem(key));
+      return v === null || v === undefined ? fallback : v;
+    } catch (e) { return fallback; }
   }
 
-  function saveChecks(dayId, checks) {
-    try { localStorage.setItem(getCheckedKey(dayId), JSON.stringify(checks)); } catch(e) {}
+  function lsSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+
+  function esc(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   }
 
   function countTotalSets(day) {
     return day.sections.reduce((acc, s) => acc + s.sets.length, 0);
   }
 
-  function countDoneSets(dayId) {
-    const checks = loadChecks(dayId);
-    return Object.values(checks).filter(Boolean).length;
-  }
-
-  // ============ MAIN RENDER ============
-  function render() {
-    const dayId = currentDayId();
-    const day = ROUTINE[dayId];
-    if (!day) return;
-
-    // CSS var for accent color
-    document.documentElement.style.setProperty('--accent', day.color);
-    document.documentElement.style.setProperty('--accent-dim', mixColor(day.color, '#000', 0.5));
-
-    renderApp(dayId, day);
-    renderTabbar(dayId);
-  }
-
   function mixColor(hex, mixWith, amount) {
-    // Simple hex mixing
     const h = hex.replace('#','');
     const r = parseInt(h.substring(0,2), 16);
     const g = parseInt(h.substring(2,4), 16);
@@ -936,12 +1391,214 @@
     return '#' + [nr,ng,nb].map(x => x.toString(16).padStart(2,'0')).join('');
   }
 
-  function renderApp(dayId, day) {
+  // ============ SESSION LOG (날짜 키 운동일지) ============
+  // gym-v4-log-YYYY-MM-DD = SessionLog, gym-v4-log-index = 날짜 배열 (정렬 유지)
+  function logKey(date) { return V4 + 'log-' + date; }
+
+  function loadLogByDate(date) { return lsGet(logKey(date), null); }
+
+  function saveLog(log, touch = true) {
+    if (touch) log.endedAt = new Date().toISOString();
+    lsSet(logKey(log.date), log);
+    const index = lsGet(LOG_INDEX_KEY, []);
+    if (!index.includes(log.date)) {
+      index.push(log.date);
+      index.sort();
+      lsSet(LOG_INDEX_KEY, index);
+    }
+  }
+
+  function deleteLog(date) {
+    localStorage.removeItem(logKey(date));
+    lsSet(LOG_INDEX_KEY, lsGet(LOG_INDEX_KEY, []).filter(d => d !== date));
+  }
+
+  function newLog(slot) {
+    const day = ROUTINE[days[slot - 1]];
+    return {
+      schemaVersion: 1,
+      date: todayStr(),
+      programId: null,
+      week: null,
+      daySlot: slot,
+      dayTitle: day.title,
+      color: day.color,
+      totalSets: countTotalSets(day),
+      startedAt: new Date().toISOString(),
+      endedAt: null,
+      note: null,
+      adjusted: null,
+      sets: []
+    };
+  }
+
+  // 오늘 로그 보장. 다른 day 세션이 진행 중이면 confirm 후 교체. 취소 시 null.
+  // 새 로그는 저장하지 않고 반환만 한다 — 실제 저장은 첫 기록(recordSet/메모) 시점.
+  // (START만 누르고 나가도 유령 세션이 남지 않게)
+  function ensureTodayLog(slot) {
+    const log = loadLogByDate(todayStr());
+    if (log && log.daySlot === slot) return log;
+    if (log) {
+      if (!confirm('오늘은 이미 D' + log.daySlot + ' (' + log.dayTitle + ') 세션이 있어요.\nD' + slot + '(으)로 새로 시작할까요? (기존 기록 삭제)')) return null;
+      deleteLog(log.date);
+    }
+    return newLog(slot);
+  }
+
+  function getEntry(log, s, i) {
+    return (log && log.sets.find(en => en.s === s && en.i === i)) || null;
+  }
+
+  // 세트 상태 기록. patch: { done, skipped, actualW, actualR, rpe }
+  function recordSet(slot, s, i, patch) {
+    const log = ensureTodayLog(slot);
+    if (!log) return null;
+    const day = ROUTINE[days[slot - 1]];
+    const section = day.sections[s];
+    const set = section.sets[i];
+    let entry = getEntry(log, s, i);
+    if (!entry) {
+      entry = {
+        s, i,
+        sec: section.title,
+        name: set.name,
+        label: set.label,
+        unit: set.unit || '',
+        targetW: set.weight || '',
+        targetR: set.reps || '',
+        actualW: null, actualR: null,
+        done: false, skipped: false, rpe: null
+      };
+      log.sets.push(entry);
+    }
+    Object.assign(entry, patch);
+    if (!entry.done && !entry.skipped) {
+      log.sets = log.sets.filter(en => en !== entry); // 체크 해제 → 엔트리 제거
+    }
+    if (!log.sets.length && !log.note) { deleteLog(log.date); return log; }
+    saveLog(log);
+    return log;
+  }
+
+  function logDoneCount(log) { return log ? log.sets.filter(en => en.done).length : 0; }
+
+  // skipped 의미론 (기획서 §4.2): 진행상 통과로 치되 done 집계에서는 제외.
+  // "세션 완료" 판정은 done+skipped >= 전체 — 모든 화면(달력/칩/탭)이 이 함수 하나를 쓴다.
+  function logFinishedCount(log) { return log ? log.sets.filter(en => en.done || en.skipped).length : 0; }
+  function isLogComplete(log) { return !!log && log.totalSets > 0 && logFinishedCount(log) >= log.totalSets; }
+
+  // 오늘 로그가 이 slot의 세션이면 반환
+  function todayLogFor(slot) {
+    const log = loadLogByDate(todayStr());
+    return (log && log.daySlot === slot) ? log : null;
+  }
+
+  // 이번 주(월~일)에 세션 로그가 있는 slot 집합
+  function weekDoneSlots() {
+    const now = new Date();
+    const mon = new Date(now);
+    mon.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // 이번 주 월요일
+    const monStr = mon.getFullYear() + '-' + String(mon.getMonth() + 1).padStart(2, '0') + '-' + String(mon.getDate()).padStart(2, '0');
+    const slots = new Set();
+    lsGet(LOG_INDEX_KEY, []).forEach(d => {
+      if (d >= monStr && d <= todayStr()) {
+        const l = loadLogByDate(d);
+        if (l && l.sets.length) slots.add(l.daySlot);
+      }
+    });
+    return slots;
+  }
+
+  // ============ ROUTER ============
+  // 라우트: #/today/:slot | #/log | #/log/:date | #/settings  (레거시 #/dayN 리다이렉트)
+  function parseRoute() {
+    const h = location.hash.replace(/^#\/?/, '');
+    const parts = h.split('/').filter(Boolean);
+
+    const legacy = parts[0] && parts[0].match(/^day(\d+)$/);
+    if (legacy) return { redirect: '#/today/' + legacy[1] };
+
+    if (parts[0] === 'log') {
+      if (parts[1] && /^\d{4}-\d{2}-\d{2}$/.test(parts[1])) return { view: 'logDetail', date: parts[1] };
+      return { view: 'log' };
+    }
+    if (parts[0] === 'settings') return { view: 'settings' };
+
+    let slot = parts[0] === 'today' ? parseInt(parts[1], 10) : NaN;
+    if (!slot || slot < 1 || slot > days.length) slot = defaultSlot();
+    return { view: 'today', slot };
+  }
+
+  // 기본 day: ⓪오늘 진행 중 세션 → ①오늘 요일에 스케줄된 day → ②이번 주 첫 미수행 → ③slot 1
+  function defaultSlot() {
+    const log = loadLogByDate(todayStr());
+    if (log && log.daySlot >= 1 && log.daySlot <= days.length) return log.daySlot;
+    const wd = ['SUN','MON','TUE','WED','THU','FRI','SAT'][new Date().getDay()];
+    const idx = days.findIndex(d => (ROUTINE[d].day || '').toUpperCase() === wd);
+    if (idx >= 0) return idx + 1;
+    const done = weekDoneSlots();
+    for (let s = 1; s <= days.length; s++) if (!done.has(s)) return s;
+    return 1;
+  }
+
+  function navigate(hash) { location.hash = hash; }
+
+  window.addEventListener('hashchange', render);
+
+  // ============ MAIN RENDER ============
+  let renderedDate = null; // 자정 경계 감지용
+
+  function render() {
+    const route = parseRoute();
+    if (route.redirect) { location.replace(route.redirect); return; }
+    renderedDate = todayStr();
+
+    let accent = DEFAULT_ACCENT;
+    if (route.view === 'today') {
+      accent = ROUTINE[days[route.slot - 1]].color;
+    } else if (route.view === 'logDetail') {
+      const log = loadLogByDate(route.date);
+      if (log && log.color) accent = log.color;
+    }
+    document.documentElement.style.setProperty('--accent', accent);
+    document.documentElement.style.setProperty('--accent-dim', mixColor(accent, '#000', 0.5));
+
+    if (route.view === 'today') renderToday(route.slot);
+    else if (route.view === 'log') renderCalendar();
+    else if (route.view === 'logDetail') renderLogDetail(route.date);
+    else renderSettings();
+
+    renderTabbar(route.view);
+  }
+
+  // ============ TODAY (오늘 탭) ============
+  function renderToday(slot) {
+    const dayId = days[slot - 1];
+    const day = ROUTINE[dayId];
     const app = document.getElementById('app');
-    const checks = loadChecks(dayId);
+    const log = todayLogFor(slot);
     const totalSets = countTotalSets(day);
-    const doneSets = Object.values(checks).filter(Boolean).length;
+    const doneSets = logDoneCount(log);
     const pct = totalSets ? Math.round(doneSets / totalSets * 100) : 0;
+
+    // day 칩 스트립 (주 2~7회 가변 대응) — 완료 상태는 이번 주 기준
+    const weekSlots = weekDoneSlots();
+    let stripHtml = '<div class="day-strip">';
+    days.forEach((dId, idx) => {
+      const d = ROUTINE[dId];
+      const s = idx + 1;
+      const sLog = todayLogFor(s);
+      let state = '';
+      if (sLog && sLog.sets.length && !isLogComplete(sLog)) state = 'in-progress';
+      else if ((sLog && isLogComplete(sLog)) || weekSlots.has(s)) state = 'completed';
+      const cls = ['day-chip', s === slot ? 'active' : '', state].filter(Boolean).join(' ');
+      stripHtml += '<div class="' + cls + '" data-slot="' + s + '" style="--chip-color:' + d.color + '">'
+        + '<span class="d">D' + s + '</span>'
+        + '<span class="wd">' + (d.day || '·') + '</span>'
+        + '<span class="day-dot"></span>'
+        + '</div>';
+    });
+    stripHtml += '</div>';
 
     let html = `
       <div class="status-bar">
@@ -957,9 +1614,11 @@
 
       <div class="header">
         <div class="header-tag">◆ ${day.day} · ${day.tag}</div>
-        <h1 class="header-title">DAY ${dayId.replace('day','').padStart(2,'0')}<br><span>${day.title}</span></h1>
+        <h1 class="header-title">DAY ${String(slot).padStart(2,'0')}<br><span>${day.title}</span></h1>
         <div class="header-sub">${totalSets} SETS · ${doneSets} DONE</div>
       </div>
+
+      ${stripHtml}
 
       <button class="start-btn" id="startFocusBtn">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -979,10 +1638,12 @@
     `;
 
     day.sections.forEach((section, sIdx) => {
-      const sectionSets = section.sets;
-      const sectionDone = sectionSets.every((_, i) => checks[sIdx + '-' + i]);
-      const restDisplay = section.rest > 0 
-        ? `REST <span class="rest">${formatRestShort(section.rest)}</span>` 
+      const sectionDone = section.sets.every((_, i) => {
+        const en = getEntry(log, sIdx, i);
+        return en && (en.done || en.skipped);
+      });
+      const restDisplay = section.rest > 0
+        ? `REST <span class="rest">${formatRestShort(section.rest)}</span>`
         : 'NO REST';
       const metaText = section.meta ? ` · ${section.meta}` : '';
 
@@ -998,21 +1659,39 @@
           <div class="sets">
       `;
 
-      sectionSets.forEach((set, setIdx) => {
-        const key = sIdx + '-' + setIdx;
-        const isDone = !!checks[key];
-        const weightHtml = set.weight 
-          ? `<span class="set-weight">${set.weight}</span>${set.unit ? `<span class="set-unit">${set.unit.toUpperCase()}</span>` : ''}<span class="set-divider"></span>`
-          : `<span class="set-weight">${set.name}</span><span class="set-divider"></span>`;
-        
+      section.sets.forEach((set, setIdx) => {
+        const en = getEntry(log, sIdx, setIdx);
+        const isDone = !!(en && en.done);
+        const isSkipped = !!(en && en.skipped);
+        const wEdited = isDone && en.actualW !== null && en.actualW !== en.targetW;
+        const rEdited = isDone && en.actualR !== null && en.actualR !== en.targetR;
+
+        let contentHtml = '';
+        if (set.weight || wEdited) {
+          if (wEdited) {
+            contentHtml += (set.weight ? `<span class="set-old">${set.weight}</span>` : '') + `<span class="set-weight edited">${en.actualW}</span>`;
+          } else {
+            contentHtml += `<span class="set-weight">${set.weight}</span>`;
+          }
+          if (set.unit || wEdited) contentHtml += `<span class="set-unit">${(set.unit || 'kg').toUpperCase()}</span>`;
+          contentHtml += `<span class="set-divider"></span>`;
+        } else {
+          contentHtml += `<span class="set-weight">${set.name}</span><span class="set-divider"></span>`;
+        }
+        if (rEdited) {
+          contentHtml += `<span class="set-old">${set.reps}</span><span class="set-reps edited"><span class="num">${en.actualR}</span></span>`;
+        } else {
+          contentHtml += `<span class="set-reps"><span class="num">${set.reps}</span></span>`;
+        }
+        if (isDone && en.rpe) contentHtml += `<span class="set-rpe-tag">@${en.rpe}</span>`;
+        if (isSkipped) contentHtml += `<span class="set-skip-tag">SKIP</span>`;
+
+        const rowCls = ['set-row', isDone ? 'done' : '', isSkipped ? 'skipped' : ''].filter(Boolean).join(' ');
         html += `
-          <div class="set-row ${isDone ? 'done' : ''}" data-key="${key}" data-rest="${section.rest}">
+          <div class="${rowCls}" data-s="${sIdx}" data-i="${setIdx}" data-rest="${section.rest}">
             <div class="checkbox"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></div>
             <div class="set-label">${set.label}</div>
-            <div class="set-content">
-              ${weightHtml}
-              <span class="set-reps"><span class="num">${set.reps}</span></span>
-            </div>
+            <div class="set-content">${contentHtml}</div>
             ${section.rest > 0 ? `<button class="timer-btn" data-timer="${section.rest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg></button>` : ''}
           </div>
         `;
@@ -1021,76 +1700,88 @@
       html += `</div></div>`;
     });
 
-    html += `<button class="reset-btn" id="resetBtn">↻ RESET THIS DAY</button>`;
+    html += `
+      <div class="action-row">
+        <button class="reset-btn" id="memoBtn">📝 세션 메모</button>
+        ${log ? '<button class="reset-btn" id="resetBtn">↻ 오늘 초기화</button>' : ''}
+      </div>
+    `;
 
     app.innerHTML = html;
 
-    // Attach handlers
+    // ----- handlers -----
+    document.querySelectorAll('.day-chip').forEach(chip => {
+      chip.addEventListener('click', () => navigate('#/today/' + chip.dataset.slot));
+    });
+
     document.querySelectorAll('.set-row').forEach(row => {
       row.addEventListener('click', (e) => {
         if (e.target.closest('.timer-btn')) return;
-        const key = row.dataset.key;
-        const rest = parseInt(row.dataset.rest || 0);
-        const checks = loadChecks(dayId);
-        checks[key] = !checks[key];
-        saveChecks(dayId, checks);
-        row.classList.toggle('done');
-
-        if (checks[key]) {
-          ensurePermissions();
-          if (rest > 0) startOverlayTimer(rest);
+        const s = parseInt(row.dataset.s, 10);
+        const i = parseInt(row.dataset.i, 10);
+        const rest = parseInt(row.dataset.rest || 0, 10);
+        if (e.target.closest('.set-content')) {
+          openSheet({ slot, s, i, rest, fromFocus: false });
+          return;
         }
-        updateProgressInPlace(dayId);
+        toggleCheck(slot, s, i, rest);
       });
     });
 
     document.querySelectorAll('[data-timer]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const sec = parseInt(btn.dataset.timer);
+        const sec = parseInt(btn.dataset.timer, 10);
         if (sec > 0) startOverlayTimer(sec);
       });
     });
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      if (confirm(`${day.title} 체크를 모두 초기화할까요?`)) {
-        localStorage.removeItem(getCheckedKey(dayId));
-        render();
-      }
+    document.getElementById('memoBtn').addEventListener('click', () => {
+      const existing = loadLogByDate(todayStr());
+      const v = prompt('세션 메모 (컨디션, 특이사항)', (existing && existing.note) || '');
+      if (v === null) return;
+      // 메모는 "오늘의 세션"에 붙는다 — 다른 day를 보고 있어도 기존 세션을 교체하지 않는다
+      const l = existing || ensureTodayLog(slot);
+      if (!l) return;
+      l.note = v.trim() || null;
+      if (!l.sets.length && !l.note) deleteLog(l.date);
+      else saveLog(l, false);
+      render();
     });
 
-    document.getElementById('startFocusBtn').addEventListener('click', () => {
-      enterFocusMode(dayId);
-    });
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('오늘 세션 기록을 초기화할까요?')) {
+          deleteLog(todayStr());
+          render();
+        }
+      });
+    }
 
-    // Status chips
+    document.getElementById('startFocusBtn').addEventListener('click', () => enterFocusMode(slot));
+
     document.getElementById('wakeChip').addEventListener('click', toggleWakeLock);
     document.getElementById('notifChip').addEventListener('click', requestNotif);
     updateWakeChip();
     updateNotifChip();
   }
 
-  function updateProgressInPlace(dayId) {
-    const day = ROUTINE[dayId];
-    const checks = loadChecks(dayId);
-    const totalSets = countTotalSets(day);
-    const doneSets = Object.values(checks).filter(Boolean).length;
-    const pct = totalSets ? Math.round(doneSets / totalSets * 100) : 0;
-    const pctEl = document.querySelector('.progress-label .pct');
-    const fillEl = document.querySelector('.progress-fill');
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (fillEl) fillEl.style.width = pct + '%';
-    const subEl = document.querySelector('.header-sub');
-    if (subEl) subEl.textContent = `${totalSets} SETS · ${doneSets} DONE`;
-
-    // Section complete state
-    document.querySelectorAll('.section').forEach((sec, idx) => {
-      const sectionSets = day.sections[idx].sets;
-      const allDone = sectionSets.every((_, i) => checks[idx + '-' + i]);
-      sec.classList.toggle('complete', allDone);
-    });
-
-    renderTabbar(dayId);
+  // 체크 토글: 체크 = 목표값을 실측값으로 자동 복사
+  function toggleCheck(slot, s, i, rest) {
+    const day = ROUTINE[days[slot - 1]];
+    const set = day.sections[s].sets[i];
+    const log = todayLogFor(slot);
+    const en = getEntry(log, s, i);
+    if (en && (en.done || en.skipped)) {
+      recordSet(slot, s, i, { done: false, skipped: false, actualW: null, actualR: null, rpe: null });
+    } else {
+      const ok = recordSet(slot, s, i, { done: true, skipped: false, actualW: set.weight || '', actualR: set.reps || '' });
+      if (!ok) return;
+      ensurePermissions();
+      if (rest > 0) startOverlayTimer(rest);
+    }
+    render();
   }
 
   function formatRestShort(sec) {
@@ -1100,36 +1791,357 @@
     return s === 0 ? m + 'm' : `${m}:${String(s).padStart(2,'0')}`;
   }
 
-  // ============ TABBAR ============
-  function renderTabbar(activeDayId) {
-    const tabbar = document.getElementById('tabbar');
-    let html = '';
-    days.forEach(dayId => {
-      const day = ROUTINE[dayId];
-      const total = countTotalSets(day);
-      const done = countDoneSets(dayId);
-      const isActive = dayId === activeDayId;
-      const isComplete = total > 0 && done === total;
-      const hasProgress = done > 0 && !isComplete;
-      
-      const cls = [
-        'tab',
-        isActive ? 'active' : '',
-        isComplete ? 'complete' : '',
-        hasProgress ? 'has-progress' : ''
-      ].filter(Boolean).join(' ');
+  // ============ ACTUAL EDIT SHEET (실측 기록) ============
+  let sheetCtx = null; // { slot, s, i, rest, fromFocus }
+  const sheetEl = document.getElementById('actualSheet');
+  const sheetBackdrop = document.getElementById('sheetBackdrop');
+  const RPE_VALUES = [6, 7, 7.5, 8, 8.5, 9, 9.5, 10];
 
+  function openSheet(ctx) {
+    sheetCtx = ctx;
+    const day = ROUTINE[days[ctx.slot - 1]];
+    const set = day.sections[ctx.s].sets[ctx.i];
+    const log = todayLogFor(ctx.slot);
+    const en = getEntry(log, ctx.s, ctx.i);
+
+    document.getElementById('sheetTitle').textContent = set.name + ' · ' + set.label;
+    const w = parseNum(en && en.actualW !== null ? en.actualW : set.weight);
+    const r = parseNum(en && en.actualR !== null ? en.actualR : set.reps);
+    document.getElementById('wVal').value = w ?? '';
+    document.getElementById('rVal').value = r ?? '';
+    document.getElementById('wUnit').textContent = (set.unit || 'KG').toUpperCase();
+
+    const rpeRow = document.getElementById('rpeRow');
+    const curRpe = en ? en.rpe : null;
+    rpeRow.innerHTML = RPE_VALUES.map(v =>
+      '<button class="rpe-chip ' + (curRpe === v ? 'on' : '') + '" data-rpe="' + v + '">' + v + '</button>'
+    ).join('');
+    rpeRow.querySelectorAll('.rpe-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const wasOn = chip.classList.contains('on');
+        rpeRow.querySelectorAll('.rpe-chip').forEach(c => c.classList.remove('on'));
+        if (!wasOn) chip.classList.add('on');
+      });
+    });
+
+    sheetBackdrop.classList.add('active');
+    sheetEl.classList.add('active');
+  }
+
+  function closeSheet() {
+    sheetCtx = null;
+    sheetBackdrop.classList.remove('active');
+    sheetEl.classList.remove('active');
+  }
+
+  sheetBackdrop.addEventListener('click', closeSheet);
+
+  function stepVal(inputId, delta) {
+    const el = document.getElementById(inputId);
+    const cur = parseFloat(el.value);
+    el.value = fmtNum(Math.max(0, (isNaN(cur) ? 0 : cur) + delta));
+  }
+  document.getElementById('wMinus').addEventListener('click', () => stepVal('wVal', -2.5));
+  document.getElementById('wPlus').addEventListener('click', () => stepVal('wVal', 2.5));
+  document.getElementById('rMinus').addEventListener('click', () => stepVal('rVal', -1));
+  document.getElementById('rPlus').addEventListener('click', () => stepVal('rVal', 1));
+
+  document.getElementById('sheetSave').addEventListener('click', () => {
+    if (!sheetCtx) return;
+    const ctx = sheetCtx;
+    const day = ROUTINE[days[ctx.slot - 1]];
+    const set = day.sections[ctx.s].sets[ctx.i];
+    const w = parseFloat(document.getElementById('wVal').value);
+    const r = parseFloat(document.getElementById('rVal').value);
+    const rpeChip = document.querySelector('#rpeRow .rpe-chip.on');
+    const rpe = rpeChip ? parseFloat(rpeChip.dataset.rpe) : null;
+    const log = recordSet(ctx.slot, ctx.s, ctx.i, {
+      done: true, skipped: false,
+      actualW: isNaN(w) ? (set.weight || '') : fmtNum(w),
+      actualR: isNaN(r) ? (set.reps || '') : fmtNum(r),
+      rpe
+    });
+    closeSheet();
+    if (!log) return;
+    if (ctx.fromFocus) {
+      focusAfterDone();
+    } else {
+      ensurePermissions();
+      if (ctx.rest > 0) startOverlayTimer(ctx.rest);
+      render();
+    }
+  });
+
+  document.getElementById('sheetSkip').addEventListener('click', () => {
+    if (!sheetCtx) return;
+    const ctx = sheetCtx;
+    const log = recordSet(ctx.slot, ctx.s, ctx.i, { done: false, skipped: true, actualW: null, actualR: null, rpe: null });
+    closeSheet();
+    if (!log) return;
+    if (ctx.fromFocus) {
+      advanceAfterRest(); // 스킵한 세트는 휴식 없이 다음으로
+    } else {
+      render();
+    }
+  });
+
+  // ============ CALENDAR (기록 탭) ============
+  let calCursor = null;     // { y, m } — m: 0~11
+  let calSelected = null;   // 'YYYY-MM-DD'
+
+  function renderCalendar() {
+    const app = document.getElementById('app');
+    const now = new Date();
+    if (!calCursor) calCursor = { y: now.getFullYear(), m: now.getMonth() };
+    const { y, m } = calCursor;
+    const index = lsGet(LOG_INDEX_KEY, []);
+    const monthPrefix = y + '-' + String(m + 1).padStart(2, '0');
+    const monthDates = index.filter(d => d.startsWith(monthPrefix));
+    const logs = {};
+    monthDates.forEach(d => { const l = loadLogByDate(d); if (l) logs[d] = l; });
+
+    const startWd = new Date(y, m, 1).getDay();
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const today = todayStr();
+
+    let cells = '';
+    ['일','월','화','수','목','금','토'].forEach(w => cells += `<div class="cal-wd">${w}</div>`);
+    for (let k = 0; k < startWd; k++) cells += '<div class="cal-cell empty"></div>';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = monthPrefix + '-' + String(d).padStart(2, '0');
+      const l = logs[dateStr];
+      let cls = 'cal-cell';
+      let style = '';
+      if (l) {
+        cls += ' has-log';
+        if (!isLogComplete(l)) cls += ' partial';
+        style = '--log-color:' + (l.color || DEFAULT_ACCENT);
+      }
+      if (dateStr === today) cls += ' today';
+      if (dateStr === calSelected) cls += ' selected';
+      cells += `<div class="${cls}" data-date="${dateStr}" style="${style}"><span>${d}</span><span class="cal-dot"></span></div>`;
+    }
+
+    let cardHtml = '';
+    if (calSelected && logs[calSelected]) {
+      const l = logs[calSelected];
+      const doneCnt = logDoneCount(l);
+      const dur = (l.startedAt && l.endedAt) ? Math.max(1, Math.round((new Date(l.endedAt) - new Date(l.startedAt)) / 60000)) : null;
+      cardHtml = `
+        <div class="cal-day-card" style="border-left: 2px solid ${l.color || DEFAULT_ACCENT}">
+          <div class="t">D${l.daySlot} · ${l.dayTitle}</div>
+          <div class="m">${calSelected} · ${doneCnt}/${l.totalSets || l.sets.length} SETS${dur ? ' · ' + dur + '분' : ''}${l.adjusted ? ' · ⚡조정됨' : ''}</div>
+          <button class="go" data-date="${calSelected}">세션 상세 보기 →</button>
+        </div>
+      `;
+    }
+
+    let html = `
+      <div class="header">
+        <div class="header-tag">◆ LOG · 운동일지</div>
+        <h1 class="header-title">TRAINING<br><span>LOG</span></h1>
+        <div class="header-sub">${index.length} SESSIONS TOTAL</div>
+      </div>
+      <div class="cal-head">
+        <div class="cal-month">${y}. ${String(m + 1).padStart(2, '0')}</div>
+        <div class="cal-nav">
+          <button id="calPrev">◀</button>
+          <button id="calNext">▶</button>
+        </div>
+      </div>
+      <div class="cal-grid">${cells}</div>
+      <div class="cal-summary">출석 ${monthDates.length}일 · 이번 달</div>
+      ${cardHtml}
+    `;
+
+    if (!index.length) {
+      html += `<div class="empty-state">아직 기록이 없습니다<br>오늘 탭에서 세트를 체크하면<br>자동으로 일지가 쌓입니다</div>`;
+    }
+
+    app.innerHTML = html;
+
+    document.getElementById('calPrev').addEventListener('click', () => {
+      calCursor = calCursor.m === 0 ? { y: calCursor.y - 1, m: 11 } : { y: calCursor.y, m: calCursor.m - 1 };
+      calSelected = null;
+      renderCalendar();
+    });
+    document.getElementById('calNext').addEventListener('click', () => {
+      calCursor = calCursor.m === 11 ? { y: calCursor.y + 1, m: 0 } : { y: calCursor.y, m: calCursor.m + 1 };
+      calSelected = null;
+      renderCalendar();
+    });
+    document.querySelectorAll('.cal-cell[data-date]').forEach(cell => {
+      cell.addEventListener('click', () => {
+        calSelected = (calSelected === cell.dataset.date) ? null : cell.dataset.date;
+        renderCalendar();
+      });
+    });
+    document.querySelectorAll('.cal-day-card .go').forEach(btn => {
+      btn.addEventListener('click', () => navigate('#/log/' + btn.dataset.date));
+    });
+  }
+
+  // ============ LOG DETAIL (세션 상세) ============
+  function renderLogDetail(date) {
+    const app = document.getElementById('app');
+    const log = loadLogByDate(date);
+
+    if (!log) {
+      app.innerHTML = `
+        <button class="detail-back" id="backBtn">← 기록으로</button>
+        <div class="empty-state">${date}<br>기록이 없습니다</div>
+      `;
+      document.getElementById('backBtn').addEventListener('click', () => navigate('#/log'));
+      return;
+    }
+
+    const doneCnt = logDoneCount(log);
+    const dur = (log.startedAt && log.endedAt) ? Math.max(1, Math.round((new Date(log.endedAt) - new Date(log.startedAt)) / 60000)) : null;
+    const tonnage = log.sets.filter(en => en.done).reduce((acc, en) => {
+      const w = parseNum(en.actualW ?? en.targetW);
+      const r = parseNum(en.actualR ?? en.targetR);
+      return (w && r) ? acc + w * r : acc;
+    }, 0);
+    const tonnageText = tonnage ? (Math.round(tonnage / 100) / 10) + 'T' : null;
+
+    let html = `
+      <button class="detail-back" id="backBtn">← 기록으로</button>
+      <div class="header">
+        <div class="header-tag">◆ ${date} · D${log.daySlot}</div>
+        <h1 class="header-title"><span>${log.dayTitle}</span></h1>
+        <div class="header-sub">${doneCnt}/${log.totalSets || log.sets.length} SETS${tonnageText ? ' · ' + tonnageText : ''}${dur ? ' · ' + dur + 'MIN' : ''}</div>
+      </div>
+    `;
+
+    if (log.adjusted) html += `<div class="note-box">⚡ 당일 조정: ${esc(log.adjusted)}</div>`;
+
+    // 섹션별 그룹 (기록된 세트만 — entry.sec 기준)
+    const groups = [];
+    log.sets.slice().sort((a, b) => a.s - b.s || a.i - b.i).forEach(en => {
+      let g = groups.find(x => x.s === en.s);
+      if (!g) { g = { s: en.s, title: en.sec, entries: [] }; groups.push(g); }
+      g.entries.push(en);
+    });
+
+    groups.forEach(g => {
       html += `
-        <button class="${cls}" data-day="${dayId}" style="--accent-tab:${day.color}">
-          <span class="tab-day">${day.day}</span>
-          <span class="tab-num" style="${isActive ? `color:${day.color}` : ''}">D${dayId.replace('day','')}</span>
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num">${String(g.s).padStart(2,'0')}</div>
+            <div class="section-info"><div class="section-title">${g.title}</div></div>
+          </div>
+          <div class="sets">
+      `;
+      g.entries.forEach(en => {
+        const wChanged = en.done && en.actualW !== null && en.actualW !== en.targetW;
+        const rChanged = en.done && en.actualR !== null && en.actualR !== en.targetR;
+        let contentHtml = '';
+        if (en.targetW || wChanged) {
+          if (wChanged) {
+            contentHtml += (en.targetW ? `<span class="set-old">${en.targetW}</span>` : '') + `<span class="set-weight edited">${en.actualW}</span>`;
+          } else {
+            contentHtml += `<span class="set-weight">${en.targetW}</span>`;
+          }
+          if (en.unit) contentHtml += `<span class="set-unit">${en.unit.toUpperCase()}</span>`;
+          contentHtml += `<span class="set-divider"></span>`;
+        } else {
+          contentHtml += `<span class="set-weight">${en.name}</span><span class="set-divider"></span>`;
+        }
+        if (rChanged) {
+          contentHtml += `<span class="set-old">${en.targetR}</span><span class="set-reps edited"><span class="num">${en.actualR}</span></span>`;
+        } else {
+          contentHtml += `<span class="set-reps"><span class="num">${en.targetR}</span></span>`;
+        }
+        if (en.done && en.rpe) contentHtml += `<span class="set-rpe-tag">@${en.rpe}</span>`;
+        if (en.skipped) contentHtml += `<span class="set-skip-tag">SKIP</span>`;
+
+        const rowCls = ['set-row', en.done ? 'done' : '', en.skipped ? 'skipped' : ''].filter(Boolean).join(' ');
+        html += `
+          <div class="${rowCls}" style="cursor: default">
+            <div class="checkbox"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></div>
+            <div class="set-label">${en.label}</div>
+            <div class="set-content">${contentHtml}</div>
+            <div style="min-width: 8px"></div>
+          </div>
+        `;
+      });
+      html += `</div></div>`;
+    });
+
+    if (log.note) html += `<div class="note-box">📝 ${esc(log.note)}</div>`;
+
+    app.innerHTML = html;
+    document.getElementById('backBtn').addEventListener('click', () => navigate('#/log'));
+  }
+
+  // ============ SETTINGS (설정 탭) ============
+  function renderSettings() {
+    const app = document.getElementById('app');
+    const index = lsGet(LOG_INDEX_KEY, []);
+    app.innerHTML = `
+      <div class="header">
+        <div class="header-tag">◆ CONFIG · 설정</div>
+        <h1 class="header-title">SETT<span>INGS</span></h1>
+        <div class="header-sub">GYM v4 · PHASE 1</div>
+      </div>
+      <button class="settings-item" id="exportBtn">
+        <span>운동 데이터 내보내기</span>
+        <span class="hint">JSON · ${index.length} LOGS</span>
+      </button>
+      <button class="settings-item" style="opacity: 0.45; cursor: default">
+        <span>GYMBRO 챗 · 당일 조정</span>
+        <span class="hint">PHASE 2 예정</span>
+      </button>
+      <button class="settings-item" style="opacity: 0.45; cursor: default">
+        <span>프로그램 빌더 · 블록 생성</span>
+        <span class="hint">PHASE 3 예정</span>
+      </button>
+    `;
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+  }
+
+  function exportData() {
+    const data = {};
+    for (let k = 0; k < localStorage.length; k++) {
+      const key = localStorage.key(k);
+      if (key && key.startsWith(V4)) {
+        try { data[key] = JSON.parse(localStorage.getItem(key)); }
+        catch (e) { data[key] = localStorage.getItem(key); }
+      }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'gym-export-' + todayStr() + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ============ TABBAR (기능 3탭) ============
+  function renderTabbar(activeView) {
+    const tabbar = document.getElementById('tabbar');
+    const log = loadLogByDate(todayStr());
+    let todayState = '';
+    if (log) {
+      todayState = isLogComplete(log) ? 'complete' : (log.sets.length ? 'has-progress' : '');
+    }
+    const tabs = [
+      { view: 'today', hash: '#/today', kr: '오늘', en: 'TODAY', cls: todayState },
+      { view: 'log', hash: '#/log', kr: '기록', en: 'LOG', cls: '' },
+      { view: 'settings', hash: '#/settings', kr: '설정', en: 'CONFIG', cls: '' }
+    ];
+    tabbar.innerHTML = tabs.map(t => {
+      const isActive = activeView === t.view || (t.view === 'log' && activeView === 'logDetail');
+      return `
+        <button class="tab ${isActive ? 'active' : ''} ${t.cls}" data-hash="${t.hash}">
+          <span class="tab-day">${t.kr}</span>
+          <span class="tab-num">${t.en}</span>
           <span class="tab-dot"></span>
         </button>
       `;
-    });
-    tabbar.innerHTML = html;
+    }).join('');
     tabbar.querySelectorAll('.tab').forEach(t => {
-      t.addEventListener('click', () => navigate(t.dataset.day));
+      t.addEventListener('click', () => navigate(t.dataset.hash));
     });
   }
 
@@ -1275,8 +2287,11 @@
     return `${m}:${ss.toString().padStart(2, '0')}`;
   }
 
+  let overlayHideTimeout = null;
+
   function startOverlayTimer(seconds) {
     stopOverlayTimer();
+    clearTimeout(overlayHideTimeout); // 직전 타이머 종료 연출이 새 타이머를 숨기지 않게
     const endTime = Date.now() + seconds * 1000;
     localStorage.setItem(TIMER_KEY, JSON.stringify({ endTime, totalSec: seconds, mode: 'overlay' }));
     overlay.classList.add('active');
@@ -1307,7 +2322,7 @@
     if (document.visibilityState === 'visible' && 'Notification' in window && Notification.permission === 'granted') {
       try { new Notification('휴식 종료 💪', { body: '다음 세트 시작!', icon: './icon-192.png', tag: 'rest-done' }); } catch(e) {}
     }
-    setTimeout(() => {
+    overlayHideTimeout = setTimeout(() => {
       overlay.classList.remove('active');
       overlayDisplay.classList.remove('warning');
     }, 2500);
@@ -1327,7 +2342,7 @@
 
   // ============ FOCUS MODE ============
   let focusState = null;
-  // { dayId, flatSets: [{sIdx, setIdx, section, set}], currentIdx, phase: 'exercise'|'rest'|'complete', restEndTime }
+  // { slot, flatSets: [{sIdx, setIdx, section, set}], currentIdx, phase: 'exercise'|'rest'|'complete', restEndTime }
   let focusInterval = null;
 
   function buildFlatSets(day) {
@@ -1340,24 +2355,27 @@
     return flat;
   }
 
-  function enterFocusMode(dayId) {
-    const day = ROUTINE[dayId];
+  function enterFocusMode(slot) {
+    const day = ROUTINE[days[slot - 1]];
+    const log = ensureTodayLog(slot);
+    if (!log) return;
     const flatSets = buildFlatSets(day);
-    const checks = loadChecks(dayId);
 
-    // 시작 위치: 첫 미체크 세트. 전부 체크됐으면 처음부터
-    let startIdx = flatSets.findIndex(({sIdx, setIdx}) => !checks[sIdx + '-' + setIdx]);
+    // 시작 위치: 첫 미기록(미완료·미스킵) 세트. 전부 끝났으면 처음부터
+    let startIdx = flatSets.findIndex(({ sIdx, setIdx }) => {
+      const en = getEntry(log, sIdx, setIdx);
+      return !(en && (en.done || en.skipped));
+    });
     if (startIdx === -1) startIdx = 0;
 
     focusState = {
-      dayId,
+      slot,
       flatSets,
       currentIdx: startIdx,
       phase: 'exercise'
     };
 
     ensurePermissions();
-    // AudioCtx warm-up (유저 제스처 필요)
     const ctx = getAudioCtx();
     if (ctx && ctx.state === 'suspended') ctx.resume();
 
@@ -1366,19 +2384,15 @@
   }
 
   function exitFocusMode() {
-    if (focusState && focusState.phase === 'rest') {
-      // 진행중 타이머 저장 안 함. 나가면 리셋
-      stopFocusTimer();
-    }
-    focusState = null;
     stopFocusTimer();
+    focusState = null;
     document.getElementById('focusMode').classList.remove('active');
-    render(); // 메인 다시 그리기
+    render();
   }
 
   function renderFocus() {
     if (!focusState) return;
-    const { flatSets, currentIdx, phase, dayId } = focusState;
+    const { flatSets, currentIdx, phase } = focusState;
     const body = document.getElementById('focusBody');
     const sectionNameEl = document.getElementById('focusSectionName');
     const currentEl = document.getElementById('focusCurrent');
@@ -1425,7 +2439,7 @@
     const { set } = current;
     const weightText = set.weight || '—';
     const unitText = set.unit || '';
-    
+
     body.innerHTML = `
       <div class="focus-content">
         <div class="focus-label">현재 세트</div>
@@ -1438,6 +2452,7 @@
         </div>
       </div>
       <div class="focus-bottom">
+        <button class="focus-alt-btn" id="focusAltBtn">┄ 다르게 했어요 (무게/횟수 수정) ┄</button>
         <button class="focus-btn" id="focusNextBtn">
           <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7V5z"/></svg>
           DONE · NEXT
@@ -1445,12 +2460,21 @@
       </div>
     `;
     document.getElementById('focusNextBtn').addEventListener('click', onNextPressed);
+    document.getElementById('focusAltBtn').addEventListener('click', () => {
+      openSheet({
+        slot: focusState.slot,
+        s: current.sIdx,
+        i: current.setIdx,
+        rest: current.section.rest,
+        fromFocus: true
+      });
+    });
   }
 
   function renderRestScreen(current, next) {
     const body = document.getElementById('focusBody');
     const restSec = current.section.rest;
-    
+
     let nextHtml = '';
     if (next) {
       const ns = next.set;
@@ -1489,7 +2513,7 @@
         </button>
       </div>
     `;
-    
+
     startFocusRestTimer(restSec);
     document.getElementById('focusSkipRestBtn').addEventListener('click', () => {
       stopFocusTimer();
@@ -1497,37 +2521,52 @@
     });
   }
 
+  // DONE·NEXT = 계획대로 수행 → 목표값을 실측으로 자동 기록
+  // 이미 기록된(done) 세트면 덮어쓰지 않고 진행만 한다 (재진입 시 실측 보존)
   function onNextPressed() {
     if (!focusState) return;
-    const { flatSets, currentIdx, dayId } = focusState;
+    const { flatSets, currentIdx, slot } = focusState;
     const current = flatSets[currentIdx];
-    
-    // 체크 저장
-    const checks = loadChecks(dayId);
-    checks[current.sIdx + '-' + current.setIdx] = true;
-    saveChecks(dayId, checks);
+    const set = current.set;
+    const existing = getEntry(todayLogFor(slot), current.sIdx, current.setIdx);
+    if (!existing || !existing.done) {
+      const ok = recordSet(slot, current.sIdx, current.setIdx, {
+        done: true, skipped: false,
+        actualW: set.weight || '', actualR: set.reps || ''
+      });
+      if (!ok) return;
+    }
+    focusAfterDone();
+  }
 
-    // 마지막 세트인가?
+  // 세트 기록 완료 후 공통 진행 (DONE·NEXT / 실측 시트 저장 양쪽에서 사용)
+  function focusAfterDone() {
+    if (!focusState) return;
+    const { flatSets, currentIdx } = focusState;
+    const current = flatSets[currentIdx];
+
     if (currentIdx >= flatSets.length - 1) {
       focusState.phase = 'complete';
       renderFocus();
       return;
     }
 
-    // 쉬는 시간 있는가?
     const restSec = current.section.rest;
     if (restSec > 0) {
       focusState.phase = 'rest';
       renderFocus();
     } else {
-      // 쉬는시간 없는 섹션 (유산소) - 바로 다음
       focusState.currentIdx++;
       focusState.phase = 'exercise';
       renderFocus();
     }
   }
 
+  let focusAdvanceTimeout = null; // 휴식 종료 → 자동 진행 예약 (SKIP과의 이중 진행 방지)
+
   function advanceAfterRest() {
+    clearTimeout(focusAdvanceTimeout);
+    focusAdvanceTimeout = null;
     if (!focusState) return;
     focusState.currentIdx++;
     if (focusState.currentIdx >= focusState.flatSets.length) {
@@ -1558,7 +2597,7 @@
     }
     timerEl.textContent = formatTime(remaining);
     timerEl.classList.toggle('warning', remaining <= 10);
-    
+
     // 3초 남았을 때 카운트다운 비프
     if (remaining === 3 || remaining === 2 || remaining === 1) {
       if (!focusState._lastCountdown || focusState._lastCountdown !== remaining) {
@@ -1572,19 +2611,17 @@
     stopFocusTimer();
     vibrate([200, 100, 200, 100, 400]);
     playBeepSequence();
-    
-    // 화면 플래시
+
     const fm = document.getElementById('focusMode');
     fm.classList.add('alert');
     setTimeout(() => fm.classList.remove('alert'), 400);
-    
-    // 알림 (백그라운드일 때만)
+
     if (document.visibilityState !== 'visible' && 'Notification' in window && Notification.permission === 'granted') {
       try { new Notification('휴식 종료 💪', { body: '다음 세트 시작!', icon: './icon-192.png', tag: 'rest-done' }); } catch(e) {}
     }
-    
-    // 잠깐 뒤 자동 진행
-    setTimeout(advanceAfterRest, 800);
+
+    clearTimeout(focusAdvanceTimeout);
+    focusAdvanceTimeout = setTimeout(advanceAfterRest, 800);
   }
 
   function stopFocusTimer() {
@@ -1594,13 +2631,13 @@
   }
 
   document.getElementById('focusExit').addEventListener('click', () => {
-    if (confirm('운동을 끝내시겠어요? (체크 상태는 저장됩니다)')) {
+    if (confirm('운동을 끝내시겠어요? (기록은 저장됩니다)')) {
       exitFocusMode();
     }
   });
 
   // Back button handling for focus mode
-  window.addEventListener('popstate', (e) => {
+  window.addEventListener('popstate', () => {
     if (focusState) {
       exitFocusMode();
     }
@@ -1637,15 +2674,18 @@
       } else if (data) {
         localStorage.removeItem(TIMER_KEY);
       }
+      // 자정을 넘긴 stale 화면 갱신 (어제 체크 상태가 오늘 로그로 오기록되는 것 방지)
+      if (renderedDate && renderedDate !== todayStr() && !focusState) {
+        render();
+      }
     }
   });
 
   // ============ INIT ============
   if (!location.hash) {
-    location.hash = '#/' + currentDayId();
-  } else {
-    render();
+    history.replaceState(null, '', '#/today/' + defaultSlot());
   }
+  render();
 </script>
 
 </body>
