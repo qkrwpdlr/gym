@@ -1235,6 +1235,329 @@
     line-height: 1.6;
   }
 
+  /* ==================== FAB (gymbro 챗 진입) ==================== */
+  .fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 40%, transparent);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fab.show { display: flex; }
+  .fab:active { transform: scale(0.94); }
+  .fab svg { width: 26px; height: 26px; fill: currentColor; }
+
+  /* 휴식 타이머 오버레이가 떠 있으면 FAB 숨김 (겹침 회피) */
+  .timer-overlay.active ~ .fab { display: none; }
+
+  /* ==================== CHAT OVERLAY (gymbro) ==================== */
+  .chat-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 110;
+    display: none;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .chat-overlay.active { display: flex; }
+
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chat-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.06em;
+  }
+
+  .chat-title span { color: var(--accent); }
+
+  .chat-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    flex: 1;
+    text-align: right;
+  }
+
+  .chat-hbtn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .chat-hbtn.gen { border-color: var(--green); color: var(--green); }
+  .chat-hbtn:active { background: var(--bg-elevated); }
+
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-msg {
+    max-width: 86%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .chat-msg.user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: var(--bg);
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-msg.bot {
+    align-self: flex-start;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-msg.sys {
+    align-self: center;
+    background: none;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .chat-typing {
+    align-self: flex-start;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 4px;
+    animation: pulse 1.2s infinite;
+  }
+
+  .quick-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: auto 0;
+    padding: 20px 0;
+  }
+
+  .quick-chip {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-dim);
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .quick-chip:active { border-color: var(--accent); color: var(--text); }
+
+  .chat-input-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    color: var(--text);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    outline: none;
+  }
+
+  .chat-input:focus { border-color: var(--accent-dim); }
+
+  .chat-send {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* diff 카드 (조정 제안 / 블록 제안) */
+  .diff-card {
+    align-self: stretch;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--yellow);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .diff-card .dc-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .diff-card.program { border-left-color: var(--green); }
+  .diff-card.program .dc-title { color: var(--green); }
+
+  .diff-card .dc-summary { font-size: 13px; margin-bottom: 10px; line-height: 1.5; }
+
+  .diff-card .dc-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 3px 0;
+    line-height: 1.5;
+  }
+
+  .dc-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+  .dc-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .dc-btn.apply { background: var(--accent); color: var(--bg); border: none; }
+  .dc-btn.reject { background: none; color: var(--text-dim); border: 1px solid var(--border); }
+
+  .dc-state {
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  /* 오늘 조정됨 배지 */
+  .adjusted-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 설정 입력 */
+  .settings-input-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .settings-input-row label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .settings-input-row input {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+  }
+
+  .settings-input-row input:focus { border-color: var(--accent-dim); }
+
+  .program-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+
+  .program-card .pc-name { font-weight: 900; font-size: 15px; margin-bottom: 6px; }
+
+  .program-card .pc-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .program-bar {
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  .program-bar .fill { height: 100%; background: var(--accent); }
+
   /* ==================== ANIMATIONS ==================== */
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
   @keyframes check-pop {
@@ -1275,6 +1598,11 @@
   <button class="timer-close" id="timerClose">STOP</button>
 </div>
 
+<!-- ============ FAB (gymbro) — timer-overlay 뒤에 위치해야 함 (CSS 형제 셀렉터로 숨김) ============ -->
+<button class="fab" id="fab" aria-label="gymbro 챗">
+  <svg viewBox="0 0 24 24"><path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4V5a2 2 0 0 1 2-2zm9.2 3.2L9.8 11h2.4l-.9 3.8 3.4-4.8h-2.4l.9-3.8z"/></svg>
+</button>
+
 <!-- ============ BOTTOM TAB BAR ============ -->
 <nav class="tabbar" id="tabbar">
   <!-- 동적 렌더링 -->
@@ -1304,10 +1632,26 @@
   </div>
 </div>
 
+<!-- ============ CHAT OVERLAY (gymbro) ============ -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-header">
+    <div class="chat-title">GYM<span>BRO</span></div>
+    <div class="chat-sub" id="chatSub">—</div>
+    <button class="chat-hbtn gen" id="chatGenBtn" style="display:none">✦ 블록 생성</button>
+    <button class="chat-hbtn" id="chatClose">✕ 닫기</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input-bar">
+    <input class="chat-input" id="chatInput" type="text" placeholder="메시지..." autocomplete="off">
+    <button class="chat-send" id="chatSend">↑</button>
+  </div>
+</div>
+
 <!-- ============ FOCUS MODE ============ -->
 <div class="focus-mode" id="focusMode">
   <div class="focus-header">
     <button class="focus-exit" id="focusExit">✕ EXIT</button>
+    <button class="focus-exit" id="focusCoach">💬</button>
     <div class="focus-section" id="focusSectionName">—</div>
     <div class="focus-progress-text">
       <span class="current" id="focusCurrent">0</span>/<span id="focusTotal">0</span>
@@ -1414,20 +1758,22 @@
   }
 
   function newLog(slot) {
-    const day = ROUTINE[days[slot - 1]];
+    const day = dayFor(slot);
+    const p = activeProgram();
+    const ovr = todayOverrideFor(slot);
     return {
       schemaVersion: 1,
       date: todayStr(),
-      programId: null,
-      week: null,
+      programId: p ? p.id : null,
+      week: p ? currentWeek(p) : null,
       daySlot: slot,
       dayTitle: day.title,
-      color: day.color,
+      color: day.color || DEFAULT_ACCENT,
       totalSets: countTotalSets(day),
       startedAt: new Date().toISOString(),
       endedAt: null,
       note: null,
-      adjusted: null,
+      adjusted: ovr ? ovr.changes.join(', ').slice(0, 300) : null,
       sets: []
     };
   }
@@ -1453,7 +1799,7 @@
   function recordSet(slot, s, i, patch) {
     const log = ensureTodayLog(slot);
     if (!log) return null;
-    const day = ROUTINE[days[slot - 1]];
+    const day = dayFor(slot);
     const section = day.sections[s];
     const set = section.sets[i];
     let entry = getEntry(log, s, i);
@@ -1509,6 +1855,618 @@
     return slots;
   }
 
+  // ============ PROGRAM (블록 프로그램) ============
+  // 와이어 포맷 = 1주 템플릿 + linear_kg 진행 규칙 + 디로드. 주차 무게는 렌더 시 계산 (전개 저장 없음).
+  const PROGRAM_KEY = V4 + 'program';
+  const PROGRAM_ARCHIVE_KEY = V4 + 'program-archive';
+
+  function activeProgram() { return lsGet(PROGRAM_KEY, null); }
+
+  function currentWeek(p) {
+    const start = new Date(p.startDate + 'T00:00:00');
+    const diff = Math.floor((new Date(todayStr() + 'T00:00:00') - start) / 86400000);
+    if (diff < 0) return 1;
+    return Math.min(p.weeks, Math.floor(diff / 7) + 1);
+  }
+
+  function round25(n) { return Math.round(n / 2.5) * 2.5; }
+
+  // 주차 적용된 day 계산: progression(linear_kg) + 디로드
+  function materializeDay(p, week, slot) {
+    const day = JSON.parse(JSON.stringify(p.days[slot - 1]));
+    (p.progression || []).forEach(rule => {
+      if (rule.dayIdx !== slot - 1) return;
+      const sec = day.sections[rule.sectionIdx];
+      if (!sec) return;
+      sec.sets.forEach(set => {
+        const base = parseFloat(set.weight);
+        if (!isNaN(base)) set.weight = String(round25(base + (rule.perWeek || 0) * (week - 1)));
+      });
+    });
+    const dl = p.deload;
+    if (dl && week === dl.week) {
+      day.sections.forEach(sec => {
+        sec.sets.forEach(set => {
+          const w = parseFloat(set.weight);
+          if (!isNaN(w)) set.weight = String(round25(w * (dl.weightFactor || 0.85)));
+        });
+        const drop = Math.min(dl.setDrop || 0, sec.sets.length - 1);
+        if (drop > 0) sec.sets = sec.sets.slice(0, sec.sets.length - drop);
+      });
+    }
+    return day;
+  }
+
+  // day 정의 목록 (칩/요일/카운트용 — 활성 블록 없으면 routine.js 폴백)
+  function dayDefs() {
+    const p = activeProgram();
+    return p ? p.days : days.map(d => ROUTINE[d]);
+  }
+  function dayCount() { return dayDefs().length; }
+
+  // 주차 적용된 "계획" day (오버라이드 적용 전)
+  function templateDayFor(slot) {
+    const p = activeProgram();
+    if (p) return materializeDay(p, currentWeek(p), slot);
+    return ROUTINE[days[slot - 1]];
+  }
+
+  // 오늘의 유효 day = 당일 오버라이드(미철회) || 주차 계획
+  function dayFor(slot) {
+    const ovr = todayOverrideFor(slot);
+    return ovr ? ovr.effectiveDay : templateDayFor(slot);
+  }
+
+  function validateProgram(p) {
+    if (!p || typeof p !== 'object') return '객체가 아님';
+    if (!p.name) return 'name 없음';
+    if (!Number.isInteger(p.weeks) || p.weeks < 1 || p.weeks > 12) return 'weeks 범위(1~12) 오류';
+    if (!Array.isArray(p.days) || !p.days.length || p.days.length > 7) return 'days는 1~7개';
+    p.daysPerWeek = p.days.length;
+    const palette = ['#ff2d2d', '#ff9500', '#00d4ff', '#a855f7', '#00ff88', '#ffdd00', '#ff2d8d'];
+    for (let di = 0; di < p.days.length; di++) {
+      const d = p.days[di];
+      if (!d || !d.title) return 'D' + (di + 1) + ' title 없음';
+      if (!Array.isArray(d.sections) || !d.sections.length) return 'D' + (di + 1) + ' sections 없음';
+      if (!/^#[0-9a-fA-F]{6}$/.test(d.color || '')) d.color = palette[di % palette.length];
+      d.day = d.day || d.weekday || null;
+      d.tag = d.tag || '';
+      for (const sec of d.sections) {
+        if (!sec || !sec.title || !Array.isArray(sec.sets) || !sec.sets.length) return 'D' + (di + 1) + ' 섹션 형식 오류';
+        sec.rest = Number.isInteger(sec.rest) ? Math.min(Math.max(sec.rest, 0), 600) : 90;
+        sec.meta = sec.meta || '';
+        for (const st of sec.sets) {
+          if (!st || !st.name || !st.label) return 'D' + (di + 1) + ' 세트 형식 오류 (name/label)';
+          st.weight = String(st.weight ?? '');
+          st.reps = String(st.reps ?? '');
+          st.unit = st.unit || (st.weight && !isNaN(parseFloat(st.weight)) ? 'kg' : '');
+          if (st.weight && isNaN(parseFloat(st.weight)) && !['BAR', 'BW', 'HEAVY'].includes(st.weight.toUpperCase())) {
+            return 'D' + (di + 1) + ' weight 형식 오류: ' + st.weight;
+          }
+        }
+      }
+    }
+    for (const r of (p.progression || [])) {
+      if (!r || r.rule !== 'linear_kg') return '지원하지 않는 진행 규칙';
+      const d = p.days[r.dayIdx];
+      if (!d || !d.sections[r.sectionIdx]) return 'progression 참조 오류';
+      if (!d.sections[r.sectionIdx].sets.some(s => !isNaN(parseFloat(s.weight)))) return 'progression 대상에 숫자 무게 없음';
+      if (typeof r.perWeek !== 'number' || Math.abs(r.perWeek) > 10) return 'perWeek 범위 오류';
+    }
+    if (p.deload && (!Number.isInteger(p.deload.week) || p.deload.week < 1 || p.deload.week > p.weeks)) return 'deload.week 범위 오류';
+    try {
+      const probe = Object.assign({}, p, { startDate: todayStr() });
+      for (let w = 1; w <= p.weeks; w++) for (let s = 1; s <= p.days.length; s++) materializeDay(probe, w, s);
+    } catch (e) { return '주차 전개 실패: ' + e.message; }
+    return null;
+  }
+
+  function nextMonday() {
+    const d = new Date();
+    const add = (8 - d.getDay()) % 7 || 7;
+    d.setDate(d.getDate() + add);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  // 적용: 기존 블록은 아카이브로, 새 블록 활성화. 시작일은 사용자가 확정.
+  function applyProgram(program) {
+    const start = prompt('블록 시작일 (YYYY-MM-DD)', nextMonday());
+    if (start === null) return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(start.trim())) { alert('날짜 형식이 잘못됐어 (YYYY-MM-DD)'); return false; }
+    const old = activeProgram();
+    if (old) {
+      const arch = lsGet(PROGRAM_ARCHIVE_KEY, []);
+      arch.push(Object.assign({}, old, { status: 'archived', archivedAt: new Date().toISOString() }));
+      lsSet(PROGRAM_ARCHIVE_KEY, arch);
+    }
+    lsSet(PROGRAM_KEY, Object.assign({}, program, {
+      schemaVersion: 1,
+      id: 'prog_' + Math.random().toString(36).slice(2, 10),
+      status: 'active',
+      startDate: start.trim(),
+      createdAt: new Date().toISOString()
+    }));
+    return true;
+  }
+
+  // ============ DAY OVERRIDE (당일 조정 — 날짜 키, 자연 만료) ============
+  function overrideKey(date) { return V4 + 'override-' + date; }
+  function loadOverride(date) { return lsGet(overrideKey(date), null); }
+
+  function todayOverrideFor(slot) {
+    const o = loadOverride(todayStr());
+    return (o && !o.revoked && o.daySlot === slot) ? o : null;
+  }
+
+  // ops를 스냅샷 day에 1회 적용해 유효 day 생성. 잘못된 인덱스 op는 관용적으로 무시.
+  function applyOps(day, ops) {
+    const d = JSON.parse(JSON.stringify(day));
+    const changes = [];
+    ops.filter(o => o.op === 'update_set').forEach(o => {
+      const sec = d.sections[o.s];
+      const set = sec && sec.sets[o.i];
+      if (!set || !o.patch) return;
+      const before = (set.weight || set.name) + '×' + set.reps;
+      if (o.patch.weight !== undefined) set.weight = String(o.patch.weight);
+      if (o.patch.reps !== undefined) set.reps = String(o.patch.reps);
+      set._changed = true;
+      changes.push(set.label + ' ' + before + ' → ' + (set.weight || set.name) + '×' + set.reps);
+    });
+    ops.filter(o => o.op === 'update_section').forEach(o => {
+      const sec = d.sections[o.s];
+      if (!sec || !o.patch) return;
+      if (Number.isInteger(o.patch.rest)) { sec.rest = o.patch.rest; changes.push(sec.title + ' 휴식 ' + o.patch.rest + 's'); }
+      if (typeof o.patch.meta === 'string') sec.meta = o.patch.meta;
+    });
+    ops.filter(o => o.op === 'remove_set' || o.op === 'add_set')
+      .sort((a, b) => (b.s - a.s) || ((b.i ?? b.after) - (a.i ?? a.after)))
+      .forEach(o => {
+        const sec = d.sections[o.s];
+        if (!sec) return;
+        if (o.op === 'remove_set') {
+          const rm = sec.sets[o.i];
+          if (!rm) return;
+          sec.sets.splice(o.i, 1);
+          changes.push('− ' + rm.label + ' ' + rm.name + ' 제거');
+        } else if (o.set && o.set.name) {
+          const ns = Object.assign({ label: '+', weight: '', unit: 'kg', reps: '' }, o.set, { _changed: true });
+          const at = Math.min(Math.max((o.after ?? sec.sets.length - 1) + 1, 0), sec.sets.length);
+          sec.sets.splice(at, 0, ns);
+          changes.push('+ ' + ns.name + ' ' + (ns.weight || '') + '×' + ns.reps + ' 추가');
+        }
+      });
+    ops.filter(o => o.op === 'remove_section' || o.op === 'add_section')
+      .sort((a, b) => ((b.s ?? b.after) - (a.s ?? a.after)))
+      .forEach(o => {
+        if (o.op === 'remove_section') {
+          const rs = d.sections[o.s];
+          if (!rs) return;
+          d.sections.splice(o.s, 1);
+          changes.push('− ' + rs.title + ' 섹션 제외');
+        } else if (o.section && o.section.title && Array.isArray(o.section.sets)) {
+          const nsec = Object.assign({ meta: '', rest: 90 }, o.section);
+          nsec.sets = nsec.sets.map(s => Object.assign({ label: '+', weight: '', unit: 'kg', reps: '' }, s, { _changed: true }));
+          const at = Math.min(Math.max((o.after ?? d.sections.length - 1) + 1, 0), d.sections.length);
+          d.sections.splice(at, 0, nsec);
+          changes.push('+ ' + nsec.title + ' 섹션 추가');
+        }
+      });
+    d.sections = d.sections.filter(sec => sec.sets.length);
+    return { day: d, changes };
+  }
+
+  // 진행 중 세션 로그의 s/i를 새 유효 day에 리매핑 (섹션제목+이름+라벨 매칭)
+  function remapLogToDay(log, day) {
+    const map = {};
+    day.sections.forEach((sec, s) => sec.sets.forEach((set, i) => {
+      map[sec.title + '|' + set.name + '|' + set.label] = { s, i };
+    }));
+    log.sets.forEach(en => {
+      const pos = map[en.sec + '|' + en.name + '|' + en.label];
+      if (pos) { en.s = pos.s; en.i = pos.i; }
+      else { en.s = -1; en.i = -1; } // 계획에서 빠진 세트 — 기록은 보존, 화면 매칭만 해제
+    });
+    log.totalSets = countTotalSets(day);
+  }
+
+  function validateProposal(slot, proposal) {
+    if (!proposal || !Array.isArray(proposal.ops) || !proposal.ops.length) return '수정 항목이 비어 있음';
+    const day = dayFor(slot);
+    const log = todayLogFor(slot);
+    for (const o of proposal.ops) {
+      if (o.op === 'update_set' || o.op === 'remove_set') {
+        const sec = day.sections[o.s];
+        if (!sec || !sec.sets[o.i]) return '존재하지 않는 세트 (s' + o.s + ',i' + o.i + ')';
+        const en = getEntry(log, o.s, o.i);
+        if (en && en.done) return '이미 완료한 세트를 수정하려 함';
+      } else if (o.op === 'add_set') {
+        if (!day.sections[o.s] || !o.set || !o.set.name) return 'add_set 형식 오류';
+      } else if (o.op === 'update_section' || o.op === 'remove_section') {
+        if (!day.sections[o.s]) return '존재하지 않는 섹션 (s' + o.s + ')';
+      } else if (o.op === 'add_section') {
+        if (!o.section || !o.section.title || !Array.isArray(o.section.sets) || !o.section.sets.length) return 'add_section 형식 오류';
+      } else {
+        return '알 수 없는 op: ' + o.op;
+      }
+    }
+    return null;
+  }
+
+  // 제안 수락 → 현재 유효 day 위에 ops 적용(누적), 오버라이드 저장, 진행 중 세션 리매핑
+  function applyProposal(slot, proposal) {
+    const { day, changes } = applyOps(dayFor(slot), proposal.ops || []);
+    const prev = loadOverride(todayStr());
+    const keepPrev = prev && !prev.revoked && prev.daySlot === slot;
+    const ovr = {
+      schemaVersion: 1,
+      date: todayStr(),
+      daySlot: slot,
+      effectiveDay: day,
+      summary: proposal.summary || '',
+      reason: (keepPrev && prev.reason ? prev.reason + ' / ' : '') + (proposal.reason || ''),
+      changes: (keepPrev ? prev.changes : []).concat(changes),
+      appliedAt: new Date().toISOString(),
+      revoked: false
+    };
+    lsSet(overrideKey(ovr.date), ovr);
+    const log = todayLogFor(slot);
+    if (log) {
+      remapLogToDay(log, day);
+      log.adjusted = ovr.changes.join(', ').slice(0, 300);
+      saveLog(log, false);
+    }
+    refreshFocusAfterOverride();
+    return ovr;
+  }
+
+  function revertOverride(slot) {
+    const o = loadOverride(todayStr());
+    if (!o || o.daySlot !== slot) return;
+    o.revoked = true;
+    lsSet(overrideKey(o.date), o);
+    const log = todayLogFor(slot);
+    if (log) {
+      remapLogToDay(log, templateDayFor(slot));
+      log.adjusted = null;
+      saveLog(log, false);
+    }
+    refreshFocusAfterOverride();
+  }
+
+  // 운동 중(집중 모드) 조정이 적용되면 flatSets 재구성 + 포인터 재탐색
+  function refreshFocusAfterOverride() {
+    if (!focusState) return;
+    const day = dayFor(focusState.slot);
+    const log = todayLogFor(focusState.slot);
+    focusState.flatSets = buildFlatSets(day);
+    let idx = focusState.flatSets.findIndex(({ sIdx, setIdx }) => {
+      const en = getEntry(log, sIdx, setIdx);
+      return !(en && (en.done || en.skipped));
+    });
+    if (idx === -1) idx = Math.min(focusState.currentIdx, focusState.flatSets.length - 1);
+    focusState.currentIdx = Math.max(idx, 0);
+    if (focusState.phase === 'exercise') renderFocus();
+  }
+
+  // ============ HISTORY SUMMARY (LLM 컨텍스트 — 순수 로컬 계산) ============
+  const LIFT_MAP = [
+    { key: 'SQ', re: /스쿼트|squat/i },
+    { key: 'BP', re: /벤치|bench/i },
+    { key: 'DL', re: /데드|deadlift/i },
+    { key: 'OHP', re: /OHP|오버헤드|밀리터리/i }
+  ];
+
+  function buildHistorySummary(maxSessions = 12) {
+    const index = lsGet(LOG_INDEX_KEY, []);
+    const dates = index.slice(-maxSessions);
+    if (!dates.length) return '아직 운동 기록 없음.';
+    const logs = dates.map(loadLogByDate).filter(Boolean);
+    const lifts = {};
+    const rates = [];
+    logs.forEach(l => {
+      if (l.totalSets) rates.push(Math.round(logDoneCount(l) / l.totalSets * 100));
+      l.sets.forEach(en => {
+        if (!en.done) return;
+        const lift = LIFT_MAP.find(m => m.re.test(en.name));
+        if (!lift) return;
+        const w = parseNum(en.actualW ?? en.targetW);
+        const r = parseNum(en.actualR ?? en.targetR);
+        if (!w || !r) return;
+        (lifts[lift.key] = lifts[lift.key] || []).push({ date: l.date, w, r, rpe: en.rpe, e: w * (1 + r / 30) });
+      });
+    });
+    const lines = ['== 최근 ' + logs.length + '세션 요약 (' + dates[0] + '~' + dates[dates.length - 1] + ') =='];
+    Object.keys(lifts).forEach(k => {
+      const arr = lifts[k];
+      const best = arr.reduce((a, b) => (b.e > a.e ? b : a));
+      const half = Math.floor(arr.length / 2);
+      let trend = '→';
+      if (half > 0) {
+        const om = Math.max.apply(null, arr.slice(0, half).map(x => x.e));
+        const nm = Math.max.apply(null, arr.slice(half).map(x => x.e));
+        trend = nm > om + 1 ? '↑' : (nm < om - 1 ? '↓' : '→');
+      }
+      const top = arr[arr.length - 1];
+      lines.push(k + ': e1RM ' + Math.round(best.e) + 'kg (' + trend + '). 최근탑 ' + top.date.slice(5) + ' ' + top.w + '×' + top.r + (top.rpe ? '@RPE' + top.rpe : ''));
+    });
+    if (rates.length) lines.push('수행률: 평균 ' + Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) + '%');
+    const notes = logs.filter(l => l.note || l.adjusted).slice(-3)
+      .map(l => l.date.slice(5) + ' "' + (l.note || '') + '"' + (l.adjusted ? ' (조정: ' + l.adjusted + ')' : ''));
+    if (notes.length) lines.push('메모: ' + notes.join(' / '));
+    return lines.join('\n');
+  }
+
+  // ============ GYMBRO CHAT ============
+  const SERVER_URL_KEY = V4 + 'server-url';
+  const API_TOKEN_KEY = V4 + 'api-token';
+
+  // 챗 세션은 메모리만 (닫으면 휘발, 날짜 바뀌면 초기화)
+  let chat = null; // { kind: 'daily'|'builder', slot, date, wire: [], pendingNote, busy, generate }
+
+  function chatConfigured() {
+    return !!(localStorage.getItem(SERVER_URL_KEY) && localStorage.getItem(API_TOKEN_KEY));
+  }
+
+  function chatBody() { return document.getElementById('chatBody'); }
+
+  function scrollChat() { const b = chatBody(); b.scrollTop = b.scrollHeight; }
+
+  function addMsg(kind, text) {
+    const el = document.createElement('div');
+    el.className = 'chat-msg ' + kind;
+    el.textContent = text;
+    chatBody().appendChild(el);
+    scrollChat();
+    return el;
+  }
+
+  function setTyping(on) {
+    let el = document.getElementById('chatTyping');
+    if (on && !el) {
+      el = document.createElement('div');
+      el.id = 'chatTyping';
+      el.className = 'chat-typing';
+      el.textContent = chat && chat.generate ? '블록 설계 중… (1~2분 걸릴 수 있어)' : 'gymbro 입력 중…';
+      chatBody().appendChild(el);
+      scrollChat();
+    } else if (!on && el) {
+      el.remove();
+    }
+  }
+
+  function openChat(kind, slot) {
+    const fresh = !chat || chat.kind !== kind || chat.date !== todayStr() || (kind === 'daily' && chat.slot !== slot);
+    if (fresh) {
+      chat = { kind, slot: slot || 1, date: todayStr(), wire: [], pendingNote: '', busy: false, generate: false };
+      chatBody().innerHTML = '';
+      renderChatEmpty();
+    }
+    document.getElementById('chatSub').textContent = kind === 'daily'
+      ? '오늘 · D' + chat.slot
+      : '프로그램 빌더';
+    document.getElementById('chatGenBtn').style.display = kind === 'builder' ? '' : 'none';
+    document.getElementById('chatOverlay').classList.add('active');
+    if (!chatConfigured()) addMsg('sys', '설정 탭에서 서버 주소와 디바이스 토큰을 먼저 입력해줘');
+  }
+
+  function closeChat() {
+    document.getElementById('chatOverlay').classList.remove('active');
+  }
+
+  function renderChatEmpty() {
+    const chips = chat.kind === 'daily'
+      ? ['오늘 컨디션 별로야', '시간이 30분밖에 없어', '허리가 좀 불편해', '어제 과음했어']
+      : ['다음 블록 만들어줘', '주 4일로 바꾸고 싶어', '지금 블록 개편하고 싶어'];
+    const wrap = document.createElement('div');
+    wrap.className = 'quick-chips';
+    wrap.id = 'quickChips';
+    chips.forEach(c => {
+      const b = document.createElement('button');
+      b.className = 'quick-chip';
+      b.textContent = c;
+      b.addEventListener('click', () => sendChat(c));
+      wrap.appendChild(b);
+    });
+    chatBody().appendChild(wrap);
+  }
+
+  function buildDailyContext(slot) {
+    const day = dayFor(slot);
+    const log = todayLogFor(slot);
+    const compact = {
+      sections: day.sections.map((sec, s) => ({
+        s, title: sec.title, rest: sec.rest,
+        sets: sec.sets.map((set, i) => {
+          const en = getEntry(log, s, i);
+          const o = { i, label: set.label, name: set.name, w: set.weight || '', r: set.reps || '' };
+          if (en && en.done) {
+            o.done = true;
+            if (en.actualW !== en.targetW || en.actualR !== en.targetR) o.act = { w: en.actualW, r: en.actualR };
+          }
+          if (en && en.skipped) o.skip = true;
+          return o;
+        })
+      }))
+    };
+    const p = activeProgram();
+    return '<CONTEXT>\n오늘: ' + todayStr() + ' / D' + slot + ' ' + day.title +
+      (p ? ' / 블록 "' + p.name + '" WEEK ' + currentWeek(p) + '/' + p.weeks : '') +
+      '\n== 오늘 루틴 (s=섹션 인덱스, i=세트 인덱스, done=완료, act=실측, skip=스킵) ==\n' +
+      JSON.stringify(compact) +
+      '\n== 최근 기록 요약 ==\n' + buildHistorySummary() +
+      '\n</CONTEXT>';
+  }
+
+  function buildBuilderContext() {
+    const p = activeProgram();
+    const defs = dayDefs();
+    const current = p
+      ? '블록 "' + p.name + '" (' + p.weeks + '주 × ' + p.daysPerWeek + '일, WEEK ' + currentWeek(p) + ') — ' + p.days.map((d, i) => 'D' + (i + 1) + ' ' + d.title).join(', ')
+      : '기본 5일 분할 — ' + defs.map((d, i) => 'D' + (i + 1) + ' ' + d.title).join(', ');
+    return '<CONTEXT>\n오늘: ' + todayStr() +
+      '\n== 현재 루틴 ==\n' + current +
+      '\n== 최근 기록 요약 ==\n' + buildHistorySummary() +
+      '\n</CONTEXT>';
+  }
+
+  async function callServer(mode, messages) {
+    const base = (localStorage.getItem(SERVER_URL_KEY) || '').replace(/\/+$/, '');
+    const ctrl = new AbortController();
+    const tmo = setTimeout(() => ctrl.abort(), mode === 'program_generate' ? 180000 : 45000);
+    let resp;
+    try {
+      resp = await fetch(base + '/v1/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem(API_TOKEN_KEY)
+        },
+        body: JSON.stringify({ mode, messages }),
+        signal: ctrl.signal
+      });
+    } catch (e) {
+      throw new Error(e.name === 'AbortError' ? '응답 시간 초과' : '네트워크 오류');
+    } finally {
+      clearTimeout(tmo);
+    }
+    if (!resp.ok) {
+      const msg = resp.status === 401 ? '토큰 인증 실패 — 설정 확인'
+        : resp.status === 403 ? '허용되지 않은 출처'
+        : resp.status === 429 ? '사용 한도 초과'
+        : '서버 오류 ' + resp.status;
+      throw new Error(msg);
+    }
+    const data = await resp.json();
+    let env;
+    try { env = JSON.parse(data.content); } catch (e) { throw new Error('응답 파싱 실패 — 다시 시도해줘'); }
+    if (typeof env.message !== 'string') throw new Error('응답 형식 오류');
+    return { message: env.message, proposal: env.proposal || null, program: env.program || null, raw: data.content };
+  }
+
+  async function sendChat(text) {
+    text = (text || '').trim();
+    if (!chat || chat.busy || !text) return;
+    if (!chatConfigured()) { addMsg('sys', '설정 탭에서 서버 주소와 토큰을 먼저 입력해줘'); return; }
+    const chips = document.getElementById('quickChips');
+    if (chips) chips.remove();
+
+    const mode = chat.kind === 'daily' ? 'daily_adjust' : (chat.generate ? 'program_generate' : 'program_intake');
+    let wireText = text;
+    if (!chat.wire.length) {
+      wireText = (chat.kind === 'daily' ? buildDailyContext(chat.slot) : buildBuilderContext()) + '\n\n' + text;
+    }
+    if (chat.pendingNote) { wireText = chat.pendingNote + '\n' + wireText; chat.pendingNote = ''; }
+
+    chat.wire.push({ role: 'user', content: wireText });
+    addMsg('user', text);
+    chat.busy = true;
+    setTyping(true);
+    try {
+      const env = await callServer(mode, chat.wire);
+      chat.wire.push({ role: 'assistant', content: env.raw });
+      setTyping(false);
+      if (env.message) addMsg('bot', env.message);
+      if (chat.kind === 'daily' && env.proposal) renderProposalCard(env.proposal);
+      if (chat.kind === 'builder' && env.program) renderProgramCard(env.program);
+    } catch (e) {
+      setTyping(false);
+      chat.wire.pop(); // 실패한 턴 제거 → 같은 내용으로 재시도 가능
+      addMsg('sys', '⚠ ' + e.message);
+    } finally {
+      chat.busy = false;
+      chat.generate = false;
+    }
+  }
+
+  function renderProposalCard(proposal) {
+    const err = validateProposal(chat.slot, proposal);
+    if (err) {
+      addMsg('sys', '제안이 꼬였어 (' + err + ') — 다시 요청해줘');
+      chat.pendingNote = '(직전 제안은 형식 오류로 무효: ' + err + '. 고쳐서 다시 제안해줘)';
+      return;
+    }
+    const preview = applyOps(dayFor(chat.slot), proposal.ops);
+    const card = document.createElement('div');
+    card.className = 'diff-card';
+    card.innerHTML = '<div class="dc-title">제안된 조정 ⚡</div>' +
+      '<div class="dc-summary">' + esc(proposal.summary || '') + '</div>' +
+      preview.changes.map(c => '<div class="dc-item">' + esc(c) + '</div>').join('') +
+      '<div class="dc-actions"><button class="dc-btn apply">적용</button><button class="dc-btn reject">거절</button></div>';
+    card.querySelector('.apply').addEventListener('click', () => {
+      applyProposal(chat.slot, proposal);
+      card.querySelector('.dc-actions').outerHTML = '<div class="dc-state" style="color:var(--green)">✓ 오늘 루틴에 적용됨</div>';
+      chat.pendingNote = '(방금 제안을 적용했어)';
+      render();
+    });
+    card.querySelector('.reject').addEventListener('click', () => {
+      card.querySelector('.dc-actions').outerHTML = '<div class="dc-state" style="color:var(--text-faint)">거절됨 — 이유를 말해주면 다시 제안할게</div>';
+      chat.pendingNote = '(방금 제안은 거절했어)';
+    });
+    chatBody().appendChild(card);
+    scrollChat();
+  }
+
+  function renderProgramCard(program) {
+    const err = validateProgram(program);
+    if (err) {
+      addMsg('sys', '블록 검증 실패: ' + err);
+      chat.pendingNote = '(생성한 블록이 검증에 실패했어: ' + err + '. 해당 부분만 고쳐서 다시 생성해줘)';
+      return;
+    }
+    const card = document.createElement('div');
+    card.className = 'diff-card program';
+    card.innerHTML = '<div class="dc-title">블록 제안 ✦ ' + esc(program.name) + ' (' + program.weeks + '주 × ' + program.daysPerWeek + '일)</div>' +
+      (program.intent ? '<div class="dc-summary">' + esc(program.intent) + '</div>' : '') +
+      program.days.map((d, i) =>
+        '<div class="dc-item"><span style="color:' + d.color + '">●</span> D' + (i + 1) + ' ' + esc(d.title) +
+        (d.day ? ' <span style="color:var(--text-faint)">' + esc(d.day) + '</span>' : '') +
+        ' · ' + countTotalSets(d) + '세트</div>'
+      ).join('') +
+      ((program.progression || []).length ? '<div class="dc-item" style="margin-top:6px">진행 규칙 ' + program.progression.length + '개 (linear_kg)</div>' : '') +
+      (program.deload ? '<div class="dc-item">디로드 ' + program.deload.week + '주차</div>' : '') +
+      '<div class="dc-actions"><button class="dc-btn apply">이 블록 적용</button><button class="dc-btn reject">수정 요청</button></div>';
+    card.querySelector('.apply').addEventListener('click', () => {
+      if (applyProgram(program)) {
+        card.querySelector('.dc-actions').outerHTML = '<div class="dc-state" style="color:var(--green)">✓ 블록 적용됨 — 오늘 탭에서 확인해</div>';
+        chat.pendingNote = '(블록을 적용했어)';
+        render();
+      }
+    });
+    card.querySelector('.reject').addEventListener('click', () => {
+      card.querySelector('.dc-actions').outerHTML = '<div class="dc-state" style="color:var(--text-faint)">수정할 부분을 말해줘</div>';
+      chat.pendingNote = '(직전 블록 제안에서 수정하고 싶은 게 있어)';
+      document.getElementById('chatInput').focus();
+    });
+    chatBody().appendChild(card);
+    scrollChat();
+  }
+
+  // 챗 UI 와이어링
+  document.getElementById('chatClose').addEventListener('click', closeChat);
+  document.getElementById('chatSend').addEventListener('click', () => {
+    const input = document.getElementById('chatInput');
+    const v = input.value;
+    input.value = '';
+    sendChat(v);
+  });
+  document.getElementById('chatInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.isComposing) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const v = input.value;
+      input.value = '';
+      sendChat(v);
+    }
+  });
+  document.getElementById('chatGenBtn').addEventListener('click', () => {
+    if (!chat || chat.busy) return;
+    chat.generate = true;
+    sendChat('지금까지 합의한 내용으로 블록을 생성해줘');
+  });
+  document.getElementById('fab').addEventListener('click', () => {
+    openChat('daily', activeSlot);
+  });
+
   // ============ ROUTER ============
   // 라우트: #/today/:slot | #/log | #/log/:date | #/settings  (레거시 #/dayN 리다이렉트)
   function parseRoute() {
@@ -1525,19 +2483,19 @@
     if (parts[0] === 'settings') return { view: 'settings' };
 
     let slot = parts[0] === 'today' ? parseInt(parts[1], 10) : NaN;
-    if (!slot || slot < 1 || slot > days.length) slot = defaultSlot();
+    if (!slot || slot < 1 || slot > dayCount()) slot = defaultSlot();
     return { view: 'today', slot };
   }
 
   // 기본 day: ⓪오늘 진행 중 세션 → ①오늘 요일에 스케줄된 day → ②이번 주 첫 미수행 → ③slot 1
   function defaultSlot() {
     const log = loadLogByDate(todayStr());
-    if (log && log.daySlot >= 1 && log.daySlot <= days.length) return log.daySlot;
+    if (log && log.daySlot >= 1 && log.daySlot <= dayCount()) return log.daySlot;
     const wd = ['SUN','MON','TUE','WED','THU','FRI','SAT'][new Date().getDay()];
-    const idx = days.findIndex(d => (ROUTINE[d].day || '').toUpperCase() === wd);
+    const idx = dayDefs().findIndex(d => (d.day || '').toUpperCase() === wd);
     if (idx >= 0) return idx + 1;
     const done = weekDoneSlots();
-    for (let s = 1; s <= days.length; s++) if (!done.has(s)) return s;
+    for (let s = 1; s <= dayCount(); s++) if (!done.has(s)) return s;
     return 1;
   }
 
@@ -1547,6 +2505,7 @@
 
   // ============ MAIN RENDER ============
   let renderedDate = null; // 자정 경계 감지용
+  let activeSlot = 1;      // FAB 챗 진입 시 현재 보고 있는 day
 
   function render() {
     const route = parseRoute();
@@ -1555,7 +2514,8 @@
 
     let accent = DEFAULT_ACCENT;
     if (route.view === 'today') {
-      accent = ROUTINE[days[route.slot - 1]].color;
+      activeSlot = route.slot;
+      accent = (dayDefs()[route.slot - 1] || {}).color || DEFAULT_ACCENT;
     } else if (route.view === 'logDetail') {
       const log = loadLogByDate(route.date);
       if (log && log.color) accent = log.color;
@@ -1569,23 +2529,24 @@
     else renderSettings();
 
     renderTabbar(route.view);
+    document.getElementById('fab').classList.toggle('show', route.view === 'today');
   }
 
   // ============ TODAY (오늘 탭) ============
   function renderToday(slot) {
-    const dayId = days[slot - 1];
-    const day = ROUTINE[dayId];
+    const day = dayFor(slot); // 오버라이드·주차 진행이 반영된 유효 day
     const app = document.getElementById('app');
     const log = todayLogFor(slot);
     const totalSets = countTotalSets(day);
     const doneSets = logDoneCount(log);
     const pct = totalSets ? Math.round(doneSets / totalSets * 100) : 0;
+    const program = activeProgram();
+    const override = todayOverrideFor(slot);
 
     // day 칩 스트립 (주 2~7회 가변 대응) — 완료 상태는 이번 주 기준
     const weekSlots = weekDoneSlots();
     let stripHtml = '<div class="day-strip">';
-    days.forEach((dId, idx) => {
-      const d = ROUTINE[dId];
+    dayDefs().forEach((d, idx) => {
       const s = idx + 1;
       const sLog = todayLogFor(s);
       let state = '';
@@ -1613,9 +2574,10 @@
       </div>
 
       <div class="header">
-        <div class="header-tag">◆ ${day.day} · ${day.tag}</div>
+        <div class="header-tag">◆ ${program ? `WEEK ${currentWeek(program)}/${program.weeks} · ` : ''}${day.day ? day.day + ' · ' : ''}${day.tag || ''}</div>
         <h1 class="header-title">DAY ${String(slot).padStart(2,'0')}<br><span>${day.title}</span></h1>
         <div class="header-sub">${totalSets} SETS · ${doneSets} DONE</div>
+        ${override ? '<div class="adjusted-chip" id="adjustedChip">⚡ 오늘 조정됨 · 되돌리기</div>' : ''}
       </div>
 
       ${stripHtml}
@@ -1665,13 +2627,14 @@
         const isSkipped = !!(en && en.skipped);
         const wEdited = isDone && en.actualW !== null && en.actualW !== en.targetW;
         const rEdited = isDone && en.actualR !== null && en.actualR !== en.targetR;
+        const adjusted = !!set._changed; // 당일 조정으로 바뀐 세트 — 노랑 표시
 
         let contentHtml = '';
         if (set.weight || wEdited) {
           if (wEdited) {
             contentHtml += (set.weight ? `<span class="set-old">${set.weight}</span>` : '') + `<span class="set-weight edited">${en.actualW}</span>`;
           } else {
-            contentHtml += `<span class="set-weight">${set.weight}</span>`;
+            contentHtml += `<span class="set-weight${adjusted ? ' edited' : ''}">${set.weight}</span>`;
           }
           if (set.unit || wEdited) contentHtml += `<span class="set-unit">${(set.unit || 'kg').toUpperCase()}</span>`;
           contentHtml += `<span class="set-divider"></span>`;
@@ -1681,7 +2644,7 @@
         if (rEdited) {
           contentHtml += `<span class="set-old">${set.reps}</span><span class="set-reps edited"><span class="num">${en.actualR}</span></span>`;
         } else {
-          contentHtml += `<span class="set-reps"><span class="num">${set.reps}</span></span>`;
+          contentHtml += `<span class="set-reps${adjusted ? ' edited' : ''}"><span class="num">${set.reps}</span></span>`;
         }
         if (isDone && en.rpe) contentHtml += `<span class="set-rpe-tag">@${en.rpe}</span>`;
         if (isSkipped) contentHtml += `<span class="set-skip-tag">SKIP</span>`;
@@ -1761,6 +2724,18 @@
 
     document.getElementById('startFocusBtn').addEventListener('click', () => enterFocusMode(slot));
 
+    const adjChip = document.getElementById('adjustedChip');
+    if (adjChip) {
+      adjChip.addEventListener('click', () => {
+        const o = todayOverrideFor(slot);
+        const detail = o ? '\n\n' + o.changes.join('\n') : '';
+        if (confirm('오늘 조정을 취소하고 원래 계획으로 되돌릴까요?' + detail)) {
+          revertOverride(slot);
+          render();
+        }
+      });
+    }
+
     document.getElementById('wakeChip').addEventListener('click', toggleWakeLock);
     document.getElementById('notifChip').addEventListener('click', requestNotif);
     updateWakeChip();
@@ -1769,7 +2744,7 @@
 
   // 체크 토글: 체크 = 목표값을 실측값으로 자동 복사
   function toggleCheck(slot, s, i, rest) {
-    const day = ROUTINE[days[slot - 1]];
+    const day = dayFor(slot);
     const set = day.sections[s].sets[i];
     const log = todayLogFor(slot);
     const en = getEntry(log, s, i);
@@ -1799,7 +2774,7 @@
 
   function openSheet(ctx) {
     sheetCtx = ctx;
-    const day = ROUTINE[days[ctx.slot - 1]];
+    const day = dayFor(ctx.slot);
     const set = day.sections[ctx.s].sets[ctx.i];
     const log = todayLogFor(ctx.slot);
     const en = getEntry(log, ctx.s, ctx.i);
@@ -1849,7 +2824,7 @@
   document.getElementById('sheetSave').addEventListener('click', () => {
     if (!sheetCtx) return;
     const ctx = sheetCtx;
-    const day = ROUTINE[days[ctx.slot - 1]];
+    const day = dayFor(ctx.slot);
     const set = day.sections[ctx.s].sets[ctx.i];
     const w = parseFloat(document.getElementById('wVal').value);
     const r = parseFloat(document.getElementById('rVal').value);
@@ -2078,26 +3053,72 @@
   function renderSettings() {
     const app = document.getElementById('app');
     const index = lsGet(LOG_INDEX_KEY, []);
+    const p = activeProgram();
+    const serverUrl = localStorage.getItem(SERVER_URL_KEY) || '';
+    const token = localStorage.getItem(API_TOKEN_KEY) || '';
+
+    let programHtml;
+    if (p) {
+      const w = currentWeek(p);
+      programHtml = `
+        <div class="program-card">
+          <div class="pc-name">${esc(p.name)}</div>
+          <div class="pc-meta">WEEK ${w}/${p.weeks} · 주 ${p.daysPerWeek}회 · ${p.startDate}~</div>
+          <div class="program-bar"><div class="fill" style="width:${Math.round(w / p.weeks * 100)}%"></div></div>
+          ${w >= p.weeks ? '<div class="pc-meta" style="color:var(--yellow); margin-top:8px">⚡ 블록 마지막 주 — 다음 블록을 준비하세요</div>' : ''}
+        </div>`;
+    } else {
+      programHtml = `
+        <div class="program-card">
+          <div class="pc-name">기본 루틴 (routine.js)</div>
+          <div class="pc-meta">활성 블록 없음 · 주 ${dayCount()}회</div>
+        </div>`;
+    }
+
     app.innerHTML = `
       <div class="header">
         <div class="header-tag">◆ CONFIG · 설정</div>
         <h1 class="header-title">SETT<span>INGS</span></h1>
-        <div class="header-sub">GYM v4 · PHASE 1</div>
+        <div class="header-sub">GYM v4</div>
       </div>
+
+      ${programHtml}
+      <button class="settings-item" id="builderBtn">
+        <span>✦ 다음 블록 만들기</span>
+        <span class="hint">GYMBRO 빌더</span>
+      </button>
+
+      <div style="height: 14px"></div>
+
+      <div class="settings-input-row">
+        <label>GYMBRO 서버 주소</label>
+        <input id="serverUrlInput" type="url" placeholder="https://gym-llm.xxx.workers.dev" value="${esc(serverUrl)}" autocomplete="off">
+      </div>
+      <div class="settings-input-row">
+        <label>디바이스 토큰</label>
+        <input id="apiTokenInput" type="password" placeholder="server/README.md 참고" value="${esc(token)}" autocomplete="off">
+      </div>
+
+      <div style="height: 14px"></div>
+
       <button class="settings-item" id="exportBtn">
         <span>운동 데이터 내보내기</span>
         <span class="hint">JSON · ${index.length} LOGS</span>
       </button>
-      <button class="settings-item" style="opacity: 0.45; cursor: default">
-        <span>GYMBRO 챗 · 당일 조정</span>
-        <span class="hint">PHASE 2 예정</span>
-      </button>
-      <button class="settings-item" style="opacity: 0.45; cursor: default">
-        <span>프로그램 빌더 · 블록 생성</span>
-        <span class="hint">PHASE 3 예정</span>
-      </button>
     `;
+
     document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('builderBtn').addEventListener('click', () => openChat('builder'));
+    document.getElementById('serverUrlInput').addEventListener('change', (e) => {
+      const v = e.target.value.trim();
+      if (v) localStorage.setItem(SERVER_URL_KEY, v);
+      else localStorage.removeItem(SERVER_URL_KEY);
+    });
+    document.getElementById('apiTokenInput').addEventListener('change', (e) => {
+      const v = e.target.value.trim();
+      if (v) localStorage.setItem(API_TOKEN_KEY, v);
+      else localStorage.removeItem(API_TOKEN_KEY);
+    });
   }
 
   function exportData() {
@@ -2356,7 +3377,7 @@
   }
 
   function enterFocusMode(slot) {
-    const day = ROUTINE[days[slot - 1]];
+    const day = dayFor(slot);
     const log = ensureTodayLog(slot);
     if (!log) return;
     const flatSets = buildFlatSets(day);
@@ -2634,6 +3655,11 @@
     if (confirm('운동을 끝내시겠어요? (기록은 저장됩니다)')) {
       exitFocusMode();
     }
+  });
+
+  // 집중 모드 중 gymbro 챗 진입 ("허리 아파, 남은 거 줄여줘" 시나리오)
+  document.getElementById('focusCoach').addEventListener('click', () => {
+    if (focusState) openChat('daily', focusState.slot);
   });
 
   // Back button handling for focus mode

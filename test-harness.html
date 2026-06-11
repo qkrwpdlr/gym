@@ -233,6 +233,107 @@ async function run() {
       t('empty-weight: (no empty-weight set found)', false);
     }
 
+    // ---- 17. Phase2: FAB / 챗 / 오버라이드 ----
+    w.localStorage.removeItem('gym-v4-log-' + today());
+    w.localStorage.removeItem('gym-v4-override-' + today());
+    w.localStorage.removeItem('gym-v4-program');
+    w.localStorage.setItem('gym-v4-log-index', '[]');
+    w.localStorage.setItem('gym-v4-server-url', 'https://stub.test');
+    w.localStorage.setItem('gym-v4-api-token', 'test-token');
+    f.src = './index.html?p2#/today/1';
+    await sleep(1500);
+    w = f.contentWindow; d = f.contentDocument;
+    w.confirm = () => true;
+
+    t('fab: visible on today', d.getElementById('fab').classList.contains('show'));
+    w.location.hash = '#/log';
+    await sleep(400);
+    t('fab: hidden on log', !d.getElementById('fab').classList.contains('show'));
+    w.location.hash = '#/today/1';
+    await sleep(400);
+
+    // fetch 스텁 (mode별 응답)
+    w.fetch = async (url, opts) => {
+      const body = JSON.parse(opts.body);
+      let env;
+      if (body.mode === 'daily_adjust') {
+        env = { message: '오늘은 가볍게 가자.', proposal: { summary: '탑셋 -20kg', reason: '컨디션 저하', ops: [
+          { op: 'update_set', s: 1, i: 0, patch: { weight: '160' } },
+          { op: 'remove_set', s: 2, i: 3 }
+        ] } };
+      } else if (body.mode === 'program_generate') {
+        env = { message: '블록 나왔어.', program: {
+          name: '테스트 블록', weeks: 4, daysPerWeek: 2, intent: '테스트용',
+          days: [
+            { title: 'DAY A', day: 'MON', tag: 'A', color: '#ff2d2d', sections: [
+              { title: '메인', meta: '', rest: 120, sets: [ { label: 'T', name: '로우바 스쿼트', weight: '100', unit: 'kg', reps: '5' } ] } ] },
+            { title: 'DAY B', day: 'THU', tag: 'B', color: '#00d4ff', sections: [
+              { title: '메인B', meta: '', rest: 120, sets: [ { label: 'T', name: '벤치프레스', weight: '80', unit: 'kg', reps: '5' } ] } ] }
+          ],
+          progression: [ { dayIdx: 0, sectionIdx: 0, rule: 'linear_kg', perWeek: 2.5 } ],
+          deload: { week: 4, weightFactor: 0.85, setDrop: 0 }
+        } };
+      } else {
+        env = { message: '목표가 뭐야?', program: null };
+      }
+      return new w.Response(JSON.stringify({ content: JSON.stringify(env), usage: {} }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    };
+
+    d.getElementById('fab').click();
+    await sleep(200);
+    t('chat: overlay opens', d.getElementById('chatOverlay').classList.contains('active'));
+    t('chat: quick chips shown', d.querySelectorAll('.quick-chip').length >= 3);
+    d.getElementById('chatInput').value = '오늘 컨디션 별로야';
+    d.getElementById('chatSend').click();
+    await sleep(600);
+    t('chat: bot message rendered', [...d.querySelectorAll('.chat-msg.bot')].some(m => m.textContent.includes('가볍게')));
+    const dcard = d.querySelector('.diff-card');
+    t('chat: diff card rendered', !!dcard && dcard.textContent.includes('160'));
+    dcard.querySelector('.dc-btn.apply').click();
+    await sleep(400);
+    const ovr = JSON.parse(w.localStorage.getItem('gym-v4-override-' + today()) || 'null');
+    t('override: stored', !!ovr && !ovr.revoked && ovr.daySlot === 1);
+    t('override: effectiveDay top = 160', !!ovr && ovr.effectiveDay.sections[1].sets[0].weight === '160');
+    d.getElementById('chatClose').click();
+    await sleep(300);
+    t('today: adjusted chip shown', !!d.getElementById('adjustedChip'));
+    const topRow = d.querySelector('.set-row[data-s="1"][data-i="0"]');
+    t('today: adjusted weight yellow 160', !!topRow && !!topRow.querySelector('.set-weight.edited') && topRow.querySelector('.set-weight.edited').textContent === '160');
+
+    d.getElementById('adjustedChip').click();
+    await sleep(400);
+    const ovr2 = JSON.parse(w.localStorage.getItem('gym-v4-override-' + today()) || 'null');
+    t('revert: revoked', !!ovr2 && ovr2.revoked === true);
+    const topRow2 = d.querySelector('.set-row[data-s="1"][data-i="0"]');
+    t('revert: weight back to 180', !!topRow2 && topRow2.textContent.includes('180'));
+
+    // ---- 18. Phase3: 빌더 → 블록 적용 → 주차 진행 ----
+    const weekAgoMonday = (() => { const dd = new Date(); dd.setDate(dd.getDate() - ((dd.getDay() + 6) % 7) - 7); return dd.getFullYear() + '-' + String(dd.getMonth()+1).padStart(2,'0') + '-' + String(dd.getDate()).padStart(2,'0'); })();
+    w.prompt = () => weekAgoMonday;
+    w.location.hash = '#/settings';
+    await sleep(400);
+    d.getElementById('builderBtn').click();
+    await sleep(200);
+    t('builder: gen button visible', d.getElementById('chatGenBtn').style.display !== 'none');
+    d.getElementById('chatInput').value = '다음 블록 만들어줘';
+    d.getElementById('chatSend').click();
+    await sleep(600);
+    d.getElementById('chatGenBtn').click();
+    await sleep(800);
+    const pcard = d.querySelector('.diff-card.program');
+    t('builder: program card rendered', !!pcard && pcard.textContent.includes('테스트 블록'));
+    pcard.querySelector('.dc-btn.apply').click();
+    await sleep(500);
+    const prog = JSON.parse(w.localStorage.getItem('gym-v4-program') || 'null');
+    t('program: stored active', !!prog && prog.status === 'active' && prog.days.length === 2);
+    d.getElementById('chatClose').click();
+    w.location.hash = '#/today/1';
+    await sleep(400);
+    t('program: today renders DAY A', d.querySelector('.header-title').textContent.includes('DAY A'));
+    t('program: WEEK 2/4 shown', d.querySelector('.header-tag').textContent.includes('WEEK 2/4'));
+    t('program: chips = 2 days', d.querySelectorAll('.day-chip').length === 2);
+    t('program: progressed weight 102.5 (100 + 2.5×1주)', d.body.textContent.includes('102.5'));
+
   } catch (e) {
     results.push('ERROR ' + e.message + ' @ ' + (e.stack || '').split('\n')[1]);
   }
