@@ -343,18 +343,19 @@ window.ROUTINE = {
     sections: [
       {
         title: '워밍업',
-        meta: '관절 풀기',
+        meta: '관절 풀기 · 마지막은 포즈로',
         rest: 60,
         sets: [
           { label: 'W1', name: '스쿼트 워밍업', weight: 'BAR', unit: 'kg', reps: '10' },
           { label: 'W2', name: '스쿼트 워밍업', weight: '60', unit: 'kg', reps: '5' },
           { label: 'W3', name: '스쿼트 워밍업', weight: '100', unit: 'kg', reps: '3' },
           { label: 'W4', name: '스쿼트 워밍업', weight: '130', unit: 'kg', reps: '2' },
+          { label: 'W5', name: '포즈 스쿼트 워밍업', weight: '120', unit: 'kg', reps: '3' },
         ]
       },
       {
         title: '포즈 로우바 스쿼트',
-        meta: '바텀 2초 정지',
+        meta: '바텀 2초 정지 · 5세트째 RPE8 넘으면 컷',
         rest: 180,
         sets: [
           { label: 'M1', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
@@ -362,27 +363,96 @@ window.ROUTINE = {
           { label: 'M3', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
           { label: 'M4', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
           { label: 'M5', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
-        ]
-      },
-      {
-        title: '하이바 스쿼트',
-        meta: '쿼드·코어 강화',
-        rest: 150,
-        sets: [
-          { label: 'H1', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
-          { label: 'H2', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
-          { label: 'H3', name: '하이바 스쿼트', weight: '120', unit: 'kg', reps: '8' },
+          { label: 'M6', name: '포즈 로우바 스쿼트', weight: '145', unit: 'kg', reps: '5' },
         ]
       },
       {
         title: '레그 프레스',
-        meta: '머신 · 헤비',
+        meta: '머신 · 헤비 · 발 낮고 좁게(쿼드) · 마지막 2세트 RPE9',
         rest: 90,
         sets: [
-          { label: 'LP1', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP2', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP3', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
-          { label: 'LP4', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12' },
+          { label: 'LP1', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP2', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP3', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP4', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP5', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+        ]
+      },
+      {
+        title: '카프 레이즈',
+        meta: '종아리',
+        rest: 60,
+        sets: [
+          { label: 'CF1', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF2', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF3', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF4', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+          { label: 'CF5', name: '카프 레이즈', weight: '', unit: '', reps: '15' },
+        ]
+      }
+    ]
+  },
+
+  // 허리 부담 있는 날의 D5 대체안. 요일 고정 아님(day: 'ALT') — 칩은 '허리'로 표시.
+  // 바벨 척추 부하 0. D3 데드 이후 기립근이 안 풀렸을 때 이걸로 돌린다.
+  day6: {
+    title: '허리 세이버',
+    day: 'ALT',
+    chip: '허리',
+    tag: 'LOWER · 척추 무부하 대체',
+    color: '#ff9500',
+    sections: [
+      {
+        title: '워밍업',
+        meta: '바벨 없음 · 관절만 풀기',
+        rest: 45,
+        sets: [
+          { label: 'W1', name: '레그 프레스 워밍업', weight: 'LIGHT', unit: '', reps: '15' },
+          { label: 'W2', name: '레그 프레스 워밍업', weight: 'LIGHT', unit: '', reps: '12' },
+          { label: 'W3', name: '레그 익스텐션 워밍업', weight: '', unit: '', reps: '15' },
+        ]
+      },
+      {
+        title: '레그 프레스',
+        meta: '메인 · 발 낮고 좁게(쿼드) · 핵스쿼트 있으면 2세트 대체',
+        rest: 90,
+        sets: [
+          { label: 'LP1', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP2', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP3', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP4', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+          { label: 'LP5', name: '레그 프레스', weight: 'HEAVY', unit: '', reps: '12–15' },
+        ]
+      },
+      {
+        title: '불가리안 스플릿 스쿼트',
+        meta: '덤벨 · 한쪽씩 · 상체 세우고',
+        rest: 90,
+        sets: [
+          { label: 'BS1', name: '불가리안 스플릿 스쿼트', weight: '', unit: '', reps: '10' },
+          { label: 'BS2', name: '불가리안 스플릿 스쿼트', weight: '', unit: '', reps: '10' },
+          { label: 'BS3', name: '불가리안 스플릿 스쿼트', weight: '', unit: '', reps: '10' },
+        ]
+      },
+      {
+        title: '레그 익스텐션',
+        meta: '쿼드 · 척추 완전 무부하',
+        rest: 60,
+        sets: [
+          { label: 'L1', name: '레그 익스텐션', weight: '', unit: '', reps: '15' },
+          { label: 'L2', name: '레그 익스텐션', weight: '', unit: '', reps: '15' },
+          { label: 'L3', name: '레그 익스텐션', weight: '', unit: '', reps: '15' },
+          { label: 'L4', name: '레그 익스텐션', weight: '', unit: '', reps: '15' },
+        ]
+      },
+      {
+        title: '햄스트링 컬',
+        meta: '햄 · 스티프레그 금지',
+        rest: 60,
+        sets: [
+          { label: 'H1', name: '햄스트링 컬', weight: '', unit: '', reps: '12' },
+          { label: 'H2', name: '햄스트링 컬', weight: '', unit: '', reps: '12' },
+          { label: 'H3', name: '햄스트링 컬', weight: '', unit: '', reps: '12' },
         ]
       },
       {

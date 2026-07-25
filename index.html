@@ -434,6 +434,14 @@
     color: var(--text-dim);
   }
 
+  /* 이름표 칩(D숫자 대신 설명): Bebas는 한글 미지원이라 본문 폰트로 */
+  .day-chip .d.alt {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
   .day-chip .wd {
     font-family: 'JetBrains Mono', monospace;
     font-size: 8px;
@@ -2495,7 +2503,9 @@
     const idx = dayDefs().findIndex(d => (d.day || '').toUpperCase() === wd);
     if (idx >= 0) return idx + 1;
     const done = weekDoneSlots();
-    for (let s = 1; s <= dayCount(); s++) if (!done.has(s)) return s;
+    const defs = dayDefs();
+    // 이름표 day(chip 있음 = 대체안)는 자동 선택 대상에서 제외 — 직접 누를 때만 쓴다
+    for (let s = 1; s <= defs.length; s++) if (!done.has(s) && !defs[s - 1].chip) return s;
     return 1;
   }
 
@@ -2554,7 +2564,7 @@
       else if ((sLog && isLogComplete(sLog)) || weekSlots.has(s)) state = 'completed';
       const cls = ['day-chip', s === slot ? 'active' : '', state].filter(Boolean).join(' ');
       stripHtml += '<div class="' + cls + '" data-slot="' + s + '" style="--chip-color:' + d.color + '">'
-        + '<span class="d">D' + s + '</span>'
+        + '<span class="d' + (d.chip ? ' alt' : '') + '">' + (d.chip ? esc(d.chip) : 'D' + s) + '</span>'
         + '<span class="wd">' + (d.day || '·') + '</span>'
         + '<span class="day-dot"></span>'
         + '</div>';
