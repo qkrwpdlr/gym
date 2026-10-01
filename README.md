@@ -1,110 +1,42 @@
-# GYM · 5 Day Split PWA
+# GYM · 웹 PWA
 
-체크리스트 + 집중 모드를 갖춘 5일 분할 루틴 트래커.
+GitHub Pages(`https://qkrwpdlr.github.io/gym/`)로 배포되는 GYM 웹 앱.
 
-## 두 가지 모드
+이 레포의 `index.html`, `assets/`, `fonts/`, `service-worker.js`, `manifest.json`,
+아이콘은 **빌드 결과물**이다. 직접 고치지 말고, 원본 소스인 `gym-ios/WebApp`
+(React + Vite)을 고친 뒤 빌드해서 덮어쓴다.
 
-### 1. 체크리스트 모드 (메인)
-- 전체 루틴 훑어보기
-- 개별 세트 탭하면 체크 + 자동 휴식 타이머 (하단 오버레이)
-- 섹션별 완료 진행률 표시
+## 배포
 
-### 2. 집중 모드 (FOCUS)
-`START WORKOUT` 크게 탭하면 풀스크린 진입:
-- **운동 화면**: 종목 + 무게(거대) + reps만
-- `DONE · NEXT` 탭 → **쉬는 시간 풀스크린**
-- 거대 타이머 + "다음: 170kg × 5" 미리보기
-- 마지막 3초 비프 (600Hz) + 타이머 끝 비프+진동 (880→1320Hz)
-- 화면 짧게 빨간색 플래시 → 자동으로 다음 세트 화면
-
-## 주요 기능
-- 🔴 5일 분할 (Mon–Fri) 하단 탭 네비게이션
-- 🔗 해시 라우팅 (`#/day1` ~ `#/day5`)
-- 💾 요일별 독립 체크 저장 (localStorage)
-- 📱 Wake Lock 자동 활성화 (첫 세트 체크시)
-- 🔔 Notification 알림 (백그라운드 복귀시)
-- 🔊 Web Audio 비프 (음악 안 멈춤)
-- 📳 진동 피드백
-- 📶 오프라인 동작 (서비스워커)
-- ⏱️ endTime 기반 타이머 (백그라운드 갔다와도 정확)
-
-## 파일 구조
-```
-gym-pwa/
-├── index.html           # 메인 SPA
-├── routine.js           # 5일치 루틴 데이터 (수정 여기)
-├── service-worker.js    # 오프라인 캐싱
-├── manifest.json        # PWA 메타데이터
-├── icon-192.png
-├── icon-512.png
-└── README.md
-```
-
-## 로컬 테스트
 ```bash
-cd gym-pwa
+cd ../gym-ios/WebApp
+npm install
+npm run build:pages   # → 이 레포 루트로 빌드 결과물을 복사
+cd ../../gym
+git add -A && git commit -m "Update web build" && git push
+```
+
+`build:pages`는 이전 빌드 결과물만 교체하고 `docs/`, `mockups/`, `server/`는
+건드리지 않는다. 서비스워커 캐시 이름이 빌드마다 바뀌므로, 이미 설치된 PWA도
+다음 실행 때 새 버전을 받는다.
+
+## 웹 버전에서 되는 것 / 안 되는 것
+
+- 루틴 체크리스트, 집중 모드, 휴식 타이머, 기록 캘린더, 루틴 템플릿, 기록 내보내기/가져오기
+- 오프라인 동작 (서비스워커)
+- 운동 기록은 브라우저 localStorage(`gym-v4-*`)에 저장된다. 예전 버전 기록도 그대로 이어진다.
+- **gymbro 코치는 iOS 앱 전용**이다. 코치는 Sign in with Apple 로그인이 필요해서,
+  웹에서는 "코치는 iOS 앱에서 쓸 수 있어요" 안내만 나온다.
+
+## 로컬 확인
+
+```bash
 python3 -m http.server 8000
 # localhost:8000 접속
 ```
-localhost는 HTTPS 없이도 PWA 인정됨.
-
-## GitHub Pages 배포
-
-```bash
-cd gym-pwa
-git init
-git add .
-git commit -m "init gym pwa"
-git branch -M main
-# GitHub에서 새 repo "gym" 생성 후
-git remote add origin https://github.com/<USERNAME>/gym.git
-git push -u origin main
-```
-
-그 다음:
-1. 레포 → **Settings** → **Pages**
-2. Source: **Deploy from a branch** → **main** / **/ (root)** → Save
-3. 1–2분 후 `https://<USERNAME>.github.io/gym/` 접속
 
 ## 폰에 설치
 
-**iOS (Safari)**
-1. 주소 접속 → 하단 공유 → **"홈 화면에 추가"**
+**iOS (Safari)**: 주소 접속 → 하단 공유 → **"홈 화면에 추가"**
 
-**Android (Chrome)**
-1. 접속 → 주소창 ⋮ → **"앱 설치"**
-
-## 루틴 수정
-
-`routine.js` 파일의 `ROUTINE` 객체를 수정하면 됨:
-```js
-window.ROUTINE = {
-  day1: {
-    title: 'SQUAT HEAVY',
-    day: 'MON',
-    tag: 'LOWER · 스쿼트',
-    color: '#ff2d2d',  // 테마 컬러
-    sections: [
-      {
-        title: '워밍업',
-        meta: '폼 확인',
-        rest: 45,  // 휴식 시간 (초)
-        sets: [
-          { label: 'W1', name: '스쿼트', weight: 'BAR', unit: 'kg', reps: '10' },
-          ...
-        ]
-      }
-    ]
-  }
-}
-```
-
-수정 후 다시 `git push` 하면 끝.
-
-## 집중 모드 팁
-
-- **시작 지점 자동 결정**: 체크 안 된 첫 세트부터 시작
-- **EXIT** 버튼으로 언제든 나갈 수 있음 (체크는 저장됨)
-- 쉬는 시간 중 `SKIP REST` 가능
-- 운동 시작하면 Wake Lock 자동 ON → 화면 안 꺼짐
-- 폰 잠궈도 복귀하면 타이머 정확함 (endTime 기반)
+**Android (Chrome)**: 접속 → 주소창 ⋮ → **"앱 설치"**

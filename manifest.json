@@ -1,7 +1,7 @@
 {
-  "name": "GYM · 5 Day Split",
+  "name": "GYM",
   "short_name": "GYM",
-  "description": "5일 분할 루틴 트래커 - 체크리스트 + 집중 모드",
+  "description": "루틴 체크리스트, 휴식 타이머, AI 코치",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
