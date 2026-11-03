@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-pwa-4138aa3e96';
+const CACHE_NAME = 'gym-pwa-a37773616d';
 const ASSETS = [
   './',
   './index.html',
