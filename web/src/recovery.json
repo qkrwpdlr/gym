@@ -97,6 +97,41 @@
               ]
             },
             {
+              "title": "OHP · 두 번째",
+              "meta": "RPE 7 · 주 2회 중 가벼운 날 · 상체B보다 5kg 가볍게 · 둔근 과하게 조이지 말기",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "OH1",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH2",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH3",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
               "title": "클로즈그립 벤치",
               "meta": "RPE 7 · 삼두",
               "rest": 150,
@@ -856,6 +891,41 @@
                   "label": "M5",
                   "name": "벤치프레스",
                   "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "OHP · 두 번째",
+              "meta": "RPE 7 · 주 2회 중 가벼운 날 · 상체B보다 5kg 가볍게",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "OH1",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH2",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH3",
+                  "name": "OHP",
+                  "weight": "70",
                   "unit": "kg",
                   "reps": "6"
                 }
@@ -1683,6 +1753,41 @@
               ]
             },
             {
+              "title": "OHP · 두 번째",
+              "meta": "RPE 7 · 주 2회 중 가벼운 날 · 상체B보다 5kg 가볍게",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "OH1",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH2",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH3",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
               "title": "클로즈그립 벤치",
               "meta": "삼두 강화",
               "rest": 150,
@@ -2486,6 +2591,41 @@
                   "weight": "105",
                   "unit": "kg",
                   "reps": "4"
+                }
+              ]
+            },
+            {
+              "title": "OHP · 두 번째",
+              "meta": "RPE 7 · 주 2회 중 가벼운 날 · 상체B보다 5kg 가볍게",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "OH1",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH2",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "OH3",
+                  "name": "OHP",
+                  "weight": "70",
+                  "unit": "kg",
+                  "reps": "6"
                 }
               ]
             },

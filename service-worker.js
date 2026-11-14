@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-pwa-ea6558dabb';
+const CACHE_NAME = 'gym-pwa-8f5a780a9c';
 const ASSETS = [
   './',
   './index.html',
@@ -30,6 +30,8 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  // lab/ 실험 페이지는 앱과 따로 배포된다. 서비스워커가 끼어들면 예전 스크립트가 남으므로 건드리지 않는다.
+  if (new URL(e.request.url).pathname.includes('/lab/')) return;
   // 페이지는 네트워크 우선: 새 배포가 바로 보이고, 오프라인이면 캐시로 연다.
   if (e.request.mode === 'navigate') {
     e.respondWith(
