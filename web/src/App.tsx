@@ -16,7 +16,13 @@ import {
   RPE_VALUES,
   TIMER_KEY,
   activeProgram,
+  RECOVERY,
+  ROUTINE,
+  activeRecovery,
   clearProgram,
+  endRecovery,
+  setRecoveryPhase,
+  startRecovery,
   buildFlatSets,
   countTotalSets,
   currentWeek,
@@ -970,6 +976,65 @@ function App() {
     bump()
   }, [askConfirm, bump, exitFocusMode])
 
+  // ============ 회복 루틴 ============
+  /// 루틴이 바뀌면 진행 중인 세션은 예전 세트 목록을 들고 있으니 끝내고, 새 루틴 기준으로 오늘 day를 다시 고른다.
+  const afterRoutineChange = useCallback(() => {
+    if (focusRef.current) exitFocusMode()
+    const slot = defaultSlot()
+    setRoute({ view: 'today', slot })
+    navigate('#/today/' + slot)
+    bump()
+  }, [bump, exitFocusMode])
+
+  /// 회복 단계를 한 칸 옮긴다. 올릴 때는 기준을 보여 주고, 내릴 때는 이유만 확인한다.
+  const onRecoveryMove = useCallback(
+    async (delta: 1 | -1) => {
+      const rec = activeRecovery()
+      if (!rec) return
+      const to = rec.state.phase + delta
+      if (to < 0 || to >= rec.plan.phases.length) return
+      const target = rec.plan.phases[to]
+      const ok = await askConfirm(
+        delta > 0
+          ? {
+              title: `${to + 1}단계 · ${target.title}로 올릴까요?`,
+              body: '아래 기준을 다 채웠을 때만 올려요. 하나라도 걸리면 지금 단계를 며칠 더 해요.',
+              items: rec.phase.advance,
+              confirmLabel: '올리기',
+            }
+          : {
+              title: `${to + 1}단계 · ${target.title}로 내릴까요?`,
+              body: '운동 중 통증이 3/10을 넘었거나 다음 날 더 아팠다면 한 단계 내려요. 기록은 그대로 남아요.',
+              confirmLabel: '내리기',
+            },
+      )
+      if (!ok) return
+      setRecoveryPhase(to)
+      afterRoutineChange()
+    },
+    [afterRoutineChange, askConfirm],
+  )
+
+  const onRecoveryEnd = useCallback(async () => {
+    const rec = activeRecovery()
+    if (!rec) return
+    const last = rec.plan.phases[rec.plan.phases.length - 1]
+    const ok = await askConfirm({
+      title: '회복을 끝내고 원래 루틴으로 돌아갈까요?',
+      body: '보통 아래 복귀 기준을 다 채웠을 때 돌아가요. 회복 기록은 그대로 남고, 설정에서 회복 루틴을 다시 켤 수 있어요.',
+      items: last.advance,
+      confirmLabel: '원래 루틴으로',
+    })
+    if (!ok) return
+    endRecovery()
+    afterRoutineChange()
+  }, [afterRoutineChange, askConfirm])
+
+  const onRecoveryStart = useCallback(() => {
+    startRecovery()
+    afterRoutineChange()
+  }, [afterRoutineChange])
+
   // ============ RENDER ============
   // 세션이 지금 어느 세트에 있는지 — 오늘 목록에서 위치와 휴식을 함께 보여준다.
   const currentMarkSet = focus && focus.phase !== 'complete' ? focus.flatSets[focus.currentIdx] : undefined
@@ -1016,6 +1081,8 @@ function App() {
           mark={sessionMark}
           collapsed={focusCollapsed}
           onRevert={onRevertOverride}
+          onRecoveryMove={onRecoveryMove}
+          onRecoveryEnd={onRecoveryEnd}
           onWakeClick={toggleWakeLock}
           onNotifClick={requestNotif}
         />
@@ -1032,6 +1099,8 @@ function App() {
       {route.view === 'settings' && (
         <SettingsView
           onClearProgram={onClearProgram}
+          onRecoveryStart={onRecoveryStart}
+          onRecoveryEnd={onRecoveryEnd}
           onImport={importRecords}
         />
       )}
@@ -1099,6 +1168,8 @@ type TodayViewProps = {
   sessionActive: boolean
   mark: SessionMark | null
   onRevert: (slot: number) => void
+  onRecoveryMove: (delta: 1 | -1) => void
+  onRecoveryEnd: () => void
   onWakeClick: () => void
   onNotifClick: () => void
   collapsed: boolean
@@ -1119,6 +1190,8 @@ function TodayView({
   mark,
   collapsed,
   onRevert,
+  onRecoveryMove,
+  onRecoveryEnd,
   onWakeClick,
   onNotifClick,
 }: TodayViewProps) {
@@ -1138,7 +1211,8 @@ function TodayView({
   const doneSets = logDoneCount(log)
   const pct = totalSets ? Math.round((doneSets / totalSets) * 100) : 0
   const complete = isLogComplete(log)
-  const program = activeProgram()
+  const recovery = activeRecovery()
+  const program = recovery ? null : activeProgram()
   const override = todayOverrideFor(slot)
   const weekSlots = weekDoneSlots()
   const defs = dayDefs()
@@ -1159,7 +1233,7 @@ function TodayView({
   }, [slot, dayCount])
 
   const tagParts = [
-    program ? `${currentWeek(program)}/${program.weeks}주차` : '',
+    recovery ? `회복 ${recovery.state.phase + 1}/${recovery.plan.phases.length}단계` : program ? `${currentWeek(program)}/${program.weeks}주차` : '',
     // 대체 루틴('ALT')은 요일이 정해져 있지 않다 — 'ALT요일'로 보이지 않게 진짜 요일일 때만 붙인다.
     weekdayKr(day.day) ? weekdayKr(day.day) + '요일' : '',
     day.tag || '',
@@ -1203,6 +1277,8 @@ function TodayView({
           </button>
         ) : null}
       </div>
+
+      {recovery ? <RecoveryCard recovery={recovery} onMove={onRecoveryMove} onEnd={onRecoveryEnd} /> : null}
 
       <div className="day-strip" ref={stripRef}>
         {defs.map((d, idx) => {
@@ -1768,6 +1844,69 @@ function LogDetailView({ date }: { date: string }) {
   )
 }
 
+// ============ RECOVERY CARD ============
+function RecoveryCard({
+  recovery,
+  onMove,
+  onEnd,
+}: {
+  recovery: NonNullable<ReturnType<typeof activeRecovery>>
+  onMove: (delta: 1 | -1) => void
+  onEnd: () => void
+}) {
+  const { plan, state, phase } = recovery
+  const n = state.phase + 1
+  const total = plan.phases.length
+  const isLast = n === total
+  return (
+    <section className="recovery-card" aria-label="회복 루틴">
+      <div className="rc-head">
+        <span className="rc-step">
+          {plan.name} {n}/{total}
+        </span>
+        <span className="rc-guide">{phase.guide}</span>
+      </div>
+      <div className="rc-title">{phase.title}</div>
+      <p className="rc-goal">{phase.goal}</p>
+      <div className="rc-steps" aria-hidden="true">
+        {plan.phases.map((_, i) => (
+          <span key={i} className={i < n ? 'on' : ''} />
+        ))}
+      </div>
+      <details className="rc-details">
+        <summary>{isLast ? '원래 루틴 복귀 기준' : '다음 단계 기준'} · 통증 규칙</summary>
+        <ul className="rc-list">
+          {phase.advance.map((a) => (
+            <li key={a}>{a}</li>
+          ))}
+        </ul>
+        <div className="rc-label">규칙</div>
+        <ul className="rc-list">
+          {plan.rules.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
+        </ul>
+        <div className="rc-label warn">이러면 병원 먼저</div>
+        <ul className="rc-list">
+          {plan.redFlags.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
+        </ul>
+      </details>
+      <div className="rc-actions">
+        {n > 1 ? (
+          <button className="rc-btn" type="button" onClick={() => onMove(-1)}>
+            ‹ 한 단계 내리기
+          </button>
+        ) : null}
+        <button className="rc-btn primary" type="button" onClick={() => (isLast ? onEnd() : onMove(1))}>
+          {isLast ? '원래 루틴으로 복귀' : `${n + 1}단계로 올리기 ›`}
+        </button>
+      </div>
+    </section>
+  )
+}
+
 // ============ SETTINGS VIEW ============
 type ImportResult = { error: boolean; text: string }
 
@@ -1777,10 +1916,12 @@ function skippedText(plan: ImportPlan): string {
 
 type SettingsViewProps = {
   onClearProgram: () => void
+  onRecoveryStart: () => void
+  onRecoveryEnd: () => void
   onImport: (file: File) => Promise<ImportResult | null>
 }
 
-function SettingsView({ onClearProgram, onImport }: SettingsViewProps) {
+function SettingsView({ onClearProgram, onRecoveryStart, onRecoveryEnd, onImport }: SettingsViewProps) {
   const importInputRef = useRef<HTMLInputElement>(null)
   const [importBusy, setImportBusy] = useState(false)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
@@ -1816,6 +1957,7 @@ function SettingsView({ onClearProgram, onImport }: SettingsViewProps) {
   }
 
   const index = lsGet<string[]>(LOG_INDEX_KEY, [])
+  const rec = activeRecovery()
   const p = activeProgram()
   const [plate, setPlate] = useState(plateStep)
   const togglePlate = () => {
@@ -1830,7 +1972,37 @@ function SettingsView({ onClearProgram, onImport }: SettingsViewProps) {
         <h1 className="header-title kr">설정</h1>
       </div>
 
-      <div className="settings-group-label">프로그램</div>
+      <div className="settings-group-label">회복</div>
+      {rec ? (
+        <>
+          <div className="program-card">
+            <div className="pc-name">
+              {rec.plan.name} · {rec.state.phase + 1}/{rec.plan.phases.length}단계 {rec.phase.title}
+            </div>
+            <div className="pc-meta">
+              {formatDateKr(rec.state.startedOn, false)} 시작 · 이 단계는 {formatDateKr(rec.state.phaseStartedOn, false)}부터
+            </div>
+            <div className="pc-meta" style={{ marginTop: 6 }}>{rec.plan.injury}</div>
+          </div>
+          <button className="settings-item" type="button" onClick={onRecoveryEnd}>
+            <span>
+              회복 끝내고 원래 루틴으로
+              <span className="settings-item-sub">회복 기록은 그대로 남아요</span>
+            </span>
+            <span className="chev" aria-hidden="true">›</span>
+          </button>
+        </>
+      ) : (
+        <button className="settings-item" type="button" onClick={onRecoveryStart}>
+          <span>
+            {RECOVERY.name} 루틴 켜기
+            <span className="settings-item-sub">1단계부터 다시 시작해요 · 지금 루틴은 그대로 보관돼요</span>
+          </span>
+          <span className="chev" aria-hidden="true">›</span>
+        </button>
+      )}
+
+      <div className="settings-group-label">{rec ? '원래 루틴 (회복 끝나면 사용)' : '프로그램'}</div>
       {p ? (
         <div className="program-card">
           <div className="pc-name">{p.name}</div>
@@ -1845,7 +2017,7 @@ function SettingsView({ onClearProgram, onImport }: SettingsViewProps) {
       ) : (
         <div className="program-card">
           <div className="pc-name">기본 루틴</div>
-          <div className="pc-meta">{frequencyText(dayDefs())} 분할 · 진행 중인 블록 없음</div>
+          <div className="pc-meta">{frequencyText(Object.values(ROUTINE))} 분할 · 진행 중인 블록 없음</div>
         </div>
       )}
 

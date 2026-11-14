@@ -2,11 +2,15 @@
 // 원본의 localStorage 단일 진실원본 방식을 그대로 따른다. React 레이어는
 // 변경 후 rev 카운터를 bump 해 화면이 storage 를 다시 읽게 한다 (원본의 render() 와 동일).
 
+import recoveryData from './recovery.json'
 import routineData from './routine.json'
 import type {
   FlatSet,
   Override,
   Program,
+  RecoveryPhase,
+  RecoveryPlan,
+  RecoveryState,
   Routine,
   SessionLog,
   SetEntry,
@@ -21,6 +25,7 @@ export const LOG_INDEX_KEY = 'gym-v4-log-index'
 export const DEFAULT_ACCENT = '#ff2d2d'
 export const PROGRAM_KEY = V4 + 'program'
 export const PROGRAM_ARCHIVE_KEY = V4 + 'program-archive'
+export const RECOVERY_KEY = V4 + 'recovery'
 
 export const MIGRATED_KEY = V4 + 'migrated'
 // 지금은 없어진 기능(코치 서버 설정, iOS 로그인, AI 전송 동의, 온보딩)이 남긴 키. 앱이 뜰 때 지운다.
@@ -45,6 +50,8 @@ export function migrateV3() {
   LEGACY_KEYS.forEach((k) => localStorage.removeItem(k))
   const p = activeProgram()
   if (p && TEMPLATE_PROGRAM_NAMES.has(p.name)) clearProgram()
+  // 회복 루틴은 한 번만 자동으로 건다. 끝내면 ended가 남아 다시 걸리지 않는다.
+  if (localStorage.getItem(RECOVERY_KEY) === null) startRecovery()
   if (localStorage.getItem(MIGRATED_KEY)) return
   try {
     days.forEach((d) => localStorage.removeItem('gym-v3-' + d + '-checks'))
@@ -143,8 +150,8 @@ export function weekdayKr(code?: string | null): string {
 }
 
 /// day 칩·목록에 붙일 짧은 이름표. 요일이 정해진 day는 '월', 이름표(chip)가 붙은 대체 루틴은 '대체'.
-export function dayLabel(d: Pick<WorkoutDay, 'day' | 'chip'>): string {
-  return weekdayKr(d.day) || (d.chip ? '대체' : '')
+export function dayLabel(d: Pick<WorkoutDay, 'day' | 'chip' | 'wd'>): string {
+  return weekdayKr(d.day) || d.wd || (d.chip ? '대체' : '')
 }
 
 /// '주 5회' 또는 '주 5회 + 대체 1일'. 이름표가 붙은 대체 루틴은 주간 횟수에 세지 않는다.
@@ -211,12 +218,13 @@ export function deleteLog(date: string) {
 
 function newLog(slot: number): SessionLog {
   const day = dayFor(slot)
-  const p = activeProgram()
+  const rec = activeRecovery()
+  const p = rec ? null : activeProgram()
   const ovr = todayOverrideFor(slot)
   return {
     schemaVersion: 1,
     date: todayStr(),
-    programId: p ? p.id ?? null : null,
+    programId: rec ? recoveryLogId(rec.state) : p ? p.id ?? null : null,
     week: p ? currentWeek(p) : null,
     daySlot: slot,
     dayTitle: day.title,
@@ -324,10 +332,65 @@ export function weekDoneSlots(): Set<number> {
   lsGet<string[]>(LOG_INDEX_KEY, []).forEach((d) => {
     if (d >= monStr && d <= todayStr()) {
       const l = loadLogByDate(d)
-      if (l && l.sets.length) slots.add(l.daySlot)
+      if (l && l.sets.length && inCurrentContext(l)) slots.add(l.daySlot)
     }
   })
   return slots
+}
+
+// ============ RECOVERY (부상 회복 루틴) ============
+// 회복 루틴이 걸려 있으면 블록·기본 루틴보다 먼저 쓰인다. 주간이 아니라 단계로 넘어가고,
+// 단계 안의 day는 요일 없이 순서대로 돌아간다. 원래 루틴(routine.json)은 그대로 두었다가 회복을 끝내면 다시 쓴다.
+export const RECOVERY = recoveryData as RecoveryPlan
+
+export function recoveryState(): RecoveryState | null {
+  const s = lsGet<RecoveryState | null>(RECOVERY_KEY, null)
+  return s && s.planId === RECOVERY.id ? s : null
+}
+
+export function activeRecovery(): { plan: RecoveryPlan; state: RecoveryState; phase: RecoveryPhase } | null {
+  const state = recoveryState()
+  if (!state || state.ended) return null
+  const idx = Math.max(0, Math.min(state.phase, RECOVERY.phases.length - 1))
+  return { plan: RECOVERY, state: { ...state, phase: idx }, phase: RECOVERY.phases[idx] }
+}
+
+/// 회복 중 기록의 programId. 단계별로 따로 남겨 기록 화면에서 어느 단계였는지 보이게 한다.
+export function recoveryLogId(state: RecoveryState): string {
+  return `recovery:${state.planId}:${state.phase + 1}`
+}
+
+const isRecoveryLog = (l: SessionLog) => !!l.programId && l.programId.startsWith('recovery:')
+
+/// 지금 쓰는 루틴(회복 단계 또는 일반 루틴)에서 남긴 기록인지.
+function inCurrentContext(l: SessionLog): boolean {
+  const rec = activeRecovery()
+  return rec ? l.programId === recoveryLogId(rec.state) : !isRecoveryLog(l)
+}
+
+export function startRecovery() {
+  lsSet(RECOVERY_KEY, { planId: RECOVERY.id, phase: 0, startedOn: todayStr(), phaseStartedOn: todayStr(), ended: null } satisfies RecoveryState)
+}
+
+export function setRecoveryPhase(phase: number) {
+  const s = recoveryState()
+  if (!s) return
+  const next = Math.max(0, Math.min(phase, RECOVERY.phases.length - 1))
+  lsSet(RECOVERY_KEY, { ...s, phase: next, phaseStartedOn: todayStr(), ended: null })
+}
+
+export function endRecovery() {
+  const s = recoveryState()
+  lsSet(RECOVERY_KEY, { ...(s || { planId: RECOVERY.id, phase: 0, startedOn: todayStr(), phaseStartedOn: todayStr() }), ended: todayStr() })
+}
+
+/// 회복 중 오늘 할 day: 오늘 기록 → 이 단계의 마지막 기록 다음 순서 → 첫 day.
+function recoveryDefaultSlot(): number {
+  const rec = activeRecovery()!
+  const n = rec.phase.days.length
+  const id = recoveryLogId(rec.state)
+  const last = allPastLogs().filter((l) => l.programId === id).pop()
+  return last ? (last.daySlot % n) + 1 : 1
 }
 
 // ============ PROGRAM (블록 프로그램) ============
@@ -398,6 +461,8 @@ export function materializeDay(p: Program, week: number, slot: number, earned?: 
 
 // day 정의 목록 (칩/요일/카운트용 — 활성 블록 없으면 routine.js 폴백)
 export function dayDefs(): WorkoutDay[] {
+  const rec = activeRecovery()
+  if (rec) return rec.phase.days
   const p = activeProgram()
   return p ? p.days : days.map((d) => ROUTINE[d])
 }
@@ -521,7 +586,14 @@ function carryAccessories(day: WorkoutDay, slot: number, factor: number, skip: (
       work.length > 0 &&
       work.every((s) => s.unit === 'kg' && REP_RANGE.test(s.reps) && (s.weight === '' || s.weight.toUpperCase() === 'HEAVY'))
     if (!isAccessory) return
-    logs = logs || allPastLogs().filter((l) => l.daySlot === slot && !skip(l))
+    // 회복 중에는 같은 회복 루틴의 기록 어디서든(단계·day 무관, 같은 종목 이름으로) 무게를 이어 받는다.
+    // 일반 루틴은 같은 day 기록에서만, 회복 기록은 빼고 이어 받는다.
+    const rec = activeRecovery()
+    logs =
+      logs ||
+      allPastLogs().filter((l) =>
+        rec ? !!l.programId && l.programId.startsWith(`recovery:${rec.state.planId}:`) : l.daySlot === slot && !isRecoveryLog(l) && !skip(l),
+      )
     for (let k = logs.length - 1; k >= 0; k--) {
       const done = logs[k].sets.filter((en) => en.sec === sec.title && en.done && isWorkLabel(en.label))
       const weights = done.map((en) => parseNum(en.actualW)).filter((w): w is number => w !== null && w > 0)
@@ -568,9 +640,13 @@ function linkBackoffs(day: WorkoutDay, log: SessionLog | null) {
 
 // 주차 적용된 "계획" day (오버라이드 적용 전)
 export function templateDayFor(slot: number): WorkoutDay {
-  const p = activeProgram()
+  const rec = activeRecovery()
+  const p = rec ? null : activeProgram()
   let day: WorkoutDay
-  if (p) {
+  if (rec) {
+    day = JSON.parse(JSON.stringify(rec.phase.days[slot - 1] || rec.phase.days[0]))
+    carryAccessories(day, slot, 1, () => false)
+  } else if (p) {
     const week = currentWeek(p)
     const dl = p.deload
     day = materializeDay(p, week, slot, earnedProgress(p, slot))
@@ -752,6 +828,7 @@ export function parseRoute(): Route {
 export function defaultSlot(): number {
   const log = loadLogByDate(todayStr())
   if (log && log.daySlot >= 1 && log.daySlot <= dayCount()) return log.daySlot
+  if (activeRecovery()) return recoveryDefaultSlot()
   const wd = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date().getDay()]
   const idx = dayDefs().findIndex((d) => (d.day || '').toUpperCase() === wd)
   if (idx >= 0) return idx + 1

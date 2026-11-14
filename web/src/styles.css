@@ -1791,3 +1791,40 @@
   font-weight: 500;
   color: var(--text);
 }
+
+/* 회복 루틴 카드 — 오늘 화면 머리 아래 */
+.recovery-card {
+  margin: 0 0 16px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-card));
+}
+.recovery-card .rc-head { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; letter-spacing: 0.04em; }
+.recovery-card .rc-step { color: var(--accent); font-weight: 700; }
+.recovery-card .rc-guide { color: var(--text-faint); }
+.recovery-card .rc-title { margin-top: 6px; font-size: 18px; font-weight: 900; color: var(--text); }
+.recovery-card .rc-goal { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--text-dim); }
+.recovery-card .rc-steps { display: flex; gap: 4px; margin-top: 12px; }
+.recovery-card .rc-steps span { flex: 1; height: 4px; border-radius: 2px; background: var(--bg-elevated); }
+.recovery-card .rc-steps span.on { background: var(--accent); }
+.recovery-card .rc-details { margin-top: 12px; font-size: 13px; color: var(--text-dim); }
+.recovery-card .rc-details summary { cursor: pointer; color: var(--text); font-weight: 700; padding: 4px 0; }
+.recovery-card .rc-list { margin: 6px 0 0; padding-left: 18px; line-height: 1.55; }
+.recovery-card .rc-label { margin-top: 10px; font-size: 11px; font-weight: 700; color: var(--text-faint); }
+.recovery-card .rc-label.warn { color: var(--yellow); }
+.recovery-card .rc-actions { display: flex; gap: 8px; margin-top: 14px; }
+.recovery-card .rc-btn {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.recovery-card .rc-btn.primary { border-color: var(--accent); color: var(--accent); font-weight: 800; }

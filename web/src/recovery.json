@@ -1,0 +1,3228 @@
+{
+  "id": "hamstring-2026-11",
+  "name": "햄스트링 회복",
+  "injury": "2026-11-13 데드리프트 중 허벅지 중간 뒤쪽 '뚝' — 근육부 부분 손상 의심, 걷기 가능",
+  "startedOn": "2026-11-14",
+  "rules": [
+    "운동 중 통증 0~2/10까지는 괜찮다. 3 이상이면 그 운동은 멈춘다.",
+    "다음 날 더 아프거나 뻣뻣하면 한 단계 내린다.",
+    "스트레칭·마사지는 1주 지나 아프지 않을 때 가볍게만. 강한 스트레칭은 3단계 이후.",
+    "진통소염제를 먹은 날은 덜 아프게 느껴진다. 단계 판단은 약효가 떨어졌을 때 기준으로.",
+    "다치고 2~3일은 사우나·온탕·술처럼 몸을 데우는 것 피하기."
+  ],
+  "redFlags": [
+    "허벅지 뒤쪽 멍이 크게 퍼지거나 무릎 쪽까지 내려옴",
+    "엉덩이 바로 아래(좌골)를 누르면 아프거나 움푹 꺼짐",
+    "다리 저림·감각 둔함",
+    "절뚝거림이 1주 넘게 나아지지 않음"
+  ],
+  "phases": [
+    {
+      "title": "보호 · 등척성",
+      "guide": "부상 1~7일차",
+      "goal": "상체는 이어가고, 햄스트링은 버티는 힘(등척성)만 준다.",
+      "advance": [
+        "걷기·계단이 거의 평소처럼 편하다",
+        "등척성 중 통증 2/10 이하이고, 다음 날 더 아프지 않다",
+        "멍이 크게 퍼지지 않았다"
+      ],
+      "days": [
+        {
+          "title": "UPPER · BENCH",
+          "wd": "상체A",
+          "tag": "상체 · 벤치 볼륨",
+          "color": "#c77dff",
+          "sections": [
+            {
+              "title": "워밍업 · 벤치",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "벤치 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "벤치 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "벤치 워밍업",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "벤치프레스",
+              "meta": "RPE 7 · 발은 바닥에 두고 레그드라이브는 약하게 · 허벅지 뒤가 당기면 그 세트에서 중단",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "클로즈그립 벤치",
+              "meta": "RPE 7 · 삼두",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "CG1",
+                  "name": "클로즈그립 벤치",
+                  "weight": "90",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG2",
+                  "name": "클로즈그립 벤치",
+                  "weight": "90",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG3",
+                  "name": "클로즈그립 벤치",
+                  "weight": "90",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "리어델트 머신",
+              "meta": "뒷어깨",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "RD1",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD2",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD3",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "힐 디그 · 무릎 90°",
+              "meta": "등척성 · 누워서 발뒤꿈치로 바닥 누르기 · 30~50% 힘 · 통증 2/10 이하",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "HD1",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD2",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD3",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD4",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD5",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                }
+              ]
+            },
+            {
+              "title": "브릿지 홀드",
+              "meta": "양발 · 당기면 엉덩이 높이를 낮추기",
+              "rest": 30,
+              "sets": [
+                {
+                  "label": "BH1",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                },
+                {
+                  "label": "BH2",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                },
+                {
+                  "label": "BH3",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "UPPER · OHP",
+          "wd": "상체B",
+          "tag": "상체 · 어깨·등",
+          "color": "#3da5ff",
+          "sections": [
+            {
+              "title": "워밍업 · OHP",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "OHP 워밍업",
+                  "weight": "50",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "OHP",
+              "meta": "RPE 7~8 · 둔근을 과하게 조이지 말기",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "인클라인 벤치",
+              "meta": "상부 가슴",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "I1",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I2",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I3",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "케이블 레터럴",
+              "meta": "어깨 비대",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "LT1",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT2",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT3",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT4",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "EZ 컬",
+              "meta": "이두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "BI1",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI2",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI3",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "오버헤드 익스텐션",
+              "meta": "삼두 장두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "TR1",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR2",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR3",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "힐 디그 · 무릎 90°",
+              "meta": "등척성 · 누워서 발뒤꿈치로 바닥 누르기 · 30~50% 힘 · 통증 2/10 이하",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "HD1",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD2",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD3",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD4",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD5",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "REHAB · LOWER",
+          "wd": "회복",
+          "tag": "햄스트링 회복 · 등척성",
+          "color": "#00ff88",
+          "sections": [
+            {
+              "title": "걷기",
+              "meta": "통증 없는 보폭 · 절뚝이면 시간을 줄이기",
+              "rest": 0,
+              "sets": [
+                {
+                  "label": "WK1",
+                  "name": "걷기",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10–20분"
+                }
+              ]
+            },
+            {
+              "title": "힐 디그 · 무릎 90°",
+              "meta": "등척성 · 누워서 발뒤꿈치로 바닥 누르기 · 30~50% 힘 · 통증 2/10 이하",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "HD1",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD2",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD3",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD4",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HD5",
+                  "name": "힐 디그 · 무릎 90°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                }
+              ]
+            },
+            {
+              "title": "힐 디그 · 무릎 30°",
+              "meta": "90°가 편하면 무릎을 더 펴서 같은 방식으로",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "HE1",
+                  "name": "힐 디그 · 무릎 30°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HE2",
+                  "name": "힐 디그 · 무릎 30°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HE3",
+                  "name": "힐 디그 · 무릎 30°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HE4",
+                  "name": "힐 디그 · 무릎 30°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                },
+                {
+                  "label": "HE5",
+                  "name": "힐 디그 · 무릎 30°",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10초"
+                }
+              ]
+            },
+            {
+              "title": "브릿지 홀드",
+              "meta": "양발 · 당기면 엉덩이 높이를 낮추기",
+              "rest": 30,
+              "sets": [
+                {
+                  "label": "BH1",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                },
+                {
+                  "label": "BH2",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                },
+                {
+                  "label": "BH3",
+                  "name": "브릿지 홀드",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "30초"
+                }
+              ]
+            },
+            {
+              "title": "레그 익스텐션",
+              "meta": "쿼드 · 가볍게 · 통증 0 범위",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "L1",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "L2",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "L3",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "카프 레이즈",
+              "meta": "종아리 · 시티드나 머신",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "CF1",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF2",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF3",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "동적 · 아스클링",
+      "guide": "대략 1~2주차",
+      "goal": "브릿지·슬라이더 컬·아스클링 L-프로토콜로 움직이는 범위를 넓힌다.",
+      "advance": [
+        "걷기·계단 통증 0",
+        "한 발 브릿지 3×8이 통증 2/10 이하",
+        "다이버·글라이더를 통증 없이 한다",
+        "다음 날 악화 없음"
+      ],
+      "days": [
+        {
+          "title": "UPPER · BENCH",
+          "wd": "상체A",
+          "tag": "상체 · 벤치 볼륨",
+          "color": "#c77dff",
+          "sections": [
+            {
+              "title": "워밍업 · 벤치",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "벤치 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "벤치 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "벤치 워밍업",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "벤치프레스",
+              "meta": "RPE 7~8 · 통증 없으면 레그드라이브 정상 · 허벅지 뒤가 당기면 그 세트에서 중단",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M5",
+                  "name": "벤치프레스",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "클로즈그립 벤치",
+              "meta": "삼두 강화",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "CG1",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG2",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG3",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "리어델트 머신",
+              "meta": "뒷어깨",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "RD1",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD2",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD3",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 익스텐더",
+              "meta": "L-프로토콜 · 누워서 허벅지를 90°로 잡고 무릎을 천천히 펴기 · 통증 없는 범위까지만 · 매일",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "EX1",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX2",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX3",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "UPPER · OHP",
+          "wd": "상체B",
+          "tag": "상체 · 어깨·등",
+          "color": "#3da5ff",
+          "sections": [
+            {
+              "title": "워밍업 · OHP",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "OHP 워밍업",
+                  "weight": "50",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "OHP",
+              "meta": "메인 프레스 · 폼 유지",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "인클라인 벤치",
+              "meta": "상부 가슴",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "I1",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I2",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I3",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I4",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU4",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "케이블 레터럴",
+              "meta": "어깨 비대",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "LT1",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT2",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT3",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT4",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "EZ 컬",
+              "meta": "이두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "BI1",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI2",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI3",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "오버헤드 익스텐션",
+              "meta": "삼두 장두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "TR1",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR2",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR3",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 익스텐더",
+              "meta": "L-프로토콜 · 누워서 허벅지를 90°로 잡고 무릎을 천천히 펴기 · 통증 없는 범위까지만 · 매일",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "EX1",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX2",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX3",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "REHAB · LOWER",
+          "wd": "회복",
+          "tag": "햄스트링 회복 · 동적",
+          "color": "#00ff88",
+          "sections": [
+            {
+              "title": "브릿지",
+              "meta": "양발 3×12 · 쉬우면 한 발 3×8로 바꾸기",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "BR1",
+                  "name": "브릿지",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "BR2",
+                  "name": "브릿지",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "BR3",
+                  "name": "브릿지",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            },
+            {
+              "title": "슬라이더 레그컬",
+              "meta": "양발 · 수건이나 슬라이더 · 천천히",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "SL1",
+                  "name": "슬라이더 레그컬",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                },
+                {
+                  "label": "SL2",
+                  "name": "슬라이더 레그컬",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                },
+                {
+                  "label": "SL3",
+                  "name": "슬라이더 레그컬",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 익스텐더",
+              "meta": "L-프로토콜 · 누워서 허벅지를 90°로 잡고 무릎을 천천히 펴기 · 통증 없는 범위까지만 · 매일",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "EX1",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX2",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX3",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 다이버",
+              "meta": "L-프로토콜 · 이틀에 한 번 · 한 발 서서 상체 숙이며 팔 뻗기 · 통증 없이",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "DV1",
+                  "name": "아스클링 다이버",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                },
+                {
+                  "label": "DV2",
+                  "name": "아스클링 다이버",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                },
+                {
+                  "label": "DV3",
+                  "name": "아스클링 다이버",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 글라이더",
+              "meta": "L-프로토콜 · 이틀에 한 번 · 손잡이 잡고 미끄러지듯 다리 벌렸다 모으기",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "GL1",
+                  "name": "아스클링 글라이더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "4"
+                },
+                {
+                  "label": "GL2",
+                  "name": "아스클링 글라이더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "4"
+                },
+                {
+                  "label": "GL3",
+                  "name": "아스클링 글라이더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "4"
+                }
+              ]
+            },
+            {
+              "title": "힙힌지 연습",
+              "meta": "막대나 가벼운 케틀벨 · 당김 없는 깊이까지",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "HH1",
+                  "name": "힙힌지 연습",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                },
+                {
+                  "label": "HH2",
+                  "name": "힙힌지 연습",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                },
+                {
+                  "label": "HH3",
+                  "name": "힙힌지 연습",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "10"
+                }
+              ]
+            },
+            {
+              "title": "레그 프레스",
+              "meta": "가볍게 · 발 낮고 좁게(쿼드) · 깊이는 통증 없는 범위까지",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "LP1",
+                  "name": "레그 프레스",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP2",
+                  "name": "레그 프레스",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP3",
+                  "name": "레그 프레스",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "레그 익스텐션",
+              "meta": "쿼드 · 가볍게 · 통증 0 범위",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "L1",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "L2",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "L3",
+                  "name": "레그 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "카프 레이즈",
+              "meta": "종아리 · 시티드나 머신",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "CF1",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF2",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF3",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "수영 (선택)",
+              "meta": "풀부이 끼우고 팔로만 · 평영·접영·벽 세게 차기 금지",
+              "rest": 0,
+              "sets": [
+                {
+                  "label": "SW1",
+                  "name": "수영 (선택)",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "20–30분"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "신장성 · 스쿼트 재도입",
+      "guide": "대략 2~4주차",
+      "goal": "내리는 힘(신장성)을 키우고 스쿼트를 가볍게 다시 붙인다.",
+      "advance": [
+        "일상 통증 0",
+        "한 발 브릿지·한 발 RDL이 좌우 비슷하다",
+        "스쿼트 130kg 4×5가 통증 없이 끝나고 다음 날도 괜찮다",
+        "밴드 노르딕 3×6이 편하다"
+      ],
+      "days": [
+        {
+          "title": "BENCH INTENSITY",
+          "wd": "상체A",
+          "tag": "상체 · 벤치 강도",
+          "color": "#c77dff",
+          "sections": [
+            {
+              "title": "워밍업 · 벤치",
+              "meta": "신경계 자극",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "벤치 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "벤치 워밍업",
+                  "weight": "40",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "벤치 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "W4",
+                  "name": "벤치 워밍업",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "2"
+                },
+                {
+                  "label": "W5",
+                  "name": "벤치 워밍업",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "1"
+                },
+                {
+                  "label": "W6",
+                  "name": "벤치 워밍업",
+                  "weight": "110",
+                  "unit": "kg",
+                  "reps": "1"
+                }
+              ]
+            },
+            {
+              "title": "벤치 탑싱글",
+              "meta": "RPE 8 · 폼 무너지면 STOP",
+              "rest": 240,
+              "sets": [
+                {
+                  "label": "TOP1",
+                  "name": "컴페티션 벤치",
+                  "weight": "120",
+                  "unit": "kg",
+                  "reps": "1"
+                }
+              ]
+            },
+            {
+              "title": "벤치 백오프",
+              "meta": "폭발적으로",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "B1",
+                  "name": "컴페티션 벤치",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B2",
+                  "name": "컴페티션 벤치",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B3",
+                  "name": "컴페티션 벤치",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B4",
+                  "name": "컴페티션 벤치",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "4"
+                }
+              ]
+            },
+            {
+              "title": "클로즈그립 벤치",
+              "meta": "삼두 강화",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "CG1",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG2",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG3",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "AMRAP · 등 마무리",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                }
+              ]
+            },
+            {
+              "title": "리어델트 머신",
+              "meta": "뒷어깨",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "RD1",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD2",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD3",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 익스텐더",
+              "meta": "L-프로토콜 · 누워서 허벅지를 90°로 잡고 무릎을 천천히 펴기 · 통증 없는 범위까지만 · 매일",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "EX1",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX2",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX3",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "UPPER · OHP",
+          "wd": "상체B",
+          "tag": "상체 · 어깨·등",
+          "color": "#3da5ff",
+          "sections": [
+            {
+              "title": "워밍업 · OHP",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "OHP 워밍업",
+                  "weight": "50",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "OHP",
+              "meta": "메인 프레스 · 폼 유지",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "인클라인 벤치",
+              "meta": "상부 가슴",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "I1",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I2",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I3",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I4",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU4",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "케이블 레터럴",
+              "meta": "어깨 비대",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "LT1",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT2",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT3",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT4",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "EZ 컬",
+              "meta": "이두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "BI1",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI2",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI3",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "오버헤드 익스텐션",
+              "meta": "삼두 장두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "TR1",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR2",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR3",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "아스클링 익스텐더",
+              "meta": "L-프로토콜 · 누워서 허벅지를 90°로 잡고 무릎을 천천히 펴기 · 통증 없는 범위까지만 · 매일",
+              "rest": 20,
+              "sets": [
+                {
+                  "label": "EX1",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX2",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                },
+                {
+                  "label": "EX3",
+                  "name": "아스클링 익스텐더",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "SQUAT RETURN",
+          "wd": "하체",
+          "tag": "스쿼트 재도입 · 신장성",
+          "color": "#00ff88",
+          "sections": [
+            {
+              "title": "워밍업 · 스쿼트",
+              "meta": "깊이 정상 · 당김 확인",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "스쿼트 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "스쿼트 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "스쿼트 워밍업",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "로우바 스쿼트",
+              "meta": "RPE 6~7 · 통증 0 범위 · 허벅지 뒤가 당기면 그 세트에서 중단",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "로우바 스쿼트",
+                  "weight": "130",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "M2",
+                  "name": "로우바 스쿼트",
+                  "weight": "130",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "M3",
+                  "name": "로우바 스쿼트",
+                  "weight": "130",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "M4",
+                  "name": "로우바 스쿼트",
+                  "weight": "130",
+                  "unit": "kg",
+                  "reps": "5"
+                }
+              ]
+            },
+            {
+              "title": "덤벨 RDL",
+              "meta": "3초 천천히 내리기 · 무게는 점점",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "DR1",
+                  "name": "덤벨 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "DR2",
+                  "name": "덤벨 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "DR3",
+                  "name": "덤벨 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "한 발 RDL",
+              "meta": "가볍게 · 좌우 비교",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "SR1",
+                  "name": "한 발 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "SR2",
+                  "name": "한 발 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "SR3",
+                  "name": "한 발 RDL",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "슬라이더 레그컬 · 한 발 내리기",
+              "meta": "양발로 올리고 한 발로 천천히 내리기",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "SL1",
+                  "name": "슬라이더 레그컬 · 한 발 내리기",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                },
+                {
+                  "label": "SL2",
+                  "name": "슬라이더 레그컬 · 한 발 내리기",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                },
+                {
+                  "label": "SL3",
+                  "name": "슬라이더 레그컬 · 한 발 내리기",
+                  "weight": "",
+                  "unit": "",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "노르딕컬 · 보조",
+              "meta": "밴드 보조나 짧은 가동범위 · 내리는 동작 천천히",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "NC1",
+                  "name": "노르딕컬",
+                  "weight": "BAND",
+                  "unit": "",
+                  "reps": "4–6"
+                },
+                {
+                  "label": "NC2",
+                  "name": "노르딕컬",
+                  "weight": "BAND",
+                  "unit": "",
+                  "reps": "4–6"
+                },
+                {
+                  "label": "NC3",
+                  "name": "노르딕컬",
+                  "weight": "BAND",
+                  "unit": "",
+                  "reps": "4–6"
+                }
+              ]
+            },
+            {
+              "title": "레그 프레스",
+              "meta": "발 낮고 좁게(쿼드)",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "LP1",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP2",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP3",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "햄스트링 컬",
+              "meta": "시티드 · 가볍게 시작",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "H1",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "H2",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "H3",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "복귀 · 데드 재도입",
+      "guide": "대략 4주차~",
+      "goal": "데드리프트를 50%부터 다시 쌓고 원래 루틴으로 돌아갈 준비를 한다.",
+      "advance": [
+        "노르딕컬을 보조 없이 3×5",
+        "데드리프트 190kg×3이 통증 없고 다음 날도 괜찮다",
+        "스쿼트 탑셋 170kg 이상 통증 없음",
+        "일상·운동 중 통증 0이 2주 이상"
+      ],
+      "days": [
+        {
+          "title": "BENCH INTENSITY",
+          "wd": "상체A",
+          "tag": "상체 · 벤치 강도",
+          "color": "#c77dff",
+          "sections": [
+            {
+              "title": "워밍업 · 벤치",
+              "meta": "신경계 자극",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "벤치 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "벤치 워밍업",
+                  "weight": "40",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "벤치 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "W4",
+                  "name": "벤치 워밍업",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "2"
+                },
+                {
+                  "label": "W5",
+                  "name": "벤치 워밍업",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "1"
+                },
+                {
+                  "label": "W6",
+                  "name": "벤치 워밍업",
+                  "weight": "115",
+                  "unit": "kg",
+                  "reps": "1"
+                }
+              ]
+            },
+            {
+              "title": "벤치 탑싱글",
+              "meta": "RPE 8~9 · 폼 무너지면 STOP",
+              "rest": 240,
+              "sets": [
+                {
+                  "label": "TOP1",
+                  "name": "컴페티션 벤치",
+                  "weight": "125",
+                  "unit": "kg",
+                  "reps": "1"
+                }
+              ]
+            },
+            {
+              "title": "벤치 백오프",
+              "meta": "폭발적으로",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "B1",
+                  "name": "컴페티션 벤치",
+                  "weight": "105",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B2",
+                  "name": "컴페티션 벤치",
+                  "weight": "105",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B3",
+                  "name": "컴페티션 벤치",
+                  "weight": "105",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B4",
+                  "name": "컴페티션 벤치",
+                  "weight": "105",
+                  "unit": "kg",
+                  "reps": "4"
+                },
+                {
+                  "label": "B5",
+                  "name": "컴페티션 벤치",
+                  "weight": "105",
+                  "unit": "kg",
+                  "reps": "4"
+                }
+              ]
+            },
+            {
+              "title": "클로즈그립 벤치",
+              "meta": "삼두 강화",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "CG1",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG2",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG3",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "CG4",
+                  "name": "클로즈그립 벤치",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "바벨 로우",
+              "meta": "복귀 · 상체 각도 유지 · 당기면 체스트 서포티드로",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "BR1",
+                  "name": "바벨 로우",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "BR2",
+                  "name": "바벨 로우",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "BR3",
+                  "name": "바벨 로우",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "BR4",
+                  "name": "바벨 로우",
+                  "weight": "95",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "AMRAP · 등 마무리",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "AMRAP"
+                }
+              ]
+            },
+            {
+              "title": "리어델트 머신",
+              "meta": "뒷어깨",
+              "rest": 45,
+              "sets": [
+                {
+                  "label": "RD1",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD2",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "RD3",
+                  "name": "리어델트 머신",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "UPPER · OHP",
+          "wd": "상체B",
+          "tag": "상체 · 어깨·등",
+          "color": "#3da5ff",
+          "sections": [
+            {
+              "title": "워밍업 · OHP",
+              "meta": "관절 풀기",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "OHP 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "OHP 워밍업",
+                  "weight": "50",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "OHP 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "OHP",
+              "meta": "메인 프레스 · 폼 유지",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M2",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M3",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                },
+                {
+                  "label": "M4",
+                  "name": "OHP",
+                  "weight": "75",
+                  "unit": "kg",
+                  "reps": "6"
+                }
+              ]
+            },
+            {
+              "title": "인클라인 벤치",
+              "meta": "상부 가슴",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "I1",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I2",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I3",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "I4",
+                  "name": "인클라인 벤치",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "풀업",
+              "meta": "컨트롤된 풀 ROM",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "PU1",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU2",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU3",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "PU4",
+                  "name": "풀업",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "체스트 서포티드 로우",
+              "meta": "머신 · 상체를 패드에 대서 허리·햄 부담 없이",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "R1",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R2",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R3",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                },
+                {
+                  "label": "R4",
+                  "name": "체스트 서포티드 로우",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "8–10"
+                }
+              ]
+            },
+            {
+              "title": "케이블 레터럴",
+              "meta": "어깨 비대",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "LT1",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT2",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT3",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LT4",
+                  "name": "케이블 레터럴 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "EZ 컬",
+              "meta": "이두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "BI1",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI2",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "BI3",
+                  "name": "EZ 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            },
+            {
+              "title": "오버헤드 익스텐션",
+              "meta": "삼두 장두",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "TR1",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR2",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "TR3",
+                  "name": "오버헤드 익스텐션",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "SQUAT",
+          "wd": "하체",
+          "tag": "스쿼트 복귀",
+          "color": "#00ff88",
+          "sections": [
+            {
+              "title": "워밍업 · 스쿼트",
+              "meta": "폼 확인 · 힘쓰지 말기",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "스쿼트 워밍업",
+                  "weight": "BAR",
+                  "unit": "kg",
+                  "reps": "10"
+                },
+                {
+                  "label": "W2",
+                  "name": "스쿼트 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W3",
+                  "name": "스쿼트 워밍업",
+                  "weight": "100",
+                  "unit": "kg",
+                  "reps": "3"
+                },
+                {
+                  "label": "W4",
+                  "name": "스쿼트 워밍업",
+                  "weight": "130",
+                  "unit": "kg",
+                  "reps": "2"
+                },
+                {
+                  "label": "W5",
+                  "name": "스쿼트 워밍업",
+                  "weight": "150",
+                  "unit": "kg",
+                  "reps": "1"
+                }
+              ]
+            },
+            {
+              "title": "스쿼트 탑셋",
+              "meta": "RPE 7 · 통증 0일 때만 무게 올리기",
+              "rest": 300,
+              "sets": [
+                {
+                  "label": "TOP1",
+                  "name": "로우바 스쿼트",
+                  "weight": "165",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "스쿼트 백오프",
+              "meta": "바속도 유지",
+              "rest": 240,
+              "sets": [
+                {
+                  "label": "B1",
+                  "name": "로우바 스쿼트",
+                  "weight": "150",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "B2",
+                  "name": "로우바 스쿼트",
+                  "weight": "150",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "B3",
+                  "name": "로우바 스쿼트",
+                  "weight": "150",
+                  "unit": "kg",
+                  "reps": "5"
+                }
+              ]
+            },
+            {
+              "title": "노르딕컬",
+              "meta": "보조 없이 · 3~5초 버티며 내리기",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "NC1",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                },
+                {
+                  "label": "NC2",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                },
+                {
+                  "label": "NC3",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                }
+              ]
+            },
+            {
+              "title": "레그 프레스",
+              "meta": "발 낮고 좁게(쿼드)",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "LP1",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP2",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP3",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "LP4",
+                  "name": "레그 프레스",
+                  "weight": "HEAVY",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            },
+            {
+              "title": "햄스트링 컬",
+              "meta": "시티드",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "H1",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "H2",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                },
+                {
+                  "label": "H3",
+                  "name": "햄스트링 컬",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "10–12"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "DEADLIFT RETURN",
+          "wd": "데드",
+          "tag": "데드 재도입",
+          "color": "#ffdd00",
+          "sections": [
+            {
+              "title": "워밍업 · 데드",
+              "meta": "신경계 자극만",
+              "rest": 90,
+              "sets": [
+                {
+                  "label": "W1",
+                  "name": "데드 워밍업",
+                  "weight": "60",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "W2",
+                  "name": "데드 워밍업",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "3"
+                }
+              ]
+            },
+            {
+              "title": "데드리프트",
+              "meta": "50%에서 시작 · 세션마다 10~20kg씩 · 당기거나 다음 날 아프면 동결",
+              "rest": 180,
+              "sets": [
+                {
+                  "label": "M1",
+                  "name": "데드리프트",
+                  "weight": "110",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "M2",
+                  "name": "데드리프트",
+                  "weight": "110",
+                  "unit": "kg",
+                  "reps": "5"
+                },
+                {
+                  "label": "M3",
+                  "name": "데드리프트",
+                  "weight": "110",
+                  "unit": "kg",
+                  "reps": "5"
+                }
+              ]
+            },
+            {
+              "title": "바벨 RDL",
+              "meta": "3초 내리기 · 가볍게",
+              "rest": 150,
+              "sets": [
+                {
+                  "label": "RL1",
+                  "name": "바벨 RDL",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "RL2",
+                  "name": "바벨 RDL",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                },
+                {
+                  "label": "RL3",
+                  "name": "바벨 RDL",
+                  "weight": "80",
+                  "unit": "kg",
+                  "reps": "8"
+                }
+              ]
+            },
+            {
+              "title": "노르딕컬",
+              "meta": "보조 없이 · 천천히 내리기",
+              "rest": 120,
+              "sets": [
+                {
+                  "label": "NC1",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                },
+                {
+                  "label": "NC2",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                },
+                {
+                  "label": "NC3",
+                  "name": "노르딕컬",
+                  "weight": "BW",
+                  "unit": "",
+                  "reps": "5"
+                }
+              ]
+            },
+            {
+              "title": "카프 레이즈",
+              "meta": "종아리 · 시티드나 머신",
+              "rest": 60,
+              "sets": [
+                {
+                  "label": "CF1",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF2",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                },
+                {
+                  "label": "CF3",
+                  "name": "카프 레이즈",
+                  "weight": "",
+                  "unit": "kg",
+                  "reps": "12–15"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

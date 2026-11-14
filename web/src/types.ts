@@ -21,12 +21,41 @@ export type WorkoutDay = {
   day?: string | null // 'MON' ...
   weekday?: string | null
   chip?: string // 수동 선택용 대체 루틴의 이름표
+  wd?: string // 요일 대신 칩에 보일 짧은 이름 (회복 루틴의 '상체A' 등)
   tag?: string
   color?: string
   sections: WorkoutSection[]
 }
 
 export type Routine = Record<string, WorkoutDay>
+
+// ============ RECOVERY (부상 회복 루틴 — 주간이 아니라 단계로 넘어간다) ============
+
+export type RecoveryPhase = {
+  title: string
+  guide: string // '대략 1~2주차' 같은 시기 안내
+  goal: string
+  advance: string[] // 다음 단계로 넘어가는 기준
+  days: WorkoutDay[] // 단계 안에서는 순서대로 돌아간다
+}
+
+export type RecoveryPlan = {
+  id: string
+  name: string
+  injury: string
+  startedOn: string
+  rules: string[]
+  redFlags: string[]
+  phases: RecoveryPhase[]
+}
+
+export type RecoveryState = {
+  planId: string
+  phase: number // 0부터
+  startedOn: string
+  phaseStartedOn: string
+  ended?: string | null // 회복을 끝낸 날. 있으면 원래 루틴을 쓴다.
+}
 
 // ============ SESSION LOG (날짜 키 운동일지) ============
 
