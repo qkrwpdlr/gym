@@ -1,5 +1,6 @@
 import { formatTime, loadText } from '../storage'
 import type { FlatSet } from '../types'
+import type { ExerciseTimerState } from '../exerciseTimer'
 
 type MiniPlayerFocus = {
   flatSets: FlatSet[]
@@ -10,6 +11,7 @@ type MiniPlayerFocus = {
 
 type MiniPlayerProps = {
   focus: MiniPlayerFocus | null
+  exerciseTimer: ExerciseTimerState | null
   /** 휴식이 끝나면 넘어갈 세트. 이미 한 세트는 건너뛴 기준이다. */
   next?: FlatSet
   /** 지금 몇 번째 세트인지 (끝낸 세트 수 기준) */
@@ -26,7 +28,7 @@ type MiniPlayerProps = {
 
 /// 포커스 모드를 접었을 때 탭바 위에 남는 작은 바.
 /// 세션은 그대로 살아 있고, 탭하면 다시 포커스 모드가 열린다.
-export function MiniPlayer({ focus, next, position, finished, show, alert, onExpand, onSetDone, onSkipRest, onFinish }: MiniPlayerProps) {
+export function MiniPlayer({ focus, exerciseTimer, next, position, finished, show, alert, onExpand, onSetDone, onSkipRest, onFinish }: MiniPlayerProps) {
   const total = focus?.flatSets.length ?? 0
   const current = focus?.flatSets[focus.currentIdx]
   const phase = focus?.phase ?? 'exercise'
@@ -48,6 +50,7 @@ export function MiniPlayer({ focus, next, position, finished, show, alert, onExp
   } else if (current) {
     title = current.set.name
     sub = `${index}/${total}세트 · ${loadText(current.set)}`
+    if (exerciseTimer) sub = `${index}/${total}세트 · ${formatTime(exerciseTimer.remaining)} · ${exerciseTimer.finished ? '시간 완료' : exerciseTimer.endTime !== null ? '진행 중' : exerciseTimer.runId !== null ? '일시정지' : '시작 대기'}`
   }
 
   // 단계에 따라 한 가지 주요 동작만 노출한다. 종료는 포커스 모드가 맡는다.

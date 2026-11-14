@@ -2,6 +2,8 @@ import { DemoButton } from './DemoButton'
 import type { ReactNode } from 'react'
 import { formatRestShort, formatTime, isNumericWeight, repsText } from '../storage'
 import type { FlatSet } from '../types'
+import { parseTimedReps } from '../exerciseTimer'
+import type { ExerciseTimerState } from '../exerciseTimer'
 
 type FocusModeState = {
   flatSets: FlatSet[]
@@ -19,6 +21,9 @@ export type FocusSummary = {
 
 type FocusModeProps = {
   focus: FocusModeState | null
+  exerciseTimer: ExerciseTimerState | null
+  onToggleExerciseTimer: () => void
+  onResetExerciseTimer: (seconds?: number) => void
   /** 이 세트(휴식) 다음에 실제로 넘어갈 세트. 이미 한 세트는 건너뛴 기준이고, 없으면 마지막 세트다. */
   next?: FlatSet
   /** 지금 몇 번째 세트인지 (끝낸 세트 수 기준) */
@@ -38,6 +43,9 @@ type FocusModeProps = {
 
 export function FocusMode({
   focus,
+  exerciseTimer,
+  onToggleExerciseTimer,
+  onResetExerciseTimer,
   next,
   position,
   alert,
@@ -85,6 +93,9 @@ export function FocusMode({
         {focus?.phase === 'exercise' && current ? (
           <FocusExercise
             current={current}
+            exerciseTimer={exerciseTimer}
+            onToggleTimer={onToggleExerciseTimer}
+            onResetTimer={onResetExerciseTimer}
             next={next}
             onNext={onNext}
             onAlt={() => onAlt(current)}
@@ -106,11 +117,17 @@ export function FocusMode({
 
 function FocusExercise({
   current,
+  exerciseTimer,
+  onToggleTimer,
+  onResetTimer,
   next,
   onNext,
   onAlt,
 }: {
   current: FlatSet
+  exerciseTimer: ExerciseTimerState | null
+  onToggleTimer: () => void
+  onResetTimer: (seconds?: number) => void
   next?: FlatSet
   onNext: () => void
   onAlt: () => void
@@ -126,7 +143,9 @@ function FocusExercise({
       <div className="focus-label">{set.label}</div>
       <div className="focus-exercise demo-title-row"><span>{set.name}</span><DemoButton name={set.name} /></div>
       {section.meta ? <div className="focus-cue">{section.meta}</div> : null}
-      {hasWeight ? (
+      {exerciseTimer ? (
+        <ExerciseCountdown timer={exerciseTimer} reps={set.reps} weight={hasWeight ? `${set.weight}${set.unit}` : ''} onToggle={onToggleTimer} onReset={onResetTimer} />
+      ) : hasWeight ? (
         <>
           <div className="focus-weight">{set.weight}</div>
           <div className="focus-unit">{isNumericWeight(set.weight) && set.unit ? set.unit : ' '}</div>
@@ -151,6 +170,41 @@ function FocusExercise({
           <span className="focus-btn-sub">{after}</span>
         </button>
       </FocusBottom>
+    </div>
+  )
+}
+
+function ExerciseCountdown({ timer, reps, weight, onToggle, onReset }: {
+  timer: ExerciseTimerState
+  reps: string
+  weight: string
+  onToggle: () => void
+  onReset: (seconds?: number) => void
+}) {
+  const running = timer.endTime !== null
+  const paused = timer.runId !== null && !running && !timer.finished
+  const status = timer.finished ? '시간 완료 · 완료를 누르면 다음으로 넘어가요' : running ? '진행 중' : paused ? '일시정지' : '준비 · 시작 버튼을 눌러 주세요'
+  const label = running ? '일시정지' : timer.finished ? '다시 시작' : paused ? '이어서 시작' : '타이머 시작'
+  const prescription = parseTimedReps(reps)
+  const durations = prescription && prescription.min !== prescription.max
+    ? [...new Set([prescription.min, Math.round((prescription.min + prescription.max) / 2), prescription.max])]
+    : []
+  return (
+    <div className="focus-time-panel">
+      <div className="focus-time-target">목표 {reps}{weight ? ` · ${weight}` : ''}</div>
+      <div className={`focus-exercise-timer ${timer.finished ? 'finished' : ''}`} role="timer" aria-label="남은 운동 시간">{formatTime(timer.remaining)}</div>
+      <div className="focus-time-status" role="status">{status}</div>
+      {durations.length ? (
+        <label className="focus-time-choice">목표 시간
+          <select aria-label="목표 운동 시간" value={timer.total} disabled={running} onChange={(e) => onReset(Number(e.target.value))}>
+            {durations.map((seconds) => <option key={seconds} value={seconds}>{formatTime(seconds)}</option>)}
+          </select>
+        </label>
+      ) : null}
+      <div className="focus-time-controls">
+        <button type="button" className="focus-time-start" onClick={onToggle}>{label}</button>
+        <button type="button" onClick={() => onReset()} aria-label="운동 타이머 처음부터">처음부터</button>
+      </div>
     </div>
   )
 }

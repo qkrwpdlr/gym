@@ -2,6 +2,9 @@ import { DemoContext, exerciseDemo } from './demos'
 import type { ExerciseDemo } from './demos'
 import { DemoButton } from './components/DemoButton'
 import { DemoSheet } from './components/DemoSheet'
+import { parseTimedReps } from './exerciseTimer'
+import type { ExerciseTimerState } from './exerciseTimer'
+import { useExerciseTimer } from './useExerciseTimer'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { ConfirmDialog } from './components/ConfirmDialog'
@@ -296,6 +299,19 @@ function App() {
   const vibrate = useCallback((pattern: number | number[]) => {
     if (navigator.vibrate) navigator.vibrate(pattern)
   }, [])
+
+  const timedSet = focus?.phase === 'exercise' ? focus.flatSets[focus.currentIdx] : undefined
+  const timePrescription = parseTimedReps(timedSet?.set.reps || '')
+  const onExerciseTimeDone = useCallback(() => {
+    playBeepSequence()
+    vibrate([200, 100, 400])
+  }, [playBeepSequence, vibrate])
+  const { timer: exerciseTimer, toggle: toggleExerciseTimer, reset: resetExerciseTimer, clear: clearExerciseTimer, restore: restoreExerciseTimer } = useExerciseTimer(
+    timedSet && focus && timePrescription
+      ? { key: JSON.stringify([focus.slot, timedSet.sIdx, timedSet.setIdx, timedSet.set.reps]), prescription: timePrescription }
+      : null,
+    onExerciseTimeDone,
+  )
 
   /// 휴식이 끝난 시점에 웹 알림을 띄운다.
   const notifyRestDone = useCallback((visibleOnly: boolean) => {
@@ -663,13 +679,14 @@ function App() {
         return !(en && (en.done || en.skipped))
       })
       if (startIdx === -1) startIdx = 0
+      clearExerciseTimer()
       setFocus({ slot, flatSets, currentIdx: startIdx, phase: 'exercise' })
       setFocusCollapsed(false)
       void ensurePermissions()
       const ctx = getAudioCtx()
       if (ctx && ctx.state === 'suspended') void ctx.resume()
     },
-    [ensurePermissions, getAudioCtx],
+    [ensurePermissions, getAudioCtx, clearExerciseTimer],
   )
 
   /// 오늘 탭의 시작 버튼 — 같은 day 세션이 이미 돌고 있으면 새로 시작하지 않고 펼친다.
@@ -684,11 +701,12 @@ function App() {
 
   const exitFocusMode = useCallback(() => {
     stopFocusTimer()
+    clearExerciseTimer()
     setFocus(null)
     setFocusAlert(false)
     setFocusCollapsed(false)
     bump()
-  }, [bump, stopFocusTimer])
+  }, [bump, stopFocusTimer, clearExerciseTimer])
 
   /// 오늘 기록 초기화 — 진행 중이던 세션도 함께 끝낸다.
   /// 기록만 지우면 미니 바와 '지금' 표시가 지워진 기록을 가리킨 채 남는다.
@@ -815,23 +833,33 @@ function App() {
     return () => window.clearInterval(timerId)
   }, [focusPhase, focusRestEndTime, focusRestDone, playBeep])
 
-  // 페이지가 다시 로드돼도 진행 중이던 휴식은 이어간다.
+  // 페이지가 다시 로드돼도 휴식과 수동 시작한 운동 타이머를 이어간다.
   // 저장 효과보다 먼저 선언해야 첫 렌더에서 키가 지워지기 전에 읽는다.
   useEffect(() => {
     const restoreSession = () => {
       if (focusRef.current) return
       const data = JSON.parse(localStorage.getItem(TIMER_KEY) || 'null') as
-        | { mode?: string; slot?: number; sIdx?: number; setIdx?: number; phase?: string; restEndTime?: number }
+        | { mode?: string; slot?: number; sIdx?: number; setIdx?: number; phase?: string; restEndTime?: number; exerciseTimer?: ExerciseTimerState }
         | null
       if (!data || data.mode !== 'session') {
         if (data) localStorage.removeItem(TIMER_KEY)
         return
       }
       const endTime = data.restEndTime ?? 0
-      if (data.phase !== 'rest' || endTime <= Date.now() || typeof data.slot !== 'number') return
+      if (typeof data.slot !== 'number') return
       const flatSets = buildFlatSets(dayFor(data.slot))
       const at = flatSets.findIndex((f) => f.sIdx === data.sIdx && f.setIdx === data.setIdx)
       if (at < 0) return
+      if (data.phase === 'exercise' && data.exerciseTimer) {
+        const current = flatSets[at]
+        const key = JSON.stringify([data.slot, current.sIdx, current.setIdx, current.set.reps])
+        if (!parseTimedReps(current.set.reps) || data.exerciseTimer.key !== key) return
+        restoreExerciseTimer(data.exerciseTimer)
+        setFocus({ slot: data.slot, flatSets, currentIdx: at, phase: 'exercise' })
+        setFocusCollapsed(true)
+        return
+      }
+      if (data.phase !== 'rest' || endTime <= Date.now()) return
       setFocus({
         slot: data.slot,
         flatSets,
@@ -849,9 +877,9 @@ function App() {
     }
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => document.removeEventListener('visibilitychange', onVisibilityChange)
-  }, [])
+  }, [restoreExerciseTimer])
 
-  // 세션 스냅샷 저장 — 현재 세트 위치와 휴식 종료 시각만 남긴다.
+  // 운동 타이머는 준비/일시정지도 저장하고, 진행 중이면 종료 시각으로 복구한다.
   useEffect(() => {
     if (!focus) {
       localStorage.removeItem(TIMER_KEY)
@@ -867,9 +895,10 @@ function App() {
         setIdx: cur ? cur.setIdx : null,
         phase: focus.phase,
         restEndTime: focus.restEndTime ?? 0,
+        exerciseTimer,
       }),
     )
-  }, [focus])
+  }, [focus, exerciseTimer])
 
   // 탭 이동이나 뒤로 가기로 화면이 바뀌면 포커스 모드를 종료하지 않고 접는다.
   // 운동 세션은 미니 바로 남아 계속 이어진다.
@@ -1115,6 +1144,7 @@ function App() {
       <div className="bottom-stack">
         <MiniPlayer
           focus={focus}
+          exerciseTimer={exerciseTimer}
           next={focusNext}
           position={focusPos}
           finished={focusDone}
@@ -1138,6 +1168,9 @@ function App() {
       />
       <FocusMode
         focus={focus}
+        exerciseTimer={exerciseTimer}
+        onToggleExerciseTimer={toggleExerciseTimer}
+        onResetExerciseTimer={resetExerciseTimer}
         next={focusNext}
         position={focusPos}
         alert={focusAlert}
