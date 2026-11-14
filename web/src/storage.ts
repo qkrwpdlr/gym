@@ -5,18 +5,13 @@
 import routineData from './routine.json'
 import type {
   FlatSet,
-  Op,
   Override,
   Program,
-  Proposal,
   Routine,
-  ServerEnvelope,
   SessionLog,
   SetEntry,
-  WireMessage,
   WorkoutDay,
   WorkoutSection,
-  WorkoutSet,
 } from './types'
 
 // ============ CONSTANTS ============
@@ -27,23 +22,15 @@ export const DEFAULT_ACCENT = '#ff2d2d'
 export const PROGRAM_KEY = V4 + 'program'
 export const PROGRAM_ARCHIVE_KEY = V4 + 'program-archive'
 
-// 코치 서버는 우리 서버 하나다. 주소와 앱 토큰은 빌드할 때 WebApp/.env.local에서 넣는다.
-// 앱에 실리는 값이라 비밀이 아니다 — 사용자 구분과 한도는 서버가 계정 단위로 맡는다.
-export const SERVER_URL = (import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/, '')
-export const API_TOKEN = import.meta.env.VITE_API_TOKEN || ''
-export const LOGIN_SKIP_KEY = V4 + 'login-skipped'
 export const MIGRATED_KEY = V4 + 'migrated'
-// 예전 설정 탭에서 직접 넣던 서버 주소·토큰. 지금은 쓰지 않지만 남아 있는 기기가 있을 수 있다.
-export const LEGACY_SERVER_URL_KEY = V4 + 'server-url'
-export const LEGACY_API_TOKEN_KEY = V4 + 'api-token'
+// 지금은 없어진 기능(코치 서버 설정, iOS 로그인, AI 전송 동의)이 남긴 키. 앱이 뜰 때 지운다.
+const LEGACY_KEYS = ['server-url', 'api-token', 'login-skipped', 'ai-consent'].map((k) => V4 + k)
 // 이 기기에서만 의미가 있거나 민감한 키. 내보내기에 넣지 않고, 파일에 있어도 가져오지 않는다.
 // 타이머는 이 기기에서 돌던 세션 시각이라 다른 기기로 옮기면 엉뚱한 휴식 알림이 뜬다.
 export const DEVICE_ONLY_KEYS: ReadonlySet<string> = new Set([
   TIMER_KEY,
-  LOGIN_SKIP_KEY,
   MIGRATED_KEY,
-  LEGACY_SERVER_URL_KEY,
-  LEGACY_API_TOKEN_KEY,
+  ...LEGACY_KEYS,
 ])
 export const RPE_VALUES = [6, 7, 7.5, 8, 8.5, 9, 9.5, 10]
 
@@ -53,9 +40,7 @@ const days = Object.keys(ROUTINE) // ['day1', ..., 'dayN'] — slot N = days[N-1
 // ============ MIGRATION (v3 → v4) ============
 // 기존 체크 상태는 날짜 정보가 없는 휘발성 데이터라 승계하지 않고 폐기한다.
 export function migrateV3() {
-  // 예전 설정 탭에서 직접 넣던 서버 주소·토큰. 이제 빌드에 들어가므로 지운다 (내보내기에 섞이지 않게).
-  localStorage.removeItem(LEGACY_SERVER_URL_KEY)
-  localStorage.removeItem(LEGACY_API_TOKEN_KEY)
+  LEGACY_KEYS.forEach((k) => localStorage.removeItem(k))
   if (localStorage.getItem(MIGRATED_KEY)) return
   try {
     days.forEach((d) => localStorage.removeItem('gym-v3-' + d + '-checks'))
@@ -266,10 +251,6 @@ export function ensureTodayLog(slot: number): SessionLog | null {
 
 export function getEntry(log: SessionLog | null, s: number, i: number): SetEntry | null {
   return (log && log.sets.find((en) => en.s === s && en.i === i)) || null
-}
-
-export function hasDoneSetInSection(log: SessionLog | null, s: number): boolean {
-  return !!log && log.sets.some((en) => en.s === s && en.done)
 }
 
 export type SetPatchInput = Partial<Pick<SetEntry, 'done' | 'skipped' | 'actualW' | 'actualR' | 'rpe'>>
@@ -651,13 +632,6 @@ export function validateProgram(p: Program | null | undefined): string | null {
   return null
 }
 
-export function nextMonday(): string {
-  const d = new Date()
-  const add = (8 - d.getDay()) % 7 || 7
-  d.setDate(d.getDate() + add)
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
-}
-
 // 적용: 기존 블록은 아카이브로, 새 블록 활성화. 시작일은 사용자가 카드에서 고른다.
 export function applyProgram(program: Program, start: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(start.trim())) return false
@@ -693,72 +667,6 @@ export function todayOverrideFor(slot: number): Override | null {
   return o && !o.revoked && o.daySlot === slot ? o : null
 }
 
-// ops를 스냅샷 day에 1회 적용해 유효 day 생성. 잘못된 인덱스 op는 관용적으로 무시.
-export function applyOps(day: WorkoutDay, ops: Op[]): { day: WorkoutDay; changes: string[] } {
-  const d: WorkoutDay = JSON.parse(JSON.stringify(day))
-  const changes: string[] = []
-  ops
-    .filter((o): o is Extract<Op, { op: 'update_set' }> => o.op === 'update_set')
-    .forEach((o) => {
-      const sec = d.sections[o.s]
-      const set = sec && sec.sets[o.i]
-      if (!set || !o.patch) return
-      const before = (set.weight || set.name) + '×' + set.reps
-      if (o.patch.weight !== undefined) set.weight = String(o.patch.weight)
-      if (o.patch.reps !== undefined) set.reps = String(o.patch.reps)
-      set._changed = true
-      changes.push(set.label + ' ' + before + ' → ' + (set.weight || set.name) + '×' + set.reps)
-    })
-  ops
-    .filter((o): o is Extract<Op, { op: 'update_section' }> => o.op === 'update_section')
-    .forEach((o) => {
-      const sec = d.sections[o.s]
-      if (!sec || !o.patch) return
-      if (Number.isInteger(o.patch.rest)) {
-        sec.rest = o.patch.rest as number
-        changes.push(sec.title + ' 휴식 ' + formatRestShort(sec.rest))
-      }
-      if (typeof o.patch.meta === 'string') sec.meta = o.patch.meta
-    })
-  ops
-    .filter((o): o is Extract<Op, { op: 'remove_set' | 'add_set' }> => o.op === 'remove_set' || o.op === 'add_set')
-    .sort((a, b) => b.s - a.s || ((b as { i?: number; after?: number }).i ?? (b as { after?: number }).after ?? 0) - ((a as { i?: number; after?: number }).i ?? (a as { after?: number }).after ?? 0))
-    .forEach((o) => {
-      const sec = d.sections[o.s]
-      if (!sec) return
-      if (o.op === 'remove_set') {
-        const rm = sec.sets[o.i]
-        if (!rm) return
-        sec.sets.splice(o.i, 1)
-        changes.push('− ' + rm.name + ' ' + rm.label + ' 빼기')
-      } else if (o.set && o.set.name) {
-        const ns: WorkoutSet = Object.assign({ label: '+', weight: '', unit: 'kg', reps: '' }, o.set, { _changed: true })
-        const at = Math.min(Math.max((o.after ?? sec.sets.length - 1) + 1, 0), sec.sets.length)
-        sec.sets.splice(at, 0, ns)
-        changes.push('+ ' + ns.name + ' ' + (ns.weight ? ns.weight + '×' : '') + ns.reps + ' 추가')
-      }
-    })
-  ops
-    .filter((o): o is Extract<Op, { op: 'remove_section' | 'add_section' }> => o.op === 'remove_section' || o.op === 'add_section')
-    .sort((a, b) => ((b as { s?: number; after?: number }).s ?? (b as { after?: number }).after ?? 0) - ((a as { s?: number; after?: number }).s ?? (a as { after?: number }).after ?? 0))
-    .forEach((o) => {
-      if (o.op === 'remove_section') {
-        const rs = d.sections[o.s]
-        if (!rs) return
-        d.sections.splice(o.s, 1)
-        changes.push('− ' + rs.title + ' 빼기')
-      } else if (o.section && o.section.title && Array.isArray(o.section.sets)) {
-        const nsec: WorkoutSection = Object.assign({ meta: '', rest: 90 }, o.section) as WorkoutSection
-        nsec.sets = nsec.sets.map((s) => Object.assign({ label: '+', weight: '', unit: 'kg', reps: '' }, s, { _changed: true }))
-        const at = Math.min(Math.max((o.after ?? d.sections.length - 1) + 1, 0), d.sections.length)
-        d.sections.splice(at, 0, nsec)
-        changes.push('+ ' + nsec.title + ' 추가')
-      }
-    })
-  d.sections = d.sections.filter((sec) => sec.sets.length)
-  return { day: d, changes }
-}
-
 // 진행 중 세션 로그의 s/i를 새 유효 day에 리매핑 (섹션제목+이름+라벨 매칭)
 export function remapLogToDay(log: SessionLog, day: WorkoutDay) {
   const map: Record<string, { s: number; i: number }> = {}
@@ -780,58 +688,6 @@ export function remapLogToDay(log: SessionLog, day: WorkoutDay) {
   log.totalSets = countTotalSets(day)
 }
 
-export function validateProposal(slot: number, proposal: Proposal | null | undefined): string | null {
-  if (!proposal || !Array.isArray(proposal.ops) || !proposal.ops.length) return '수정 항목이 비어 있음'
-  const day = dayFor(slot)
-  const log = todayLogFor(slot)
-  for (const o of proposal.ops) {
-    if (o.op === 'update_set' || o.op === 'remove_set') {
-      const sec = day.sections[o.s]
-      if (!sec || !sec.sets[o.i]) return '존재하지 않는 세트 (s' + o.s + ',i' + o.i + ')'
-      const en = getEntry(log, o.s, o.i)
-      if (en && en.done) return '이미 완료한 세트를 수정하려 함'
-    } else if (o.op === 'add_set') {
-      if (!day.sections[o.s] || !o.set || !o.set.name) return 'add_set 형식 오류'
-    } else if (o.op === 'update_section') {
-      if (!day.sections[o.s]) return '존재하지 않는 섹션 (s' + o.s + ')'
-    } else if (o.op === 'remove_section') {
-      if (!day.sections[o.s]) return '존재하지 않는 섹션 (s' + o.s + ')'
-      if (hasDoneSetInSection(log, o.s)) return '이미 완료한 세트가 있는 섹션을 삭제하려 함'
-    } else if (o.op === 'add_section') {
-      if (!o.section || !o.section.title || !Array.isArray(o.section.sets) || !o.section.sets.length) return 'add_section 형식 오류'
-    } else {
-      return '알 수 없는 op: ' + (o as { op: string }).op
-    }
-  }
-  return null
-}
-
-// 제안 수락 → 현재 유효 day 위에 ops 적용(누적), 오버라이드 저장, 진행 중 세션 리매핑
-export function applyProposal(slot: number, proposal: Proposal): Override {
-  const { day, changes } = applyOps(dayFor(slot), proposal.ops || [])
-  const prev = loadOverride(todayStr())
-  const keepPrev = !!(prev && !prev.revoked && prev.daySlot === slot)
-  const ovr: Override = {
-    schemaVersion: 1,
-    date: todayStr(),
-    daySlot: slot,
-    effectiveDay: day,
-    summary: proposal.summary || '',
-    reason: (keepPrev && prev!.reason ? prev!.reason + ' / ' : '') + (proposal.reason || ''),
-    changes: (keepPrev ? prev!.changes : []).concat(changes),
-    appliedAt: new Date().toISOString(),
-    revoked: false,
-  }
-  lsSet(overrideKey(ovr.date), ovr)
-  const log = todayLogFor(slot)
-  if (log) {
-    remapLogToDay(log, day)
-    log.adjusted = ovr.changes.join(', ').slice(0, 300)
-    saveLog(log, false)
-  }
-  return ovr
-}
-
 export function revertOverride(slot: number) {
   const o = loadOverride(todayStr())
   if (!o || o.daySlot !== slot) return
@@ -845,7 +701,7 @@ export function revertOverride(slot: number) {
   }
 }
 
-// ============ HISTORY SUMMARY (LLM 컨텍스트 — 순수 로컬 계산) ============
+// ============ LIFT KEY ============
 const LIFT_MAP = [
   { key: 'SQ', re: /스쿼트|squat/i },
   { key: 'BP', re: /벤치|bench/i },
@@ -855,249 +711,6 @@ const LIFT_MAP = [
 
 function liftKey(name: string): string | null {
   return LIFT_MAP.find((m) => m.re.test(name))?.key ?? null
-}
-
-export function buildHistorySummary(maxSessions = 12): string {
-  const index = lsGet<string[]>(LOG_INDEX_KEY, [])
-  const dates = index.slice(-maxSessions)
-  if (!dates.length) return '아직 운동 기록 없음.'
-  const logs = dates.map(loadLogByDate).filter(Boolean) as SessionLog[]
-  const lifts: Record<string, { date: string; w: number; r: number; rpe: number | null; e: number }[]> = {}
-  const rates: number[] = []
-  logs.forEach((l) => {
-    if (l.totalSets) rates.push(Math.round((logDoneCount(l) / l.totalSets) * 100))
-    l.sets.forEach((en) => {
-      if (!en.done) return
-      const lift = LIFT_MAP.find((m) => m.re.test(en.name))
-      if (!lift) return
-      const w = parseNum(en.actualW ?? en.targetW)
-      const r = parseNum(en.actualR ?? en.targetR)
-      if (!w || !r) return
-      ;(lifts[lift.key] = lifts[lift.key] || []).push({ date: l.date, w, r, rpe: en.rpe, e: w * (1 + r / 30) })
-    })
-  })
-  const lines = ['== 최근 ' + logs.length + '세션 요약 (' + dates[0] + '~' + dates[dates.length - 1] + ') ==']
-  Object.keys(lifts).forEach((k) => {
-    const arr = lifts[k]
-    const best = arr.reduce((a, b) => (b.e > a.e ? b : a))
-    const half = Math.floor(arr.length / 2)
-    let trend = '→'
-    if (half > 0) {
-      const om = Math.max(...arr.slice(0, half).map((x) => x.e))
-      const nm = Math.max(...arr.slice(half).map((x) => x.e))
-      trend = nm > om + 1 ? '↑' : nm < om - 1 ? '↓' : '→'
-    }
-    const top = arr[arr.length - 1]
-    lines.push(
-      k +
-        ': e1RM ' +
-        Math.round(best.e) +
-        'kg (' +
-        trend +
-        '). 최근탑 ' +
-        top.date.slice(5) +
-        ' ' +
-        top.w +
-        '×' +
-        top.r +
-        (top.rpe ? '@RPE' + top.rpe : ''),
-    )
-  })
-  if (rates.length) lines.push('수행률: 평균 ' + Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) + '%')
-  const notes = logs
-    .filter((l) => l.note || l.adjusted)
-    .slice(-3)
-    .map((l) => l.date.slice(5) + ' "' + (l.note || '') + '"' + (l.adjusted ? ' (조정: ' + l.adjusted + ')' : ''))
-  if (notes.length) lines.push('메모: ' + notes.join(' / '))
-  return lines.join('\n')
-}
-
-// ============ GYMBRO CHAT CONTEXT ============
-
-/// 한도 초과 오류 — 페이월 안내에 필요한 정보를 함께 들고 온다.
-export type QuotaError = Error & { quota?: boolean; loginRequired?: boolean; tier?: string; limit?: number; window?: string }
-
-// 계정 헤더 주입은 subscription 모듈이 담당한다. 순환 의존을 피하려고 주입식으로 둔다.
-let chatAuthHeaders: () => Record<string, string> = () => ({
-  Authorization: 'Bearer ' + API_TOKEN,
-})
-
-export function setChatAuthHeaders(fn: () => Record<string, string>) {
-  chatAuthHeaders = fn
-}
-
-export function chatConfigured(): boolean {
-  return !!(SERVER_URL && API_TOKEN)
-}
-
-export function buildDailyContext(slot: number, focusPos?: { s: number; i: number } | null): string {
-  const day = dayFor(slot)
-  const log = todayLogFor(slot)
-  const compact = {
-    sections: day.sections.map((sec, s) => ({
-      s,
-      title: sec.title,
-      rest: sec.rest,
-      sets: sec.sets.map((set, i) => {
-        const en = getEntry(log, s, i)
-        const o: Record<string, unknown> = { i, label: set.label, name: set.name, w: set.weight || '', r: set.reps || '' }
-        if (en && en.done) {
-          o.done = true
-          if (en.actualW !== en.targetW || en.actualR !== en.targetR) o.act = { w: en.actualW, r: en.actualR }
-        }
-        if (en && en.skipped) o.skip = true
-        return o
-      }),
-    })),
-  }
-  let posLine = ''
-  if (focusPos) {
-    const sec = day.sections[focusPos.s]
-    const st = sec?.sets[focusPos.i]
-    if (sec && st) {
-      posLine =
-        '\n== 지금 진행 중 (사용자가 이 세트에서 챗을 열었다) ==\ns' +
-        focusPos.s +
-        ' i' +
-        focusPos.i +
-        ' — ' +
-        sec.title +
-        ' / ' +
-        (st.label ? st.label + ' ' : '') +
-        st.name +
-        ' (목표 ' +
-        (st.weight ? weightText(st) : '?') +
-        ' × ' +
-        (st.reps || '?') +
-        ')'
-    }
-  }
-  const p = activeProgram()
-  return (
-    '<CONTEXT>\n오늘: ' +
-    todayStr() +
-    ' / D' +
-    slot +
-    ' ' +
-    day.title +
-    (p ? ' / 블록 "' + p.name + '" WEEK ' + currentWeek(p) + '/' + p.weeks : '') +
-    '\n== 오늘 루틴 (s=섹션 인덱스, i=세트 인덱스, done=완료, act=실측, skip=스킵) ==\n' +
-    JSON.stringify(compact) +
-    posLine +
-    '\n== 최근 기록 요약 ==\n' +
-    buildHistorySummary() +
-    '\n</CONTEXT>'
-  )
-}
-
-// 'D6 허리 세이버(대체)' — 코치가 대체 루틴을 주간 분할의 한 날로 오해하지 않게 표시한다.
-const dayLine = (d: WorkoutDay, i: number) => 'D' + (i + 1) + ' ' + d.title + (d.chip ? '(대체)' : '')
-
-export function buildBuilderContext(): string {
-  const p = activeProgram()
-  const defs = dayDefs()
-  const current = p
-    ? '블록 "' +
-      p.name +
-      '" (' +
-      p.weeks +
-      '주 · ' +
-      frequencyText(p.days) +
-      ', WEEK ' +
-      currentWeek(p) +
-      ') — ' +
-      p.days.map(dayLine).join(', ')
-    : '기본 루틴 (' + frequencyText(defs) + ') — ' + defs.map(dayLine).join(', ')
-  return '<CONTEXT>\n오늘: ' + todayStr() + '\n== 현재 루틴 ==\n' + current + '\n== 최근 기록 요약 ==\n' + buildHistorySummary() + '\n</CONTEXT>'
-}
-
-export type ServerMode = 'daily_adjust' | 'program_intake' | 'program_generate'
-
-// 서버(validateBody)가 받는 대화 상한. 넘으면 400으로 거부해 그 대화를 더 이어갈 수 없게 된다.
-const WIRE_MAX_MESSAGES = 40
-const WIRE_MAX_CHARS: Record<ServerMode, number> = { daily_adjust: 12000, program_intake: 12000, program_generate: 40000 }
-
-/// 오래 이어진 대화도 계속 보낼 수 있게, 상한을 넘으면 오래된 주고받기부터 한 쌍씩 덜어 낸다.
-/// keepFirst면 첫 메시지(블록 상담은 여기에 루틴·기록 컨텍스트를 실어 둔다)를 남긴다.
-/// 대화는 user/assistant가 번갈아 쌓이므로 두 개씩 덜어야 순서가 어긋나지 않는다. 지금 보내는 마지막 메시지는 늘 남는다.
-export function trimWire(messages: WireMessage[], mode: ServerMode, keepFirst: boolean): WireMessage[] {
-  const cap = WIRE_MAX_CHARS[mode]
-  const chars = (ms: WireMessage[]) => ms.reduce((acc, m) => acc + m.content.length, 0)
-  const head = keepFirst && messages.length > 1 ? messages.slice(0, 1) : []
-  let tail = messages.slice(head.length)
-  const over = () => head.length + tail.length > WIRE_MAX_MESSAGES || chars(head) + chars(tail) > cap
-  while (tail.length > 2 && over()) tail = tail.slice(2)
-  return head.concat(tail)
-}
-
-export async function callServer(mode: ServerMode, messages: WireMessage[]): Promise<ServerEnvelope> {
-  const base = SERVER_URL
-  const ctrl = new AbortController()
-  // 서버는 DeepSeek를 재시도까지 합쳐 최대 60초(블록 생성은 170초) 기다린다. 앱이 먼저 끊으면 서버는 끝까지 답을 받아
-  // 한도를 쓰는데 사용자는 '오래 걸린다'는 오류만 본다. 서버 대기보다 조금 길게 둔다.
-  const tmo = setTimeout(() => ctrl.abort(), mode === 'program_generate' ? 180000 : 65000)
-  let resp: Response
-  try {
-    resp = await fetch(base + '/v1/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...chatAuthHeaders(),
-      },
-      body: JSON.stringify({ mode, messages }),
-      signal: ctrl.signal,
-    })
-  } catch (e) {
-    throw new Error(
-      (e as Error).name === 'AbortError'
-        ? '응답이 너무 오래 걸려요. 잠시 후 다시 시도해 주세요.'
-        : '네트워크에 연결할 수 없어요. 연결 상태를 확인해 주세요.',
-      { cause: e },
-    )
-  } finally {
-    clearTimeout(tmo)
-  }
-  if (!resp.ok) {
-    // 한도 초과는 페이월로 안내해야 하므로 다른 오류와 구분해서 던진다.
-    if (resp.status === 429) {
-      const detail = (await resp.json().catch(() => ({}))) as {
-        error?: string
-        tier?: string
-        limit?: number
-        window?: string
-      }
-      const err = new Error(
-        detail.error === 'quota_exceeded'
-          ? `${detail.window === 'month' ? '이번 달' : '오늘'} 사용 한도를 모두 썼어요.`
-          : '요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.',
-      ) as QuotaError
-      err.quota = detail.error === 'quota_exceeded'
-      err.tier = detail.tier
-      err.limit = detail.limit
-      err.window = detail.window
-      throw err
-    }
-    if (resp.status === 401) {
-      const detail = (await resp.json().catch(() => ({}))) as { error?: string }
-      if (detail.error === 'login_required') {
-        const err = new Error('코치는 로그인 후 쓸 수 있어요.') as QuotaError
-        err.loginRequired = true
-        throw err
-      }
-      throw new Error('서버 인증에 실패했어요. 앱을 최신 버전으로 업데이트해 주세요.')
-    }
-    const msg = resp.status === 403 ? '서버가 이 요청을 거부했어요.' : `서버에 문제가 생겼어요. (${resp.status})`
-    throw new Error(msg)
-  }
-  const data = await resp.json()
-  let env: { message?: unknown; proposal?: Proposal; program?: Program }
-  try {
-    env = JSON.parse(data.content)
-  } catch {
-    throw new Error('답변을 읽지 못했어요. 다시 시도해 주세요.')
-  }
-  if (typeof env.message !== 'string') throw new Error('답변을 읽지 못했어요. 다시 시도해 주세요.')
-  return { message: env.message, proposal: env.proposal || null, program: env.program || null, raw: data.content }
 }
 
 // ============ ROUTER ============
@@ -1145,17 +758,11 @@ export function navigate(hash: string) {
 }
 
 // ============ EXPORT DATA ============
-type ShareNative = {
-  shareFile?: (file: { filename: string; content: string; mimeType: string }) => Promise<{ completed?: boolean }>
-}
-
-/// 'saved' 는 공유 시트에서 저장·전송을 마쳤거나 브라우저 다운로드를 시작했다는 뜻,
-/// 'cancelled' 는 공유 시트를 그냥 닫았다는 뜻이다. 네이티브 오류는 그대로 던진다.
-export async function exportData(): Promise<'saved' | 'cancelled'> {
+/// 브라우저 다운로드로 기록 파일을 저장한다.
+export async function exportData(): Promise<'saved'> {
   const data: Record<string, unknown> = {}
   for (let k = 0; k < localStorage.length; k++) {
     const key = localStorage.key(k)
-    // migrateV3 가 예전 토큰을 지우지만, 지우기 전에 내보내는 경우까지 한 번 더 막는다.
     if (key && key.startsWith(V4) && !DEVICE_ONLY_KEYS.has(key)) {
       try {
         data[key] = JSON.parse(localStorage.getItem(key) as string)
@@ -1167,14 +774,6 @@ export async function exportData(): Promise<'saved' | 'cancelled'> {
   const content = JSON.stringify(data, null, 2)
   const filename = 'gym-export-' + todayStr() + '.json'
   const mimeType = 'application/json'
-
-  // iOS 웹뷰는 <a download> 를 처리하지 않아 눌러도 아무 일이 없다. 앱에서는 네이티브 공유 시트로
-  // 파일을 넘겨 '파일에 저장'·AirDrop 등으로 꺼낼 수 있게 한다.
-  const native = (window as Window & { GymNative?: ShareNative }).GymNative
-  if (native?.shareFile) {
-    const result = await native.shareFile({ filename, content, mimeType })
-    return result?.completed ? 'saved' : 'cancelled'
-  }
 
   const blob = new Blob([content], { type: mimeType })
   const a = document.createElement('a')

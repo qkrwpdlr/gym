@@ -93,31 +93,7 @@ export type Program = {
   intent?: string
 }
 
-// ============ DAY OVERRIDE (당일 조정) ============
-
-export type SetPatch = {
-  weight?: string | number
-  reps?: string | number
-}
-
-export type SectionPatch = {
-  rest?: number
-  meta?: string
-}
-
-export type Op =
-  | { op: 'update_set'; s: number; i: number; patch: SetPatch }
-  | { op: 'remove_set'; s: number; i: number }
-  | { op: 'add_set'; s: number; after?: number; set: Partial<WorkoutSet> & { name: string } }
-  | { op: 'update_section'; s: number; patch: SectionPatch }
-  | { op: 'remove_section'; s: number }
-  | { op: 'add_section'; after?: number; section: Partial<WorkoutSection> & { title: string; sets: WorkoutSet[] } }
-
-export type Proposal = {
-  summary?: string
-  reason?: string
-  ops: Op[]
-}
+// ============ DAY OVERRIDE (예전 코치 당일 조정 — 남아 있는 데이터 표시·되돌리기용) ============
 
 export type Override = {
   schemaVersion: number
@@ -138,38 +114,4 @@ export type FlatSet = {
   setIdx: number
   section: WorkoutSection
   set: WorkoutSet
-}
-
-// ============ CHAT (gymbro) ============
-
-export type WireMessage = {
-  role: 'user' | 'assistant'
-  content: string
-}
-
-export type ServerEnvelope = {
-  message: string
-  proposal: Proposal | null
-  program: Program | null
-  raw: string
-}
-
-export type ChatKind = 'daily' | 'builder'
-
-export type ChatMessage =
-  | { id: number; kind: 'user' | 'bot' | 'sys'; text: string }
-  | { id: number; kind: 'proposal'; proposal: Proposal; changes: string[]; state: 'pending' | 'applied' | 'rejected' }
-  | { id: number; kind: 'program'; program: Program; state: 'pending' | 'applied' | 'editing' }
-
-export type ChatState = {
-  kind: ChatKind
-  slot: number
-  date: string
-  wire: WireMessage[]
-  messages: ChatMessage[]
-  pendingNote: string
-  busy: boolean
-  generate: boolean
-  typing: boolean
-  focusPos?: { s: number; i: number } | null // 포커스 모드에서 열었을 때 진행 중인 세트
 }

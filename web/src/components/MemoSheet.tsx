@@ -21,7 +21,7 @@ export function MemoSheet({ open, initial, onClose, onSave }: MemoSheetProps) {
       <div className={`sheet memo-sheet ${open ? 'active' : ''}`} role="dialog" aria-label="오늘 메모">
         <div className="sheet-handle" />
         <div className="sheet-heading">오늘 메모</div>
-        <div className="sheet-caption">컨디션이나 특이사항을 남겨두면 코치가 다음 조정에 참고해요.</div>
+        <div className="sheet-caption">컨디션이나 특이사항을 기록해 두세요.</div>
         <textarea
           className="memo-input"
           rows={4}

@@ -11,14 +11,13 @@ type OnboardingProps = {
   mode: 'first' | 'change'
   onApply: (program: Program, start: string) => void
   onLater: () => void
-  onCoach: () => void
 }
 
 type Step = 'pick' | 'weights' | 'start'
 
 /// 루틴 고르기 → (선택) 무게 입력 → 시작일 확인.
 /// 새 사용자가 남의 루틴을 보지 않도록 첫 실행에 한 번 띄우고, 설정에서 다시 열 수 있다.
-export function Onboarding({ open, mode, onApply, onLater, onCoach }: OnboardingProps) {
+export function Onboarding({ open, mode, onApply, onLater }: OnboardingProps) {
   const [step, setStep] = useState<Step>('pick')
   const scrollRef = useRef<HTMLDivElement>(null)
   const [templateId, setTemplateId] = useState<string>(TEMPLATES[0].id)
@@ -74,7 +73,6 @@ export function Onboarding({ open, mode, onApply, onLater, onCoach }: Onboarding
           <PickStep
             templateId={templateId}
             onSelect={setTemplateId}
-            onCoach={onCoach}
             onNext={() => go('weights')}
             onLater={onLater}
             mode={mode}
@@ -108,14 +106,12 @@ export function Onboarding({ open, mode, onApply, onLater, onCoach }: Onboarding
 function PickStep({
   templateId,
   onSelect,
-  onCoach,
   onNext,
   onLater,
   mode,
 }: {
   templateId: string
   onSelect: (id: string) => void
-  onCoach: () => void
   onNext: () => void
   onLater: () => void
   mode: 'first' | 'change'
@@ -133,16 +129,6 @@ function PickStep({
           <TemplateCard key={t.id} t={t} selected={t.id === templateId} onSelect={() => onSelect(t.id)} />
         ))}
       </div>
-
-      <button className="settings-item onboard-coach" type="button" onClick={onCoach}>
-        <span>
-          코치와 직접 만들기
-          <span className="settings-item-sub">목표와 일정을 말하면 코치가 몇 주짜리 루틴을 짜 줘요</span>
-        </span>
-        <span className="chev" aria-hidden="true">
-          ›
-        </span>
-      </button>
 
       <div className="onboard-actions">
         <button className="start-btn onboard-primary" type="button" onClick={onNext}>

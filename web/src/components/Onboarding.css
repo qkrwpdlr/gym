@@ -128,8 +128,6 @@
 
 .onboard-card.selected .onboard-card-main { color: var(--text-dim); }
 
-.onboard-coach { margin-bottom: 0; }
-
 /* ----- 하단 버튼 ----- */
 .onboard-actions {
   display: flex;
@@ -239,8 +237,6 @@
   align-items: baseline;
   font-size: 13px;
 }
-
-.onboard-days .dc-dot { margin: 0; }
 
 .onboard-day-title { font-weight: 700; }
 .onboard-faint { color: var(--text-faint); font-weight: 400; }

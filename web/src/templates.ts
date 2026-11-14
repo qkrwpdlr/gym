@@ -1,5 +1,5 @@
 // ============ 루틴 템플릿 (첫 실행 온보딩 · 설정의 루틴 바꾸기) ============
-// 템플릿은 블록 프로그램(Program)으로 만든다. 코치가 짠 블록과 같은 경로
+// 템플릿은 블록 프로그램(Program)으로 만든다. 다른 블록과 같은 경로
 // (validateProgram → applyProgram → 주차 전개·선형 증량·디로드)를 그대로 타게 하려는 것.
 // 무게는 절대값 대신 "추정 1RM 대비 비율"로 적어 두고, 사용자가 입력한 무게로 계산한다.
 // 입력이 없으면 무게를 비워 횟수만 보여 준다 — 실제 무게는 세트 기록 시트에서 적는다.
@@ -313,7 +313,7 @@ const POWERBUILDING: RoutineTemplate = {
 
 export const TEMPLATES: RoutineTemplate[] = [BEGINNER, UPPER_LOWER, POWERBUILDING]
 
-/// "나중에 할게요"·코치로 넘어갈 때 쓰는 기본 템플릿.
+/// "나중에 할게요"를 고르면 쓰는 기본 템플릿.
 export const DEFAULT_TEMPLATE = BEGINNER
 
 export function templateById(id: string): RoutineTemplate | undefined {

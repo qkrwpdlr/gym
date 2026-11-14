@@ -1,36 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { clearAiConsent, hasAiConsent, loadAiConsent, saveAiConsent } from './aiConsent'
-import type { AiConsent } from './aiConsent'
-import { AiConsentSettingsRow, AiConsentSheet } from './components/AiConsentSheet'
-import { CoachLoginSheet } from './components/CoachLoginSheet'
 import { ConfirmDialog } from './components/ConfirmDialog'
-import { DeleteAccountSheet } from './components/DeleteAccountSheet'
 import type { ConfirmRequest } from './components/ConfirmDialog'
-import { Fab } from './components/Fab'
 import { FocusMode } from './components/FocusMode'
 import type { FocusSummary } from './components/FocusMode'
 import { MemoSheet } from './components/MemoSheet'
 import { MiniPlayer } from './components/MiniPlayer'
-import { LoginGate } from './components/LoginGate'
-import { NotificationSettingsModal } from './components/NotificationSettingsModal'
 import { Onboarding } from './components/Onboarding'
-import { Paywall } from './components/Paywall'
 import { StatusBar } from './components/StatusBar'
-import { PRIVACY_URL, TERMS_URL, openExternal } from './legal'
-import type { AccountState } from './subscription'
-import {
-  authHeadersForChat,
-  currentAccountId,
-  deleteAccount,
-  fetchAccountState,
-  loginAvailable,
-  reconcileOnLaunch,
-  skipLoginGateFlag,
-  signIn,
-  signOut,
-  submitTransaction,
-} from './subscription'
 import { Tabbar } from './components/Tabbar'
 import { ImportError, applyImport, currentImportState, planImport } from './importData'
 import type { ImportPlan } from './importData'
@@ -38,21 +15,13 @@ import { DEFAULT_TEMPLATE, buildProgram, markOnboarded, needsOnboarding } from '
 import {
   DEFAULT_ACCENT,
   LOG_INDEX_KEY,
-  LOGIN_SKIP_KEY,
   RPE_VALUES,
   TIMER_KEY,
   activeProgram,
-  applyOps,
   applyProgram,
-  applyProposal,
-  buildBuilderContext,
-  buildDailyContext,
   buildFlatSets,
-  callServer,
-  chatConfigured,
   countTotalSets,
   currentWeek,
-  dayCount,
   dayDefs,
   dayFor,
   dayLabel,
@@ -73,11 +42,9 @@ import {
   migrateV3,
   mixColor,
   navigate,
-  nextMonday,
   parseNum,
   parseRoute,
   plateStep,
-  type QuotaError,
   type Route,
   recordSet,
   setPlateStep,
@@ -85,22 +52,15 @@ import {
   isNumericWeight,
   revertOverride,
   saveLog,
-  setChatAuthHeaders,
   todayLogFor,
-  trimWire,
   todayOverrideFor,
   todayStr,
-  validateProgram,
-  validateProposal,
   weekDoneSlots,
   weekdayKr,
 } from './storage'
 import type {
-  ChatMessage,
-  ChatState,
   FlatSet,
   Program,
-  Proposal,
   SessionLog,
   SetEntry,
   WorkoutSection,
@@ -110,12 +70,6 @@ import type {
 migrateV3()
 
 type ViewRoute = Exclude<Route, { redirect: string }>
-
-// 서버 주소가 빠진 채 빌드된 경우에만 보인다.
-const NOT_CONFIGURED_MSG = '지금은 코치를 쓸 수 없어요. 앱을 최신 버전으로 업데이트해 주세요.'
-
-let msgSeq = 0
-const nextId = () => ++msgSeq
 
 type FocusPhase = 'exercise' | 'rest' | 'complete'
 
@@ -153,27 +107,6 @@ type WakeLockSentinelLike = {
 
 type WakeLockNavigator = Navigator & {
   wakeLock?: { request: (type: 'screen') => Promise<WakeLockSentinelLike> }
-}
-
-type LiveActivityInfo = {
-  dayTitle: string
-  exerciseName: string
-  setLabel: string
-  phase: FocusPhase
-  restEndEpochMs: number
-  setIndex: number
-  setTotal: number
-}
-
-type GymNativeWindow = Window & {
-  GymNative?: {
-    openSettings?: () => void
-    startWorkoutActivity?: (info: LiveActivityInfo & { startEpochMs: number }) => void
-    updateWorkoutActivity?: (info: LiveActivityInfo) => void
-    endWorkoutActivity?: () => void
-    scheduleRestEnd?: (info: { endEpochMs: number; title: string; body: string; foregroundBanner: boolean }) => void
-    cancelRestEnd?: () => void
-  }
 }
 
 function isFinished(log: SessionLog | null, f: FlatSet): boolean {
@@ -232,38 +165,6 @@ function restEndBody(f: FocusState): string {
   return next ? `다음: ${next.set.name} ${loadText(next.set)}` : '다음 세트를 시작하세요'
 }
 
-/// iOS 앱이면 휴식 종료 알림을 네이티브가 예약해서 보낸다. 브라우저에서는 JS가 직접 띄운다.
-function nativeRestAlerts(): boolean {
-  return !!(window as GymNativeWindow).GymNative?.scheduleRestEnd
-}
-
-// 집중 모드 상태를 잠금화면(Live Activity) 표시용 정보로 변환한다.
-function liveActivityInfoFor(f: FocusState, dayTitle: string): LiveActivityInfo {
-  const total = f.flatSets.length
-  if (f.phase === 'complete') {
-    return {
-      dayTitle,
-      exerciseName: '',
-      setLabel: `${total}세트 모두 완료`,
-      phase: 'complete',
-      restEndEpochMs: 0,
-      setIndex: total,
-      setTotal: total,
-    }
-  }
-  const current = f.flatSets[f.currentIdx]
-  const index = focusPosition(f)
-  return {
-    dayTitle,
-    exerciseName: current ? current.section.title : '',
-    setLabel: `${index}/${total}세트`,
-    phase: f.phase,
-    restEndEpochMs: f.phase === 'rest' ? f.restEndTime ?? 0 : 0,
-    setIndex: index,
-    setTotal: total,
-  }
-}
-
 function getNotificationPermission() {
   if (!('Notification' in window)) return 'unsupported'
   return Notification.permission
@@ -284,8 +185,6 @@ function App() {
   const [focusCollapsed, setFocusCollapsed] = useState(false)
   const [sheet, setSheet] = useState<SheetCtx | null>(null)
   const [sheetKey, setSheetKey] = useState(0)
-  const [chat, setChat] = useState<ChatState | null>(null)
-  const [chatOpen, setChatOpen] = useState(false)
 
   const [calCursor, setCalCursor] = useState<{ y: number; m: number } | null>(null)
   const [calSelected, setCalSelected] = useState<string | null>(null)
@@ -293,21 +192,9 @@ function App() {
   const [wakeLockActive, setWakeLockActive] = useState(false)
   const [wakeLockUnavailable, setWakeLockUnavailable] = useState(false)
   const [notificationPermission, setNotificationPermission] = useState(getNotificationPermission)
-  const [showNotificationSettings, setShowNotificationSettings] = useState(false)
-  const [account, setAccount] = useState<AccountState>({ tier: 'free', accountId: null, usage: null, offline: true })
-  const [paywall, setPaywall] = useState<{ open: boolean; reason: string | null }>({ open: false, reason: null })
-  // 계정 조회가 끝나기 전에는 게이트를 띄우지 않는다 — 로그인한 사람에게 깜빡이면 안 된다.
-  const [accountResolved, setAccountResolved] = useState(false)
-  const [loginSkipped, setLoginSkipped] = useState(() => localStorage.getItem(LOGIN_SKIP_KEY) === '1')
   const [confirmReq, setConfirmReq] = useState<ConfirmRequest | null>(null)
   const confirmResolveRef = useRef<((ok: boolean) => void) | null>(null)
   const [memo, setMemo] = useState<{ open: boolean; key: number; slot: number }>({ open: false, key: 0, slot: 1 })
-  const [coachLoginOpen, setCoachLoginOpen] = useState(false)
-  const afterCoachLoginRef = useRef<(() => void) | null>(null)
-  const [aiConsent, setAiConsent] = useState<AiConsent | null>(loadAiConsent)
-  const [aiConsentOpen, setAiConsentOpen] = useState(false)
-  const afterAiConsentRef = useRef<(() => void) | null>(null)
-  const [deleteSheet, setDeleteSheet] = useState<{ open: boolean; key: number }>({ open: false, key: 0 })
   // 루틴 온보딩: 첫 실행(기록·블록 없는 새 사용자)에 한 번, 이후엔 설정의 '루틴 바꾸기'로 다시 연다.
   const [onboarding, setOnboarding] = useState<{ open: boolean; mode: 'first' | 'change'; key: number }>(() => ({
     open: needsOnboarding(),
@@ -321,9 +208,7 @@ function App() {
   const focusRestDoneHandledRef = useRef(false)
   const focusAdvanceTimeoutRef = useRef<number | null>(null)
   const focusRef = useRef<FocusState | null>(null)
-  const chatRef = useRef<ChatState | null>(null)
   const renderedDateRef = useRef<string>(todayStr())
-  const liveActivityActiveRef = useRef(false)
   const focusCollapsedRef = useRef(false)
 
   useEffect(() => {
@@ -332,36 +217,6 @@ function App() {
   useEffect(() => {
     focusCollapsedRef.current = focusCollapsed
   }, [focusCollapsed])
-  useEffect(() => {
-    chatRef.current = chat
-  }, [chat])
-
-  // 집중 모드 ↔ 잠금화면 Live Activity 동기화 (iOS 네이티브 앱에서만 동작)
-  // 진행 위치(끝낸 세트 수)도 넣는다 — 목록에서 체크를 풀면 위치는 그대로여도 잠금화면의 'N/전체'가 바뀐다.
-  const focusSig = focus
-    ? `${focus.currentIdx}|${focus.phase}|${focus.restEndTime ?? 0}|${focusPosition(focus)}`
-    : ''
-  useEffect(() => {
-    const native = (window as GymNativeWindow).GymNative
-    if (!native?.startWorkoutActivity) return
-
-    if (!focus) {
-      if (liveActivityActiveRef.current) {
-        native.endWorkoutActivity?.()
-        liveActivityActiveRef.current = false
-      }
-      return
-    }
-
-    const info = liveActivityInfoFor(focus, dayFor(focus.slot).title)
-    if (!liveActivityActiveRef.current) {
-      native.startWorkoutActivity?.({ ...info, startEpochMs: Date.now() })
-      liveActivityActiveRef.current = true
-    } else {
-      native.updateWorkoutActivity?.(info)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusSig])
 
   // ----- routing -----
   useEffect(() => {
@@ -439,10 +294,8 @@ function App() {
     if (navigator.vibrate) navigator.vibrate(pattern)
   }, [])
 
-  /// 브라우저 전용 — 휴식이 끝난 시점에 웹 알림을 띄운다.
-  /// iOS 앱은 휴식 시작 때 네이티브가 예약해 두므로 여기서 또 띄우면 두 번 울린다.
+  /// 휴식이 끝난 시점에 웹 알림을 띄운다.
   const notifyRestDone = useCallback((visibleOnly: boolean) => {
-    if (nativeRestAlerts()) return
     if (visibleOnly && document.visibilityState !== 'visible') return
     if (!visibleOnly && document.visibilityState === 'visible') return
     if ('Notification' in window && Notification.permission === 'granted') {
@@ -451,9 +304,26 @@ function App() {
       try {
         new Notification(REST_END_TITLE, { body, icon: './icon-192.png', tag: 'rest-done' })
       } catch {
-        /* native bridge may reject mid-transition */
+        /* 일부 브라우저는 페이지에서 new Notification을 막는다 */
       }
     }
+  }, [])
+
+  // ============ 확인 창 ============
+  // confirm() 대신 앱 안 확인 창을 띄우고, 고른 결과를 Promise로 돌려준다.
+  const askConfirm = useCallback((req: ConfirmRequest) => {
+    confirmResolveRef.current?.(false)
+    setConfirmReq(req)
+    return new Promise<boolean>((resolve) => {
+      confirmResolveRef.current = resolve
+    })
+  }, [])
+
+  const resolveConfirm = useCallback((ok: boolean) => {
+    const resolve = confirmResolveRef.current
+    confirmResolveRef.current = null
+    setConfirmReq(null)
+    resolve?.(ok)
   }, [])
 
   // ============ WAKE LOCK ============
@@ -500,10 +370,6 @@ function App() {
     await requestWakeLock()
   }, [releaseWakeLock, requestWakeLock])
 
-  const openNativeNotificationSettings = useCallback(() => {
-    ;(window as GymNativeWindow).GymNative?.openSettings?.()
-  }, [])
-
   const requestNotif = useCallback(async () => {
     if (!('Notification' in window)) {
       setNotificationPermission('unsupported')
@@ -512,12 +378,15 @@ function App() {
     if (Notification.permission === 'default') {
       await Notification.requestPermission()
     } else if (Notification.permission === 'denied') {
-      setShowNotificationSettings(true)
-    } else {
-      openNativeNotificationSettings()
+      void askConfirm({
+        title: '알림이 꺼져 있어요',
+        body: '휴식이 끝났을 때 알려드리려면 브라우저 설정에서 이 사이트의 알림을 허용해 주세요.',
+        confirmLabel: '확인',
+        notice: true,
+      })
     }
     setNotificationPermission(getNotificationPermission())
-  }, [openNativeNotificationSettings])
+  }, [askConfirm])
 
   const ensurePermissions = useCallback(async () => {
     if (!wakeLockRef.current) {
@@ -605,23 +474,6 @@ function App() {
     },
     [beginRestAt, ensurePermissions],
   )
-
-  // ============ 확인 창 ============
-  // confirm() 대신 앱 안 확인 창을 띄우고, 고른 결과를 Promise로 돌려준다.
-  const askConfirm = useCallback((req: ConfirmRequest) => {
-    confirmResolveRef.current?.(false)
-    setConfirmReq(req)
-    return new Promise<boolean>((resolve) => {
-      confirmResolveRef.current = resolve
-    })
-  }, [])
-
-  const resolveConfirm = useCallback((ok: boolean) => {
-    const resolve = confirmResolveRef.current
-    confirmResolveRef.current = null
-    setConfirmReq(null)
-    resolve?.(ok)
-  }, [])
 
   /// 오늘 이미 다른 day 기록이 있으면 이 day로 바꿀지 앱 안 확인 창으로 묻고, 바꾸면 그 기록을 지운 뒤 then을 부른다.
   /// 겹치는 기록이 없으면 then을 바로(같은 탭 이벤트 안에서) 부른다 — 알림·화면 유지 권한 요청이 사용자 동작으로 인정되게.
@@ -900,7 +752,6 @@ function App() {
     playBeepSequence()
     setFocusAlert(true)
     window.setTimeout(() => setFocusAlert(false), 400)
-    // 아래 두 알림은 브라우저 전용이다. iOS 앱은 휴식 시작 때 네이티브가 같은 기준으로 예약해 둔다.
     notifyRestDone(false)
     // 포커스 모드는 화면 전체가 번쩍여서 알림이 필요 없지만,
     // 미니 바만 떠 있을 때는 화면을 보고 있어도 놓치기 쉬워 알림을 띄운다.
@@ -961,56 +812,7 @@ function App() {
     return () => window.clearInterval(timerId)
   }, [focusPhase, focusRestEndTime, focusRestDone, playBeep])
 
-  // 휴식 종료 알림 예약 (iOS 네이티브 앱에서만). 화면이 잠기면 JS가 멈춰 위 틱이 돌지 않으므로,
-  // 휴식이 시작되거나 종료 시각이 바뀌는 순간 iOS에 알림을 맡겨 둔다.
-  // 경로별로 부르지 않고 세션 상태 하나만 본다 — 세트 체크(목록·미니 바·집중 모드), 타이머 버튼,
-  // +30초, 다른 day로 전환, 새로고침 후 복원은 모두 rest/restEndTime 변화로, 건너뛰기·자연 종료·
-  // 운동 마치기·초기화는 rest가 아닌 상태(또는 세션 없음)로 나타나 여기서 예약/취소된다.
-  // 앞에 있을 때의 중복 방지: 집중 모드 화면이 열려 있으면 번쩍임·비프로 충분해 네이티브가 배너를 숨기고,
-  // 미니 바만 떠 있으면 놓치기 쉬워 배너를 띄운다(foregroundBanner). 접힘 상태가 바뀌면 다시 예약해 반영한다.
-  // rev: 휴식 중 목록에서 다른 세트를 체크/해제하면 '다음 세트' 본문이 바뀐다.
-  // notificationPermission: 첫 휴식은 권한 요청과 동시에 시작돼 허용 전 예약이 실패할 수 있어, 허용되면 다시 건다.
-  useEffect(() => {
-    const native = (window as GymNativeWindow).GymNative
-    if (!native?.scheduleRestEnd) return
-    const cur = focusRef.current
-    if (focusPhase !== 'rest' || !focusRestEndTime || !cur || focusRestEndTime <= Date.now()) {
-      native.cancelRestEnd?.()
-      return
-    }
-    native.scheduleRestEnd({
-      endEpochMs: focusRestEndTime,
-      title: REST_END_TITLE,
-      body: restEndBody(cur),
-      foregroundBanner: focusCollapsed,
-    })
-  }, [focusPhase, focusRestEndTime, focusCollapsed, notificationPermission, rev])
-
-  // 구독·계정은 서버가 권위 소스다. 앱이 뜨면 기기에 남은 구독을 서버와 맞춘다.
-  useEffect(() => {
-    setChatAuthHeaders(authHeadersForChat)
-    let cancelled = false
-    void reconcileOnLaunch().then((state) => {
-      if (cancelled) return
-      setAccount(state)
-      setAccountResolved(true)
-    })
-    // 갱신·환불처럼 앱 밖에서 일어난 거래 변화
-    const onTransaction = (event: Event) => {
-      const detail = (event as CustomEvent<{ signedTransaction?: string }>).detail
-      if (!detail?.signedTransaction) return
-      void submitTransaction(detail.signedTransaction)
-        .then((state) => setAccount(state))
-        .catch(() => undefined)
-    }
-    window.addEventListener('gym-transaction-update', onTransaction)
-    return () => {
-      cancelled = true
-      window.removeEventListener('gym-transaction-update', onTransaction)
-    }
-  }, [])
-
-  // 웹뷰가 다시 로드돼도 진행 중이던 휴식은 이어간다.
+  // 페이지가 다시 로드돼도 진행 중이던 휴식은 이어간다.
   // 저장 효과보다 먼저 선언해야 첫 렌더에서 키가 지워지기 전에 읽는다.
   useEffect(() => {
     const restoreSession = () => {
@@ -1073,7 +875,7 @@ function App() {
     if (focusRef.current) setFocusCollapsed(true)
   }, [routeKey])
 
-  // 미니 바가 떠 있는 동안에는 본문 아래 여백과 FAB 위치를 한 칸 올린다.
+  // 미니 바가 떠 있는 동안에는 본문 아래 여백을 한 칸 올린다.
   const miniActive = focus !== null && focusCollapsed
   useEffect(() => {
     document.body.classList.toggle('has-mini', miniActive)
@@ -1081,12 +883,10 @@ function App() {
   }, [miniActive])
 
   // ============ 오버레이 열림 시 배경 스크롤 잠금 ============
-  // WKWebView는 키보드가 뜨면 인풋을 노출하려고 문서를 강제 스크롤한다.
+  // 모바일 브라우저는 키보드가 뜨면 인풋을 노출하려고 문서를 강제 스크롤한다.
   // 오버레이가 떠 있는 동안 body를 고정해 이 점프(덜컹임)를 차단한다.
-  // 로그인 게이트가 뜰 수 있는 환경에서는 계정 조회가 끝날 때까지 온보딩을 미룬다 — 게이트보다 먼저 깜빡이면 안 된다.
-  const loginSettled = !loginAvailable() || skipLoginGateFlag() || accountResolved
-  const onboardingVisible = onboarding.open && (onboarding.mode === 'change' || loginSettled)
-  const overlayLock = chatOpen || sheet !== null || memo.open || onboardingVisible
+  const onboardingVisible = onboarding.open
+  const overlayLock = sheet !== null || memo.open || onboardingVisible
   useEffect(() => {
     if (!overlayLock) return undefined
     const y = window.scrollY
@@ -1160,94 +960,6 @@ function App() {
     [advanceAfterRest, bump, closeSheet, withDaySwitch],
   )
 
-  // ============ 계정 ============
-  const doSignIn = useCallback(async () => {
-    const id = await signIn()
-    if (id) setAccount(await fetchAccountState())
-    return id
-  }, [])
-
-  /// 코치를 여는 모든 입구가 거치는 관문. 로그인 → 데이터 전송 동의 → 하려던 동작 순서로 잇는다.
-  /// 코치는 계정마다 한도와 구독이 붙는 기능이라 로그인이 필요하고, 답변을 외부 AI가 만들기 때문에
-  /// 처음 한 번은 무엇을 보내는지 알리고 동의를 받는다.
-  /// 브라우저 배포본은 Apple 로그인이 없어 서버가 코치를 막으므로, 챗을 열지 않고 앱에서 쓰라고 안내한다.
-  const withCoach = useCallback(
-    (action: () => void) => {
-      if (!loginAvailable()) {
-        void askConfirm({
-          title: '코치는 iOS 앱에서 쓸 수 있어요',
-          body: '코치는 로그인이 필요한데, 로그인은 iOS 앱에서만 할 수 있어요. 운동 기록과 타이머는 여기서도 그대로 쓸 수 있어요.',
-          confirmLabel: '확인',
-          notice: true,
-        })
-        return
-      }
-      const withConsent = () => {
-        if (!hasAiConsent()) {
-          afterAiConsentRef.current = action
-          setAiConsentOpen(true)
-          return
-        }
-        action()
-      }
-      if (!currentAccountId()) {
-        afterCoachLoginRef.current = withConsent
-        setCoachLoginOpen(true)
-        return
-      }
-      withConsent()
-    },
-    [askConfirm],
-  )
-
-  const closeCoachLogin = useCallback(() => {
-    afterCoachLoginRef.current = null
-    setCoachLoginOpen(false)
-  }, [])
-
-  const onCoachLoginDone = useCallback(() => {
-    const next = afterCoachLoginRef.current
-    afterCoachLoginRef.current = null
-    setCoachLoginOpen(false)
-    next?.()
-  }, [])
-
-  const onAiConsentAgree = useCallback(() => {
-    setAiConsent(saveAiConsent())
-    setAiConsentOpen(false)
-    const next = afterAiConsentRef.current
-    afterAiConsentRef.current = null
-    next?.()
-  }, [])
-
-  const onAiConsentDecline = useCallback(() => {
-    afterAiConsentRef.current = null
-    setAiConsentOpen(false)
-  }, [])
-
-  /// 설정에서 동의를 켜고 끈다. 철회는 기록만 지우고, 다음에 코치를 열 때 다시 묻는다.
-  const onAiConsentToggle = useCallback(async () => {
-    if (!hasAiConsent()) {
-      afterAiConsentRef.current = null
-      setAiConsentOpen(true)
-      return
-    }
-    const ok = await askConfirm({
-      title: '데이터 전송 동의를 철회할까요?',
-      body: '이제 코치에게 루틴, 운동 기록, 채팅 내용을 보내지 않아요. 코치를 다시 열면 동의를 다시 물어봐요.',
-      confirmLabel: '철회',
-    })
-    if (!ok) return
-    clearAiConsent()
-    setAiConsent(null)
-  }, [askConfirm])
-
-  const onDeleteAccount = useCallback(async () => {
-    const result = await deleteAccount()
-    setAccount(await fetchAccountState())
-    return result
-  }, [])
-
   // ============ 루틴 온보딩 ============
   /// 템플릿 블록을 걸고 DAY 1로 보낸다. 라우트도 직접 바꾼다 — 새 블록의 day 수가 적으면
   /// 해시 변경이 반영되기 전 렌더에서 없는 slot을 그리게 된다.
@@ -1294,223 +1006,7 @@ function App() {
     setOnboarding((o) => ({ open: true, mode: 'change', key: o.key + 1 }))
   }, [])
 
-  // ============ GYMBRO CHAT ============
-  const openChat = useCallback((kind: 'daily' | 'builder', slot?: number, focusPos?: { s: number; i: number } | null) => {
-    setChat((prev) => {
-      const fresh = !prev || prev.kind !== kind || prev.date !== todayStr() || (kind === 'daily' && prev.slot !== (slot || 1))
-      if (fresh) {
-        const messages: ChatMessage[] = []
-        if (!chatConfigured()) messages.push({ id: nextId(), kind: 'sys', text: NOT_CONFIGURED_MSG })
-        return { kind, slot: slot || 1, date: todayStr(), wire: [], messages, pendingNote: '', busy: false, generate: false, typing: false, focusPos: focusPos ?? null }
-      }
-      // 같은 챗을 다시 열면 진행 위치만 현재 세트로 갱신 (지정됐을 때만)
-      return focusPos !== undefined ? { ...prev, focusPos } : prev
-    })
-    setChatOpen(true)
-  }, [])
-
-  const closeChat = useCallback(() => setChatOpen(false), [])
-
-  /// 온보딩의 "코치와 직접 만들기". 코치 블록이 적용되기 전(로그인을 미루거나 챗을 닫는 경우)에도
-  /// 남의 루틴이 보이지 않게, 첫 실행이면 "나중에"와 같은 기본 템플릿을 먼저 걸어 둔다.
-  const onOnboardCoach = useCallback(() => {
-    onOnboardLater()
-    withCoach(() => openChat('builder'))
-  }, [onOnboardLater, openChat, withCoach])
-
-  const pushMsg = useCallback((msg: ChatMessage) => {
-    setChat((prev) => (prev ? { ...prev, messages: [...prev.messages, msg] } : prev))
-  }, [])
-
-  const setMsgState = useCallback((id: number, patch: Partial<ChatMessage>) => {
-    setChat((prev) =>
-      prev
-        ? { ...prev, messages: prev.messages.map((m) => (m.id === id ? ({ ...m, ...patch } as ChatMessage) : m)) }
-        : prev,
-    )
-  }, [])
-
-  const setPendingNote = useCallback((note: string) => {
-    setChat((prev) => (prev ? { ...prev, pendingNote: note } : prev))
-  }, [])
-
-  const onProposalApply = useCallback(
-    (id: number, slot: number, proposal: Proposal) => {
-      applyProposal(slot, proposal)
-      setMsgState(id, { state: 'applied' } as Partial<ChatMessage>)
-      setPendingNote('(방금 제안을 적용했어)')
-      refreshFocusAfterOverride()
-      bump()
-    },
-    [bump, refreshFocusAfterOverride, setMsgState, setPendingNote],
-  )
-
-  const onProposalReject = useCallback(
-    (id: number) => {
-      setMsgState(id, { state: 'rejected' } as Partial<ChatMessage>)
-      setPendingNote('(방금 제안은 거절했어)')
-    },
-    [setMsgState, setPendingNote],
-  )
-
-  const onProgramApply = useCallback(
-    (id: number, program: Program, start: string) => {
-      if (applyProgram(program, start)) {
-        setMsgState(id, { state: 'applied' } as Partial<ChatMessage>)
-        setPendingNote('(블록을 적용했어)')
-        // 진행 중이던 세션은 예전 루틴의 세트 목록을 들고 있다. 온보딩에서 루틴을 바꿀 때처럼 끝낸다.
-        if (focusRef.current) exitFocusMode()
-        // 새 블록이 지금 보던 day보다 짧으면 없는 day를 그리게 된다. 오늘 탭이면 새 블록 기준으로 다시 고른다.
-        const m = location.hash.match(/^#\/today\/(\d+)/)
-        if (m && Number(m[1]) > dayCount()) navigate('#/today/' + defaultSlot())
-        bump()
-      }
-    },
-    [bump, exitFocusMode, setMsgState, setPendingNote],
-  )
-
-  const onProgramReject = useCallback(
-    (id: number) => {
-      setMsgState(id, { state: 'editing' } as Partial<ChatMessage>)
-      setPendingNote('(직전 블록 제안에서 수정하고 싶은 게 있어)')
-    },
-    [setMsgState, setPendingNote],
-  )
-
-  const sendChat = useCallback(
-    async (rawText: string, forceGenerate = false) => {
-      const text = (rawText || '').trim()
-      const current = chatRef.current
-      if (!current || current.busy || !text) return
-      // 입구(withCoach)에서 이미 동의를 받지만, 챗이 열린 사이 동의가 철회됐을 수도 있다.
-      // 동의 없이는 어떤 경로로도 외부 AI에 보내지 않도록 전송 직전에 한 번 더 막는다.
-      if (!hasAiConsent()) {
-        setChatOpen(false)
-        afterAiConsentRef.current = () => setChatOpen(true)
-        setAiConsentOpen(true)
-        return
-      }
-      if (!chatConfigured()) {
-        pushMsg({ id: nextId(), kind: 'sys', text: NOT_CONFIGURED_MSG })
-        return
-      }
-      const generate = current.kind === 'builder' && (current.generate || forceGenerate)
-      const mode = current.kind === 'daily' ? 'daily_adjust' : generate ? 'program_generate' : 'program_intake'
-      // 영구 저장용 wire: builder 는 첫 메시지에 컨텍스트를 baking (인테이크 내내 유지).
-      // daily 는 컨텍스트를 저장하지 않는다 — 매 전송 시 최신 스냅샷으로 새로 주입하므로.
-      let storedText = text
-      if (current.kind === 'builder' && !current.wire.length) {
-        storedText = buildBuilderContext() + '\n\n' + storedText
-      }
-      if (current.pendingNote) storedText = current.pendingNote + '\n' + storedText
-      const newWire = [...current.wire, { role: 'user' as const, content: storedText }]
-
-      // 실제 전송용 wire: daily 는 매 메시지마다 최신 컨텍스트(진행 위치·완료/실측 상태 포함)를
-      // 마지막 유저 턴에 주입한다. 이전 턴의 옛 스냅샷은 wire 에 남지 않아 토큰·혼선이 없다.
-      let sendWire = newWire
-      if (current.kind === 'daily') {
-        const ctx = buildDailyContext(current.slot, current.focusPos)
-        sendWire = newWire.map((m, idx) => (idx === newWire.length - 1 ? { ...m, content: ctx + '\n\n' + m.content } : m))
-      }
-      // 대화가 길어지면 서버 상한(메시지 수·글자 수)에 걸려 매번 400이 난다. 오래된 턴을 덜어 보낸다.
-      sendWire = trimWire(sendWire, mode, current.kind === 'builder')
-      const slot = current.slot
-      const kind = current.kind
-
-      setChat((prev) =>
-        prev
-          ? {
-              ...prev,
-              wire: newWire,
-              pendingNote: '',
-              busy: true,
-              typing: true,
-              generate,
-              messages: [...prev.messages, { id: nextId(), kind: 'user', text }],
-            }
-          : prev,
-      )
-
-      try {
-        const env = await callServer(mode, sendWire)
-        setChat((prev) =>
-          prev ? { ...prev, wire: [...prev.wire, { role: 'assistant' as const, content: env.raw }], typing: false } : prev,
-        )
-        if (env.message) pushMsg({ id: nextId(), kind: 'bot', text: env.message })
-        if (kind === 'daily' && env.proposal) {
-          const err = validateProposal(slot, env.proposal)
-          if (err) {
-            pushMsg({ id: nextId(), kind: 'sys', text: '제안을 적용할 수 없는 형태로 받았어요. 다시 요청해 주세요.' })
-            setPendingNote('(직전 제안은 형식 오류로 무효: ' + err + '. 고쳐서 다시 제안해줘)')
-          } else {
-            const preview = applyOps(dayFor(slot), env.proposal.ops)
-            pushMsg({ id: nextId(), kind: 'proposal', proposal: env.proposal, changes: preview.changes, state: 'pending' })
-          }
-        }
-        if (kind === 'builder' && env.program) {
-          const err = validateProgram(env.program)
-          if (err) {
-            pushMsg({ id: nextId(), kind: 'sys', text: '받은 블록에 문제가 있어 적용할 수 없어요. 다시 만들어 달라고 해 주세요.' })
-            setPendingNote('(생성한 블록이 검증에 실패했어: ' + err + '. 해당 부분만 고쳐서 다시 생성해줘)')
-          } else {
-            pushMsg({ id: nextId(), kind: 'program', program: env.program, state: 'pending' })
-          }
-        }
-      } catch (e) {
-        // 보내지 못한 턴은 대화에서 뺀다. 그 턴에 실어 보낸 메모(제안 적용·거절 같은 pendingNote)는 다음 전송에 다시 싣는다.
-        const lostNote = current.pendingNote
-        setChat((prev) =>
-          prev
-            ? {
-                ...prev,
-                wire: prev.wire.slice(0, -1),
-                typing: false,
-                pendingNote: [lostNote, prev.pendingNote].filter(Boolean).join('\n'),
-              }
-            : prev,
-        )
-        const err = e as QuotaError
-        pushMsg({ id: nextId(), kind: 'sys', text: err.message })
-        // 세션이 끊겼다면(다른 기기에서 계정 삭제 등) 로그인 안내를 띄우고, 로그인하면 챗을 다시 연다.
-        // 로그인할 수 없는 환경(브라우저)에서는 안내를 띄워도 버튼이 동작하지 않으므로 메시지만 남긴다.
-        if (err.loginRequired && loginAvailable()) {
-          void fetchAccountState().then(setAccount)
-          setChatOpen(false)
-          afterCoachLoginRef.current = () => setChatOpen(true)
-          setCoachLoginOpen(true)
-        }
-        // 한도를 다 쓴 거라면 페이월로 안내한다. 무료 사용자에게만 의미가 있다.
-        if (err.quota) {
-          void fetchAccountState().then(setAccount)
-          if (err.tier !== 'paid') {
-            setPaywall({ open: true, reason: err.message })
-          }
-        }
-      } finally {
-        setChat((prev) => (prev ? { ...prev, busy: false, generate: false } : prev))
-      }
-    },
-    [pushMsg, setPendingNote],
-  )
-
-  const onChatGenerate = useCallback(() => {
-    const current = chatRef.current
-    if (!current || current.busy) return
-    void sendChat('지금까지 합의한 내용으로 블록을 생성해줘', true)
-  }, [sendChat])
-
   // ============ RENDER ============
-  const activeSlot = route.view === 'today' ? route.slot : 1
-
-  // 로그인 게이트: 네이티브 앱에서, 계정 조회가 끝났고, 계정이 없고, 건너뛰지 않았을 때만.
-  // 브라우저 배포본에는 Apple 로그인이 없으므로 아예 띄우지 않는다.
-  const loginGateOpen =
-    loginAvailable() &&
-    !skipLoginGateFlag() &&
-    accountResolved &&
-    !account.accountId &&
-    !loginSkipped
-
   // 세션이 지금 어느 세트에 있는지 — 오늘 목록에서 위치와 휴식을 함께 보여준다.
   const currentMarkSet = focus && focus.phase !== 'complete' ? focus.flatSets[focus.currentIdx] : undefined
   const sessionMark: SessionMark | null =
@@ -1536,19 +1032,6 @@ function App() {
     total: focus ? focus.flatSets.length : 0,
     minutes: summaryLog ? sessionDuration(summaryLog) : null,
     volumeKg: summaryLog ? logVolume(summaryLog) : 0,
-  }
-
-  if (loginGateOpen) {
-    return (
-      <LoginGate
-        open
-        onSignIn={doSignIn}
-        onSkip={() => {
-          localStorage.setItem(LOGIN_SKIP_KEY, '1')
-          setLoginSkipped(true)
-        }}
-      />
-    )
   }
 
   return (
@@ -1584,21 +1067,13 @@ function App() {
       {route.view === 'logDetail' && <LogDetailView date={route.date} />}
       {route.view === 'settings' && (
         <SettingsView
-          onBuilder={() => withCoach(() => openChat('builder'))}
           onChangeRoutine={openRoutinePicker}
-          aiConsent={aiConsent}
-          onAiConsentToggle={() => void onAiConsentToggle()}
-          onDeleteAccount={() => setDeleteSheet((d) => ({ open: true, key: d.key + 1 }))}
-          account={account}
-          onAccountChange={setAccount}
-          onOpenPaywall={() => setPaywall({ open: true, reason: null })}
           onImport={importRecords}
         />
       )}
 
-      {/* 하단 고정 스택 — FAB이 미니 바 유무에 따라 자동으로 올라간다 */}
+      {/* 하단 고정 스택 — 미니 바와 탭바 */}
       <div className="bottom-stack">
-        <Fab show={route.view === 'today'} onClick={() => withCoach(() => openChat('daily', activeSlot))} />
         <MiniPlayer
           focus={focus}
           next={focusNext}
@@ -1622,17 +1097,6 @@ function App() {
         onClose={closeMemo}
         onSave={onMemoSave}
       />
-      <ChatOverlay
-        open={chatOpen}
-        chat={chat}
-        onClose={closeChat}
-        onSend={sendChat}
-        onGenerate={onChatGenerate}
-        onProposalApply={onProposalApply}
-        onProposalReject={onProposalReject}
-        onProgramApply={onProgramApply}
-        onProgramReject={onProgramReject}
-      />
       <FocusMode
         focus={focus}
         next={focusNext}
@@ -1642,11 +1106,6 @@ function App() {
         summary={focusSummary}
         onCollapse={() => setFocusCollapsed(true)}
         onExit={onFocusExit}
-        onCoach={() => {
-          if (!focus) return
-          const cur = focus.flatSets[focus.currentIdx]
-          withCoach(() => openChat('daily', focus.slot, cur ? { s: cur.sIdx, i: cur.setIdx } : null))
-        }}
         onNext={onFocusNext}
         onSkipRest={onSkipRest}
         onExtendRest={extendRest}
@@ -1656,38 +1115,12 @@ function App() {
         }
         onDone={exitFocusMode}
       />
-      <Paywall
-        open={paywall.open}
-        reason={paywall.reason}
-        onClose={() => setPaywall({ open: false, reason: null })}
-        onUpgraded={setAccount}
-        loggedIn={!!account.accountId}
-        onSignIn={doSignIn}
-      />
-      <CoachLoginSheet open={coachLoginOpen} onSignIn={doSignIn} onClose={closeCoachLogin} onDone={onCoachLoginDone} />
-      <AiConsentSheet open={aiConsentOpen} onAgree={onAiConsentAgree} onDecline={onAiConsentDecline} />
-      <DeleteAccountSheet
-        key={'delete' + deleteSheet.key}
-        open={deleteSheet.open}
-        subscribed={account.tier === 'paid'}
-        onDelete={onDeleteAccount}
-        onClose={() => setDeleteSheet((d) => ({ ...d, open: false }))}
-      />
-      <NotificationSettingsModal
-        active={showNotificationSettings}
-        onCancel={() => setShowNotificationSettings(false)}
-        onConfirm={() => {
-          setShowNotificationSettings(false)
-          openNativeNotificationSettings()
-        }}
-      />
       <Onboarding
         key={'onboard' + onboarding.key}
         open={onboardingVisible}
         mode={onboarding.mode}
         onApply={onOnboardApply}
         onLater={onOnboardLater}
-        onCoach={onOnboardCoach}
       />
       <ConfirmDialog request={confirmReq} onResolve={resolveConfirm} />
     </>
@@ -2379,12 +1812,6 @@ function LogDetailView({ date }: { date: string }) {
 }
 
 // ============ SETTINGS VIEW ============
-const MODE_LABELS: Record<string, string> = {
-  daily_adjust: '코치 루틴 조정',
-  program_intake: '블록 상담',
-  program_generate: '새 블록 만들기',
-}
-
 type ImportResult = { error: boolean; text: string }
 
 function skippedText(plan: ImportPlan): string {
@@ -2392,30 +1819,11 @@ function skippedText(plan: ImportPlan): string {
 }
 
 type SettingsViewProps = {
-  onBuilder: () => void
   onChangeRoutine: () => void
-  aiConsent: AiConsent | null
-  onAiConsentToggle: () => void
-  onDeleteAccount: () => void
-  account: AccountState
-  onAccountChange: (state: AccountState) => void
-  onOpenPaywall: () => void
   onImport: (file: File) => Promise<ImportResult | null>
 }
 
-function SettingsView({
-  onBuilder,
-  onChangeRoutine,
-  aiConsent,
-  onAiConsentToggle,
-  onDeleteAccount,
-  account,
-  onAccountChange,
-  onOpenPaywall,
-  onImport,
-}: SettingsViewProps) {
-  const [authBusy, setAuthBusy] = useState(false)
-  const [authError, setAuthError] = useState<string | null>(null)
+function SettingsView({ onChangeRoutine, onImport }: SettingsViewProps) {
   const importInputRef = useRef<HTMLInputElement>(null)
   const [importBusy, setImportBusy] = useState(false)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
@@ -2450,19 +1858,6 @@ function SettingsView({
     }
   }
 
-  const runAuth = async (fn: () => Promise<unknown>) => {
-    setAuthBusy(true)
-    setAuthError(null)
-    try {
-      await fn()
-      onAccountChange(await fetchAccountState())
-    } catch (e) {
-      setAuthError((e as Error).message)
-    } finally {
-      setAuthBusy(false)
-    }
-  }
-
   const index = lsGet<string[]>(LOG_INDEX_KEY, [])
   const p = activeProgram()
   const [plate, setPlate] = useState(plateStep)
@@ -2472,73 +1867,11 @@ function SettingsView({
     setPlate(next)
   }
 
-  const accountText = account.offline
-    ? '코치 서버에 연결되지 않았어요'
-    : account.accountId
-      ? 'Apple 계정으로 로그인됨'
-      : '로그인하지 않음'
-
   return (
     <div className="app" id="app">
       <div className="header">
         <h1 className="header-title kr">설정</h1>
       </div>
-
-      {/* 계정·구독은 Apple 로그인이 되는 iOS 앱에서만 의미가 있다. 브라우저 배포본에서는 눌러도 동작하지 않는
-          로그인·구독 버튼과 '서버에 연결되지 않았어요' 문구만 남으므로 칸을 통째로 숨긴다. */}
-      {loginAvailable() ? (
-        <>
-          <div className="settings-group-label">계정</div>
-          <div className="settings-block account-block">
-            <div className="account-row">
-              <span className={`tier-badge ${account.tier}`}>{account.tier === 'paid' ? 'PRO' : 'FREE'}</span>
-              <span className="account-id">{accountText}</span>
-            </div>
-
-            {account.usage ? (
-              <div className="usage-list">
-                {Object.entries(account.usage).map(([mode, usage]) => (
-                  <div className="usage-row" key={mode}>
-                    <span className="usage-name">{MODE_LABELS[mode] || mode}</span>
-                    <span className="usage-bar">
-                      <span style={{ width: `${Math.min((usage.used / Math.max(usage.limit, 1)) * 100, 100)}%` }} />
-                    </span>
-                    <span className="usage-num">
-                      {usage.window === 'month' ? '이번 달' : '오늘'} {usage.used}/{usage.limit}회
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-
-            <div className="account-actions">
-              {account.tier === 'paid' ? null : (
-                <button className="reset-btn accent" type="button" onClick={onOpenPaywall}>
-                  PRO 구독하기
-                </button>
-              )}
-              {account.accountId ? (
-                <button className="reset-btn" type="button" disabled={authBusy} onClick={() => runAuth(signOut)}>
-                  로그아웃
-                </button>
-              ) : (
-                <button className="reset-btn" type="button" disabled={authBusy} onClick={() => runAuth(signIn)}>
-                   Apple로 로그인
-                </button>
-              )}
-            </div>
-            {authError ? <div className="settings-error">{authError}</div> : null}
-            {!account.accountId ? (
-              <div className="settings-hint">로그인하면 코치를 쓸 수 있고, 기기를 바꿔도 구독이 그대로 이어져요.</div>
-            ) : null}
-          </div>
-          {account.accountId ? (
-            <button className="settings-danger-link" type="button" onClick={onDeleteAccount}>
-              계정 삭제
-            </button>
-          ) : null}
-        </>
-      ) : null}
 
       <div className="settings-group-label">프로그램</div>
       {p ? (
@@ -2577,15 +1910,6 @@ function SettingsView({
         <span className="settings-item-value">{plate}kg</span>
       </button>
 
-      <button className="settings-item" type="button" onClick={onBuilder}>
-        <span>
-          코치와 새 블록 만들기
-          <span className="settings-item-sub">목표와 일정을 말하면 몇 주짜리 프로그램을 짜 줘요</span>
-        </span>
-        <span className="chev" aria-hidden="true">›</span>
-      </button>
-      <AiConsentSettingsRow consent={aiConsent} onToggle={onAiConsentToggle} />
-
       <div className="settings-group-label">데이터</div>
       <button className="settings-item" type="button" disabled={exportBusy} onClick={() => void onExport()}>
         <span>
@@ -2599,7 +1923,6 @@ function SettingsView({
           {exportResult.text}
         </div>
       ) : null}
-      {/* iOS 웹뷰에서도 표준 파일 입력이 '파일' 앱 선택 창을 연다 — 네이티브 쪽 처리는 필요 없다. */}
       <input
         ref={importInputRef}
         type="file"
@@ -2625,24 +1948,6 @@ function SettingsView({
         </div>
       ) : null}
 
-      {/* 문서는 코치 서버가 서빙한다. 서버 주소 없이 빌드했으면 열 곳이 없으니 숨긴다. */}
-      {TERMS_URL || PRIVACY_URL ? (
-        <>
-          <div className="settings-group-label">정보</div>
-          {TERMS_URL ? (
-            <button className="settings-item" type="button" onClick={() => openExternal(TERMS_URL)}>
-              <span>이용약관</span>
-              <span className="chev" aria-hidden="true">›</span>
-            </button>
-          ) : null}
-          {PRIVACY_URL ? (
-            <button className="settings-item" type="button" onClick={() => openExternal(PRIVACY_URL)}>
-              <span>개인정보처리방침</span>
-              <span className="chev" aria-hidden="true">›</span>
-            </button>
-          ) : null}
-        </>
-      ) : null}
     </div>
   )
 }
@@ -2753,264 +2058,6 @@ function ActualSheet({ ctx, onClose, onSave, onSkip }: ActualSheetProps) {
         </div>
       </div>
     </>
-  )
-}
-
-// ============ CHAT OVERLAY ============
-type ChatOverlayProps = {
-  open: boolean
-  chat: ChatState | null
-  onClose: () => void
-  onSend: (text: string) => void
-  onGenerate: () => void
-  onProposalApply: (id: number, slot: number, proposal: Proposal) => void
-  onProposalReject: (id: number) => void
-  onProgramApply: (id: number, program: Program, start: string) => void
-  onProgramReject: (id: number) => void
-}
-
-const CHAT_COPY = {
-  daily: {
-    sub: (slot: number) => `DAY ${slot} 루틴 조정`,
-    intro: '오늘 컨디션이나 상황을 알려주세요. 코치가 남은 세트를 맞춰 조정해 드려요.',
-    chips: ['오늘 컨디션 별로야', '30분밖에 없어', '허리가 좀 불편해', '잠을 거의 못 잤어'],
-    placeholder: '지금 상태를 알려주세요',
-  },
-  builder: {
-    sub: () => '새 블록 설계',
-    intro: '목표, 주당 운동 횟수, 기간을 알려주세요. 코치가 몇 가지 물어본 뒤 블록을 짜 드려요.',
-    chips: ['다음 블록 짜줘', '주 4일로 바꾸고 싶어', '벤치 위주로 가고 싶어'],
-    placeholder: '목표나 일정을 알려주세요',
-  },
-} as const
-
-function ChatOverlay({
-  open,
-  chat,
-  onClose,
-  onSend,
-  onGenerate,
-  onProposalApply,
-  onProposalReject,
-  onProgramApply,
-  onProgramReject,
-}: ChatOverlayProps) {
-  const [input, setInput] = useState('')
-  const bodyRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    const b = bodyRef.current
-    if (b) b.scrollTop = b.scrollHeight
-  }, [open, chat?.messages, chat?.typing])
-
-  // 키보드가 뜨면서 웹뷰가 리사이즈되면 대화를 맨 아래로 유지
-  useEffect(() => {
-    const onResize = () => {
-      const b = bodyRef.current
-      if (b) b.scrollTop = b.scrollHeight
-    }
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
-  const busy = !!chat?.busy
-  const canSend = !!input.trim() && !busy
-
-  const submit = () => {
-    if (!canSend) return
-    const v = input
-    setInput('')
-    onSend(v)
-  }
-
-  const copy = CHAT_COPY[chat?.kind ?? 'daily']
-  const showIntro = !!chat && !chat.messages.some((m) => m.kind === 'user')
-
-  return (
-    <div className={`chat-overlay ${open ? 'active' : ''}`} aria-hidden={!open}>
-      <div className="chat-backdrop" onClick={onClose} />
-      <div className="chat-panel">
-        <div className="chat-handle" />
-        <div className="chat-header">
-          <div className="chat-heading">
-            <div className="chat-title">
-              GYM<span>BRO</span>
-            </div>
-            <div className="chat-sub">{chat ? copy.sub(chat.slot) : ''}</div>
-          </div>
-          {chat?.kind === 'builder' ? (
-            <button className="chat-hbtn gen" type="button" disabled={busy} onClick={onGenerate}>
-              블록 만들기
-            </button>
-          ) : null}
-          <button className="chat-close" type="button" aria-label="닫기" onClick={onClose}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
-        <div className="chat-body" ref={bodyRef}>
-          {showIntro ? <div className="chat-intro">{copy.intro}</div> : null}
-          {chat?.messages.map((m) => {
-            if (m.kind === 'proposal') {
-              return (
-                <ProposalCard
-                  key={m.id}
-                  msg={m}
-                  onApply={() => onProposalApply(m.id, chat.slot, m.proposal)}
-                  onReject={() => onProposalReject(m.id)}
-                />
-              )
-            }
-            if (m.kind === 'program') {
-              return (
-                <ProgramCard
-                  key={m.id}
-                  msg={m}
-                  onApply={(start) => onProgramApply(m.id, m.program, start)}
-                  onReject={() => onProgramReject(m.id)}
-                />
-              )
-            }
-            return (
-              <div key={m.id} className={`chat-msg ${m.kind}`}>
-                {m.text}
-              </div>
-            )
-          })}
-          {chat?.typing ? (
-            chat.generate ? (
-              <div className="chat-typing">블록을 설계하고 있어요. 1~2분 정도 걸려요.</div>
-            ) : (
-              <div className="chat-typing dots" aria-label="코치가 답변을 쓰고 있어요">
-                <span />
-                <span />
-                <span />
-              </div>
-            )
-          ) : null}
-          {showIntro ? (
-            <div className="quick-chips">
-              {copy.chips.map((c) => (
-                <button key={c} className="quick-chip" type="button" onClick={() => onSend(c)}>
-                  {c}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <div className="chat-input-bar">
-          <input
-            className="chat-input"
-            type="text"
-            placeholder={copy.placeholder}
-            autoComplete="off"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                e.preventDefault()
-                submit()
-              }
-            }}
-          />
-          <button className="chat-send" type="button" aria-label="보내기" disabled={!canSend} onClick={submit}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 19V5M6 11l6-6 6 6" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ProposalCard({
-  msg,
-  onApply,
-  onReject,
-}: {
-  msg: Extract<ChatMessage, { kind: 'proposal' }>
-  onApply: () => void
-  onReject: () => void
-}) {
-  return (
-    <div className="diff-card">
-      <div className="dc-title">오늘 루틴 조정안</div>
-      {msg.proposal.summary ? <div className="dc-summary">{msg.proposal.summary}</div> : null}
-      {msg.changes.map((c, i) => (
-        <div className="dc-item" key={i}>
-          {c}
-        </div>
-      ))}
-      {msg.state === 'pending' ? (
-        <div className="dc-actions">
-          <button className="dc-btn reject" type="button" onClick={onReject}>
-            적용 안 함
-          </button>
-          <button className="dc-btn apply" type="button" onClick={onApply}>
-            적용하기
-          </button>
-        </div>
-      ) : msg.state === 'applied' ? (
-        <div className="dc-state ok">오늘 루틴에 적용했어요. 오늘 탭에서 되돌릴 수 있어요.</div>
-      ) : (
-        <div className="dc-state">적용하지 않았어요. 원하는 방향을 말해 주면 다시 제안해요.</div>
-      )}
-    </div>
-  )
-}
-
-function ProgramCard({
-  msg,
-  onApply,
-  onReject,
-}: {
-  msg: Extract<ChatMessage, { kind: 'program' }>
-  onApply: (start: string) => void
-  onReject: () => void
-}) {
-  const [start, setStart] = useState(nextMonday)
-  const program = msg.program
-  const progressionCount = (program.progression || []).length
-  return (
-    <div className="diff-card program">
-      <div className="dc-title">새 블록 제안</div>
-      <div className="dc-name">{program.name}</div>
-      <div className="dc-meta">
-        {program.weeks}주 · {frequencyText(program.days)}
-        {program.deload ? ` · ${program.deload.week}주차 디로드` : ''}
-      </div>
-      {program.intent ? <div className="dc-summary">{program.intent}</div> : null}
-      {program.days.map((d, i) => (
-        <div className="dc-item" key={i}>
-          <span className="dc-dot" style={{ background: d.color }} /> DAY {i + 1} · {d.title}
-          {dayLabel(d) ? <span className="dc-faint"> · {dayLabel(d)}</span> : null}
-          <span className="dc-faint"> · {countTotalSets(d)}세트</span>
-        </div>
-      ))}
-      {progressionCount ? <div className="dc-item dc-faint">매주 무게를 올리는 종목 {progressionCount}개</div> : null}
-      {msg.state === 'pending' ? (
-        <>
-          <label className="dc-date">
-            <span>시작일</span>
-            <input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
-          </label>
-          <div className="dc-actions">
-            <button className="dc-btn reject" type="button" onClick={onReject}>
-              수정 요청
-            </button>
-            <button className="dc-btn apply" type="button" disabled={!start} onClick={() => onApply(start)}>
-              이 블록으로 시작
-            </button>
-          </div>
-        </>
-      ) : msg.state === 'applied' ? (
-        <div className="dc-state ok">블록을 적용했어요. 오늘 탭에서 바로 확인할 수 있어요.</div>
-      ) : (
-        <div className="dc-state">어떤 부분을 바꾸고 싶은지 말해 주세요.</div>
-      )}
-    </div>
   )
 }
 

@@ -27,7 +27,6 @@ type FocusModeProps = {
   summary: FocusSummary
   onCollapse: () => void
   onExit: () => void
-  onCoach: () => void
   onNext: () => void
   onSkipRest: () => void
   onExtendRest: (sec: number) => void
@@ -45,7 +44,6 @@ export function FocusMode({
   summary,
   onCollapse,
   onExit,
-  onCoach,
   onNext,
   onSkipRest,
   onExtendRest,
@@ -76,11 +74,6 @@ export function FocusMode({
           </div>
         </div>
         <div className="focus-header-right">
-          <button className="focus-icon-btn" type="button" onClick={onCoach} aria-label="코치에게 물어보기">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-4 3.5V16H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
-            </svg>
-          </button>
           <button className="focus-end-btn" type="button" onClick={onExit}>
             마치기
           </button>
