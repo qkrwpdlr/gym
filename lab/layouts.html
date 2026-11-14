@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>레이아웃 시안</title>
+<style>
+  body { margin: 0; background: #0b0b0b; color: #ece8df; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; }
+  main { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } p { color: #9a968e; font-size: 13px; margin: 0 0 14px; line-height: 1.5; }
+  .row { padding: 12px 14px; margin-bottom: 8px; border: 1px solid #2a2a2a; border-radius: 10px; background: #151515; }
+  .row b { display: block; font-size: 15px; } .row span { display: block; font-size: 12px; color: #9a968e; margin: 2px 0 8px; }
+  .row a { display: inline-block; margin-right: 6px; padding: 6px 10px; border-radius: 6px; border: 1px solid #333; color: #ece8df; font-size: 12px; text-decoration: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>레이아웃 시안</h1>
+  <p>같은 내용을 다섯 가지로 배치했어요. 아이폰 13 mini 한 화면 기준이에요. 운동을 눌러 비교해 보세요.</p>
+  <div id="list"></div>
+</main>
+<script>
+  const L = [
+    ['a', 'A · 스택', '시범 → 앞·뒤 지도와 근육 설명 → 요점을 위에서 아래로'],
+    ['b', 'B · 앞·옆·뒤', '앞 지도 | 옆모습 시범 | 뒤 지도를 한 줄에, 아래에 큐와 설명'],
+    ['c', 'C · 겹쳐 보기', '시범을 가장 크게, 지도는 시범 위 모서리에 작게'],
+    ['d', 'D · 탭', '시범 아래를 근육 / 요령 탭으로 나눠 한 번에 하나씩'],
+    ['e', 'E · 좌우 분할', '왼쪽 큰 시범, 오른쪽에 앞·뒤 지도를 세로로'],
+  ]
+  const EX = [['askling-diver', '다이버'], ['t-bar-row', 'T바 로우'], ['pull-up', '풀업']]
+  document.getElementById('list').innerHTML = L.map(([k, t, d]) =>
+    `<div class="row"><b>${t}</b><span>${d}</span>${EX.map(([e, n]) => `<a href="${e}.html?layout=${k}">${n}</a>`).join('')}</div>`).join('')
+</script>
+</body>
+</html>

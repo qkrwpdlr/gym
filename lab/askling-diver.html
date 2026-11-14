@@ -3,125 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>아스클링 다이버 · 자세 보기</title>
+<title>자세 보기</title>
 <link rel="stylesheet" href="lineart-demo.css" />
 </head>
 <body>
-<main>
-  <div class="kicker">회복 2단계 · 아스클링 L-프로토콜</div>
-  <h1>아스클링 다이버</h1>
-  <p class="sub">다친 다리로 서서 다이빙하듯 상체를 숙여요. 3×6 · 이틀에 한 번 · 통증 없는 범위까지만.</p>
-
-  <div class="stage">
-    <svg id="scene" role="img" aria-label="옆에서 본 아스클링 다이버 동작 반복 애니메이션"></svg>
-    <div class="cue" id="cue" aria-live="polite"></div>
-    <div class="bar" id="bar"></div>
-  </div>
-  <div class="controls">
-    <button id="play" type="button" aria-pressed="false">일시정지</button>
-    <button id="slow" type="button" aria-pressed="false">0.5배속</button>
-  </div>
-
-  <section class="mcard" aria-label="힘이 들어가는 근육">
-    <div class="mhead">
-      <h2>힘이 들어가는 곳</h2>
-      <div class="side" role="group" aria-label="다친 다리">
-        <button type="button" data-side="left">다친 쪽 왼다리</button>
-        <button type="button" data-side="right">오른다리</button>
-      </div>
-    </div>
-    <div class="maps">
-      <figure><div class="map" id="mapF"></div><figcaption>앞</figcaption></figure>
-      <figure><div class="map" id="mapB"></div><figcaption>뒤</figcaption></figure>
-    </div>
-    <div class="roles" id="roles" aria-live="polite"></div>
-    <div class="scale"><span>약하게</span><i></i><span>세게</span></div>
-    <p class="hint">옆모습 인형에도 같은 색으로 칠해요. 점선은 늘어나면서 버티는 근육, 옅은 인형은 끝 자세예요.
-      강도는 운동역학 지식으로 정한 추정치이고 근전도 측정값이 아니에요.</p>
-  </section>
-
-  <ul>
-    <li>선 다리 무릎은 10~20° 살짝 굽힌 채 끝까지 고정해요. 무릎을 펴서 늘리지 않아요.</li>
-    <li>상체 숙이기, 팔 앞으로 뻗기, 뒷다리 뒤로 뻗기를 동시에 해요.</li>
-    <li>골반은 바닥과 수평으로 두고 옆으로 돌리지 않아요.</li>
-    <li>당기는 느낌이 2/10을 넘으면 그 직전 깊이에서 멈춰요.</li>
-  </ul>
-  <p class="note">제 운동역학 지식으로 짠 근사 시범이에요. 처음에는 실제 영상과 한 번 대조해 보세요.
-    <a href="https://www.youtube.com/results?search_query=Askling+diver+L-protocol" rel="noopener">영상 검색</a> ·
-    선 그리기: <a href="https://github.com/JDhruv14/line-art-animation" rel="noopener">line-art-animation</a> (MIT) ·
-    근육 지도: <a href="https://github.com/vulovix/body-muscles" rel="noopener">body-muscles</a> (Apache-2.0,
-    <a href="vendor/body-muscles/LICENSE">LICENSE</a> · <a href="vendor/body-muscles/NOTICE">NOTICE</a>)</p>
-</main>
+<main id="app"></main>
 <script src="vendor/body-muscles/body-muscles.umd.min.js"></script>
 <script src="lineart-demo.js"></script>
-<script>
-const { go, lerp, L } = LineArtDemo
-// 두 마디 IK: a에서 b까지 l1·l2 길이로 잇고, bend=+1이면 가운데 관절이 앞(+x), -1이면 뒤.
-function ik(a, b, l1, l2, bend) {
-  const dx = b[0] - a[0], dy = b[1] - a[1]
-  const d = Math.min(Math.hypot(dx, dy), l1 + l2 - 0.01)
-  const th = Math.atan2(dy, dx)
-  const al = Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d))))
-  const c1 = [a[0] + l1 * Math.cos(th - al), a[1] + l1 * Math.sin(th - al)]
-  const c2 = [a[0] + l1 * Math.cos(th + al), a[1] + l1 * Math.sin(th + al)]
-  return (c1[0] - c2[0]) * bend > 0 ? c1 : c2
-}
-
-LineArtDemo.mount({
-  viewBox: '44 22 156 116',
-  ground: 'M48 130.6 L196 130.6',
-  sided: true,
-  ghostPose: 'end',
-  reducedAt: 4.5,
-  poses: {
-    start: { trunk: 176, arm: 12, elbow: 8, swingThigh: -4, swingKnee: 28 },
-    end: { trunk: 100, arm: 102, elbow: 2, swingThigh: -82, swingKnee: 4 },
-  },
-  phases: [
-    { key: 'set', dur: 1.2, from: 'start', to: 'start', cue: '다친 다리로 서요', sub: '무릎은 살짝 굽혀서 고정 · 반대 발은 살짝 띄우기' },
-    { key: 'dive', dur: 3.0, from: 'start', to: 'end', cue: '숙이며 팔은 앞으로, 뒷다리는 뒤로', sub: '세 동작을 동시에 · 천천히', stretch: ['S:ham'] },
-    { key: 'hold', dur: 1.2, from: 'end', to: 'end', cue: '끝에서 잠깐 멈춤', sub: '골반 수평 · 당김 2/10 넘으면 덜 숙이기', stretch: ['S:ham'] },
-    { key: 'back', dur: 2.4, from: 'end', to: 'start', cue: '천천히 돌아오기', sub: '선 다리 무릎 각도는 그대로' },
-  ],
-  // 선 다리(가까운 다리)는 발목 고정, 무릎 15° 고정. 숙일수록 정강이 기울기를 줄여 골반을 뒤로 보낸다.
-  solve(p) {
-    const depth = (176 - p.trunk) / 76
-    const ankleN = [118, 128]
-    const lean = lerp(9, 4, depth)
-    const kneeN = go(ankleN, L.shank, 180 - lean)
-    const hip = go(kneeN, L.thigh, 180 - lean + 15)
-    const shoulder = go(hip, L.torso, p.trunk)
-    const elbowN = go(shoulder, L.upper, p.arm)
-    const handN = go(elbowN, L.fore, p.arm + p.elbow)
-    const kneeF = go(hip, L.thigh, p.swingThigh)
-    const ankleF = go(kneeF, L.shank, p.swingThigh + p.swingKnee)
-    return { ankleN, kneeN, hip, shoulder, elbowN, handN, kneeF, ankleF, toeF: 12 + 58 * depth,
-      elbowF: [elbowN[0] - 1.2, elbowN[1] + 0.6], handF: [handN[0] - 1.2, handN[1] + 0.6] }
-  },
-  bands: [
-    { layer: 'far', key: 'O:ham', from: 'kneeF', to: 'hipF', off: 1.9, k0: 0.15, k1: 0.78 },
-    { layer: 'far', key: 'O:glute', from: 'kneeF', to: 'hipF', off: 2.2, k0: 0.84, k1: 1.0, w: 3.2 },
-    { layer: 'torso', key: 'B:erect', from: 'hip', to: 'shoulder', off: 3.6, k0: 0.22, k1: 0.78, w: 3 },
-    { layer: 'near', key: 'S:ham', from: 'kneeN', to: 'hip', off: 2.1, k0: 0.12, k1: 0.84, w: 2.6 },
-    { layer: 'near', key: 'S:quad', from: 'kneeN', to: 'hip', off: -2.1, k0: 0.12, k1: 0.84 },
-    { layer: 'near', key: 'S:calf', from: 'ankleN', to: 'kneeN', off: 1.7, k0: 0.3, k1: 0.82, w: 2.2 },
-    { layer: 'near', key: 'S:glute', type: 'glute', leg: 'near', w: 3.4 },
-    { layer: 'arm', key: 'B:delt', from: 'elbowN', to: 'shoulder', off: 0, k0: 0.7, k1: 1.0, w: 3.2 },
-  ],
-  loads: {
-    set: { 'S:quad': 3, 'S:gmed': 4, 'S:calf': 3, 'S:glute': 2 },
-    dive: { 'S:ham': 7, 'S:glute': 6, 'S:gmed': 5, 'B:erect': 5, 'O:glute': 6, 'O:ham': 4, 'B:delt': 3, 'S:quad': 3, 'S:calf': 3 },
-    hold: { 'S:ham': 7, 'S:glute': 6, 'S:gmed': 6, 'B:erect': 6, 'O:glute': 7, 'O:ham': 5, 'B:delt': 4, 'S:quad': 3, 'S:calf': 3 },
-    back: { 'S:glute': 7, 'S:ham': 6, 'S:gmed': 5, 'B:erect': 5, 'O:glute': 3, 'O:ham': 2, 'S:quad': 3, 'S:calf': 3 },
-  },
-  roles: {
-    set: [['주로', '선 다리 허벅지 앞·중둔근으로 균형 잡기'], ['버티기', '종아리']],
-    dive: [['주로', '선 다리 햄스트링(늘어나며 버팀)·엉덩이'], ['버티기', '허리(척추기립근)·중둔근으로 골반 수평'], ['보조', '뒷다리 엉덩이, 앞어깨']],
-    hold: [['주로', '선 다리 햄스트링·엉덩이로 자세 고정'], ['버티기', '허리·중둔근, 뒷다리 엉덩이'], ['보조', '앞어깨(팔 뻗기)']],
-    back: [['주로', '선 다리 엉덩이로 골반을 세워 올라오기'], ['보조', '선 다리 햄스트링, 허리']],
-  },
-})
-
-</script>
+<script src="ex/askling-diver.js"></script>
 </body>
 </html>

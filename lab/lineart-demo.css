@@ -1,35 +1,72 @@
-:root { --bg: #0b0b0b; --card: #151515; --ink: #ece8df; --paper: #151515; --dim: #9a968e; --faint: #66625b; --accent: #00ff88; }
+/* 한 화면(아이폰 13 mini, Safari 기준 약 375×629) 안에 시범·근육·요점을 모두 담는다. */
+:root { --bg: #0b0b0b; --card: #151515; --line: #262626; --ink: #ece8df; --paper: #151515; --dim: #9a968e; --faint: #66625b; --accent: #00ff88; }
 * { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; }
-main { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
-.kicker { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; }
-h1 { margin: 6px 0 4px; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; }
-.sub { margin: 0 0 14px; font-size: 13px; color: var(--dim); line-height: 1.5; }
-.stage { background: var(--card); border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
-#scene { display: block; width: 100%; height: auto; color: var(--ink); }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; -webkit-text-size-adjust: 100%; }
+main { max-width: 440px; margin: 0 auto; padding: max(10px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; }
+
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 0 4px; }
+h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; white-space: nowrap; }
+.kicker { font-size: 11px; color: var(--accent); font-weight: 700; text-align: right; }
+.sub { margin: -4px 4px 0; font-size: 12px; color: var(--dim); line-height: 1.4; }
+
+.stage { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+#scene { display: block; width: 100%; height: clamp(190px, 37.5svh, 260px); color: var(--ink); }
 .pp { fill: var(--paper); }
-.cue { min-height: 52px; padding: 12px 14px 0; font-size: 16px; font-weight: 800; line-height: 1.35; }
-.cue small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--dim); }
-.bar { display: flex; gap: 3px; padding: 10px 14px 14px; }
-.bar span { position: relative; height: 4px; border-radius: 2px; background: #262626; overflow: hidden; }
+.ctl { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
+.ctl button { width: 36px; height: 36px; padding: 0; border-radius: 50%; border: 1px solid #333; background: rgba(21, 21, 21, 0.85); color: var(--ink); font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; display: grid; place-items: center; }
+.ctl button svg { width: 16px; height: 16px; }
+.ctl button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+.cue { min-height: 44px; padding: 2px 12px 0; font-size: 15px; font-weight: 800; line-height: 1.3; }
+.cue small { display: block; margin-top: 1px; font-size: 12px; font-weight: 500; color: var(--dim); }
+.bar { display: flex; gap: 3px; padding: 8px 12px 10px; }
+.bar span { position: relative; height: 3px; border-radius: 2px; background: #262626; overflow: hidden; }
 .bar span i { position: absolute; inset: 0; width: 0; background: var(--accent); }
-.controls { display: flex; gap: 8px; margin-top: 12px; }
-button { flex: 1; min-height: 44px; border-radius: 8px; border: 1px solid #333; background: none; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
-button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
-.mcard { margin-top: 14px; background: var(--card); border: 1px solid #262626; border-radius: 12px; padding: 14px; }
-.mhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.mhead h2 { margin: 0; font-size: 15px; font-weight: 800; }
-.side { display: flex; gap: 4px; }
-.side button { flex: none; min-height: 34px; padding: 0 10px; font-size: 12px; }
-.maps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-.maps figure { margin: 0; text-align: center; }
-.maps figcaption { font-size: 11px; color: var(--faint); margin-top: 2px; }
-.maps .map { max-width: 120px; margin: 0 auto; }
-.roles { margin-top: 10px; font-size: 13px; line-height: 1.55; min-height: 60px; }
-.roles b { display: inline-block; min-width: 44px; color: var(--dim); font-weight: 600; }
-.scale { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 11px; color: var(--faint); }
-.scale i { flex: 1; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #fde047, #facc15, #fb923c, #ea580c, #ef4444, #b91c1c); }
-.hint { margin: 8px 0 0; font-size: 11px; color: var(--faint); line-height: 1.5; }
-ul { margin: 14px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: var(--dim); }
-.note { margin-top: 16px; font-size: 11px; color: var(--faint); line-height: 1.5; }
+
+.info { display: grid; grid-template-columns: auto 1fr; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.maps { display: flex; gap: 2px; }
+.maps figure { margin: 0; width: 66px; text-align: center; }
+.maps figcaption { font-size: 10px; color: var(--faint); }
+.text { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.roles { font-size: 12.5px; line-height: 1.4; display: flex; flex-direction: column; gap: 4px; }
+.roles div { display: grid; grid-template-columns: 30px 1fr; gap: 4px; }
+.roles b { color: var(--dim); font-weight: 600; }
+.scale { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--faint); }
+.scale i { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #fde047, #fb923c, #ef4444, #b91c1c); }
+.side { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--faint); }
+.side button { min-height: 28px; padding: 0 8px; border-radius: 6px; border: 1px solid #333; background: none; color: var(--dim); font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.side button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+ul.tips { margin: 0; padding-left: 16px; font-size: 12px; line-height: 1.45; color: var(--dim); }
+ul.tips li + li { margin-top: 2px; }
+.note { margin: 0 4px; font-size: 10px; color: var(--faint); line-height: 1.4; }
 .note a { color: var(--dim); }
+
+/* ---------- 시안별 배치 ---------- */
+.info1, .cuebox { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.cuebox { padding: 6px 0 0; }
+
+/* B 앞·옆·뒤 */
+.L-b .trip { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
+.L-b .trip .maps figure { width: 70px; }
+.L-b .trip .stage { border: 0; background: none; }
+.L-b #scene { height: clamp(190px, 36svh, 240px); }
+
+/* C 겹쳐 보기 */
+.L-c #scene { height: clamp(240px, 46svh, 320px); }
+.L-c .inset { position: absolute; left: 8px; top: 8px; padding: 4px; border-radius: 10px; background: rgba(11, 11, 11, 0.55); }
+.L-c .inset .maps figure { width: 50px; }
+
+/* D 탭 */
+.L-d .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.L-d .tabs button { min-height: 34px; border: 0; border-radius: 8px; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.L-d .tabs button[aria-selected='true'] { background: #262626; color: var(--ink); }
+.L-d .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: auto 1fr; gap: 10px; min-height: 188px; }
+.L-d .panel[data-panel='t'] { display: flex; flex-direction: column; gap: 10px; }
+.L-d .panel[hidden] { display: none; }
+.L-d .panel .maps figure { width: 62px; }
+.L-d #scene { height: clamp(200px, 37svh, 250px); }
+
+/* E 좌우 분할 */
+.L-e .split { display: grid; grid-template-columns: 1fr 72px; gap: 6px; }
+.L-e .maps.col { flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px 2px; }
+.L-e .maps.col figure { width: 64px; }
+.L-e #scene { height: clamp(210px, 38svh, 280px); }

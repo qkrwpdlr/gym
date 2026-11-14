@@ -81,7 +81,63 @@
     abs: ['abs-upper', 'abs-lower'], triceps: ['triceps-long', 'triceps-lateral'], chest: ['chest-upper', 'chest-lower'],
   }
 
+  const ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>'
+  const ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>'
+
+  // ---------- 화면 구성(시안 A~E, ?layout=로 고름) ----------
+  const LAYOUTS = {
+    a: '스택', b: '앞·옆·뒤', c: '겹쳐 보기', d: '탭', e: '좌우 분할',
+  }
+  function buildLayout(meta, sided) {
+    const q = new URLSearchParams(location.search)
+    const lay = LAYOUTS[(q.get('layout') || 'a').toLowerCase()] ? (q.get('layout') || 'a').toLowerCase() : 'a'
+    const app = document.getElementById('app')
+    app.className = 'L-' + lay
+    document.title = `${meta.title} · 자세 보기`
+    const P = {
+      head: `<header class="top"><h1>${meta.title}</h1><span class="kicker">${meta.kicker}</span></header><p class="sub">${meta.sub}</p>`,
+      fig: `<svg id="scene" role="img" aria-label="옆에서 본 ${meta.title} 동작 반복 애니메이션"></svg>`,
+      ctl: `<div class="ctl"><button id="play" type="button" aria-label="일시정지">${ICON_PAUSE}</button><button id="slow" type="button" aria-pressed="false" aria-label="0.5배속으로 보기">½</button></div>`,
+      cue: `<div class="cue" id="cue" aria-live="polite"></div><div class="bar" id="bar"></div>`,
+      mapF: `<figure><div class="map" id="mapF"></div><figcaption>앞</figcaption></figure>`,
+      mapB: `<figure><div class="map" id="mapB"></div><figcaption>뒤</figcaption></figure>`,
+      roles: `<div class="roles" id="roles"></div>`,
+      scale: `<div class="scale"><span>약</span><i></i><span>강</span></div>`,
+      side: sided ? `<div class="side">다친 쪽 <button type="button" data-side="left">왼다리</button><button type="button" data-side="right">오른다리</button></div>` : '',
+      tips: `<ul class="tips">${meta.tips.map((t) => `<li>${t}</li>`).join('')}</ul>`,
+      note: `<p class="note">근사 시범이에요. 근육 강도는 추정치예요 · <a href="https://www.youtube.com/results?search_query=${meta.yt}" rel="noopener">영상 검색</a> · <a href="credits.html">출처·라이선스</a></p>`,
+    }
+    const maps = `<div class="maps">${P.mapF}${P.mapB}</div>`
+    const html = {
+      // A 스택: 시범 → [지도 | 근육 설명] → 요점
+      a: `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
+          <section class="info">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>${P.tips}${P.note}`,
+      // B 앞·옆·뒤: 앞 지도 | 옆모습 시범 | 뒤 지도를 한 줄에
+      b: `${P.head}<section class="trip"><div class="maps">${P.mapF}</div><div class="stage">${P.fig}${P.ctl}</div><div class="maps">${P.mapB}</div></section>
+          <section class="cuebox">${P.cue}</section><section class="info1">${P.roles}${P.scale}${P.side}</section>${P.tips}${P.note}`,
+      // C 겹쳐 보기: 큰 시범 위에 지도를 작게 얹는다
+      c: `${P.head}<section class="stage">${P.fig}${P.ctl}<div class="inset">${maps}</div>${P.cue}</section>
+          <section class="info1">${P.roles}${P.side}</section>${P.tips}${P.note}`,
+      // D 탭: 시범 아래를 '근육 / 요령' 탭으로 나눈다
+      d: `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
+          <div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-tab="m">근육</button><button type="button" role="tab" aria-selected="false" data-tab="t">요령</button></div>
+          <section class="panel" data-panel="m">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>
+          <section class="panel" data-panel="t" hidden>${P.tips}${P.note}</section>`,
+      // E 좌우 분할: 왼쪽 시범(크게) | 오른쪽 앞·뒤 지도 세로
+      e: `${P.head}<section class="split"><div class="stage">${P.fig}${P.ctl}${P.cue}</div><div class="maps col">${P.mapF}${P.mapB}</div></section>
+          <section class="info1">${P.roles}${P.scale}${P.side}</section>${P.tips}${P.note}`,
+    }[lay]
+    app.innerHTML = html
+    if (lay === 'd') {
+      app.querySelectorAll('[role=tab]').forEach((t) => t.addEventListener('click', () => {
+        app.querySelectorAll('[role=tab]').forEach((x) => x.setAttribute('aria-selected', String(x === t)))
+        app.querySelectorAll('.panel').forEach((pn) => (pn.hidden = pn.dataset.panel !== t.dataset.tab))
+      }))
+    }
+  }
+
   function mount(X) {
+    if (X.meta) buildLayout(X.meta, !!X.sided)
     const $ = (id) => document.getElementById(id)
     const svg = $('scene')
     svg.setAttribute('viewBox', X.viewBox)
@@ -172,12 +228,10 @@
     let injured = 'left'
     if (X.sided) try { if (localStorage.getItem('lineart-injured') === 'right') injured = 'right' } catch (e) { /* 저장 안 됨 */ }
     const other = () => (injured === 'left' ? 'right' : 'left')
-    function loadAt(i, frac) {
-      const cur = X.loads[PH[i].key], prev = X.loads[PH[(i + PH.length - 1) % PH.length].key]
-      const u = ease(Math.min(1, frac * 1.6)), m = {}
-      for (const k of new Set([...Object.keys(cur), ...Object.keys(prev)])) m[k] = lerp(prev[k] || 0, cur[k] || 0, u)
-      return m
-    }
+    // 근육은 구간마다 바꾸지 않고, 한 동작에서 가장 많이 쓰일 때 값으로 고정해 보여 준다.
+    const PEAK = {}
+    for (const ph in X.loads) for (const k in X.loads[ph]) PEAK[k] = Math.max(PEAK[k] || 0, X.loads[ph][k])
+    const STRETCH = new Set(PH.flatMap((ph) => ph.stretch || []))
     function bodyState(m) {
       const st = {}
       const put = (id, v) => { const r = Math.min(10, Math.round(v)); if (r > 0 && (!st[id] || st[id].intensity < r)) st[id] = { intensity: r, selected: false } }
@@ -203,14 +257,17 @@
     if (X.sided && sideBox) {
       const btns = sideBox.querySelectorAll('button')
       const mark = () => btns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.side === injured)))
-      btns.forEach((b) => b.addEventListener('click', () => { injured = b.dataset.side; try { localStorage.setItem('lineart-injured', injured) } catch (e) { /* 저장 안 됨 */ } lastMap = ''; mark() }))
+      btns.forEach((b) => b.addEventListener('click', () => { injured = b.dataset.side; try { localStorage.setItem('lineart-injured', injured) } catch (e) { /* 저장 안 됨 */ } paintMaps(); mark() }))
       mark()
     }
 
     // ---------- 큐·진행 바 ----------
     const cueEl = $('cue'), rolesEl = $('roles'), bar = $('bar')
+    rolesEl.innerHTML = (X.summary || []).map(([a, b]) => `<div><b>${a}</b><span>${b}</span></div>`).join('')
+    function paintMaps() { if (charts) { const st = bodyState(PEAK); charts.forEach((c) => c.update({ bodyState: st })) } }
+    paintMaps()
     const fills = PH.map((ph) => { const s = document.createElement('span'); s.style.flex = String(ph.dur); const i = document.createElement('i'); s.appendChild(i); bar.appendChild(s); return i })
-    let lastPhase = -1, lastMap = ''
+    let lastPhase = -1
 
     if (Gh) draw(Gh, full(X.solve(X.poses[X.ghostPose])), null)
 
@@ -218,18 +275,13 @@
       const { i, frac } = phaseAt(time)
       const p = poseAt(i, frac)
       const j = full(X.solve(p))
-      const load = loadAt(i, frac)
-      const stretch = new Set(PH[i].stretch || [])
       if (props) props.update(j, p)
-      draw(Fg, j, { load, stretch })
+      draw(Fg, j, { load: PEAK, stretch: STRETCH })
       if (i !== lastPhase) {
         lastPhase = i
         cueEl.innerHTML = `${PH[i].cue}<small>${PH[i].sub}</small>`
-        rolesEl.innerHTML = (X.roles[PH[i].key] || []).map(([a, b]) => `<div><b>${a}</b> ${b}</div>`).join('')
       }
       fills.forEach((fi, k) => (fi.style.width = (k < i ? 100 : k === i ? frac * 100 : 0) + '%'))
-      const st = bodyState(load), key = JSON.stringify(st) + injured
-      if (charts && key !== lastMap) { lastMap = key; charts.forEach((c) => c.update({ bodyState: st })) }
     }
 
     // ---------- 루프 (?t=초 로 고정) ----------
@@ -247,7 +299,11 @@
       requestAnimationFrame(tick)
     }
     const playBtn = $('play'), slowBtn = $('slow')
-    playBtn.addEventListener('click', () => { playing = !playing; playBtn.textContent = playing ? '일시정지' : '재생'; playBtn.setAttribute('aria-pressed', String(!playing)) })
+    playBtn.addEventListener('click', () => {
+      playing = !playing
+      playBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY
+      playBtn.setAttribute('aria-label', playing ? '일시정지' : '재생')
+    })
     slowBtn.addEventListener('click', () => { speed = speed === 1 ? 0.5 : 1; slowBtn.setAttribute('aria-pressed', String(speed !== 1)) })
   }
 
