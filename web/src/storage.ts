@@ -23,8 +23,10 @@ export const PROGRAM_KEY = V4 + 'program'
 export const PROGRAM_ARCHIVE_KEY = V4 + 'program-archive'
 
 export const MIGRATED_KEY = V4 + 'migrated'
-// 지금은 없어진 기능(코치 서버 설정, iOS 로그인, AI 전송 동의)이 남긴 키. 앱이 뜰 때 지운다.
-const LEGACY_KEYS = ['server-url', 'api-token', 'login-skipped', 'ai-consent'].map((k) => V4 + k)
+// 지금은 없어진 기능(코치 서버 설정, iOS 로그인, AI 전송 동의, 온보딩)이 남긴 키. 앱이 뜰 때 지운다.
+const LEGACY_KEYS = ['server-url', 'api-token', 'login-skipped', 'ai-consent', 'onboarded'].map((k) => V4 + k)
+// 예전 온보딩이 걸던 템플릿 블록. 이 앱은 routine.json(개인 루틴)이 기본이라, 이 블록이 걸려 있으면 내린다.
+const TEMPLATE_PROGRAM_NAMES = new Set(['초보 전신 주 3회', '상하체 분할 주 4회', '파워빌딩 주 5회'])
 // 이 기기에서만 의미가 있거나 민감한 키. 내보내기에 넣지 않고, 파일에 있어도 가져오지 않는다.
 // 타이머는 이 기기에서 돌던 세션 시각이라 다른 기기로 옮기면 엉뚱한 휴식 알림이 뜬다.
 export const DEVICE_ONLY_KEYS: ReadonlySet<string> = new Set([
@@ -41,6 +43,8 @@ const days = Object.keys(ROUTINE) // ['day1', ..., 'dayN'] — slot N = days[N-1
 // 기존 체크 상태는 날짜 정보가 없는 휘발성 데이터라 승계하지 않고 폐기한다.
 export function migrateV3() {
   LEGACY_KEYS.forEach((k) => localStorage.removeItem(k))
+  const p = activeProgram()
+  if (p && TEMPLATE_PROGRAM_NAMES.has(p.name)) clearProgram()
   if (localStorage.getItem(MIGRATED_KEY)) return
   try {
     days.forEach((d) => localStorage.removeItem('gym-v3-' + d + '-checks'))
@@ -633,14 +637,19 @@ export function validateProgram(p: Program | null | undefined): string | null {
 }
 
 // 적용: 기존 블록은 아카이브로, 새 블록 활성화. 시작일은 사용자가 카드에서 고른다.
+/// 진행 중인 블록을 보관함으로 옮기고 내린다. 블록이 없으면 routine.json(기본 루틴)이 쓰인다. 기록은 건드리지 않는다.
+export function clearProgram() {
+  const old = activeProgram()
+  if (!old) return
+  const arch = lsGet<Program[]>(PROGRAM_ARCHIVE_KEY, [])
+  arch.push(Object.assign({}, old, { status: 'archived', archivedAt: new Date().toISOString() }))
+  lsSet(PROGRAM_ARCHIVE_KEY, arch)
+  localStorage.removeItem(PROGRAM_KEY)
+}
+
 export function applyProgram(program: Program, start: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(start.trim())) return false
-  const old = activeProgram()
-  if (old) {
-    const arch = lsGet<Program[]>(PROGRAM_ARCHIVE_KEY, [])
-    arch.push(Object.assign({}, old, { status: 'archived', archivedAt: new Date().toISOString() }))
-    lsSet(PROGRAM_ARCHIVE_KEY, arch)
-  }
+  clearProgram()
   lsSet(
     PROGRAM_KEY,
     Object.assign({}, program, {

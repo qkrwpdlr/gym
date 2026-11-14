@@ -6,19 +6,17 @@ import { FocusMode } from './components/FocusMode'
 import type { FocusSummary } from './components/FocusMode'
 import { MemoSheet } from './components/MemoSheet'
 import { MiniPlayer } from './components/MiniPlayer'
-import { Onboarding } from './components/Onboarding'
 import { StatusBar } from './components/StatusBar'
 import { Tabbar } from './components/Tabbar'
 import { ImportError, applyImport, currentImportState, planImport } from './importData'
 import type { ImportPlan } from './importData'
-import { DEFAULT_TEMPLATE, buildProgram, markOnboarded, needsOnboarding } from './templates'
 import {
   DEFAULT_ACCENT,
   LOG_INDEX_KEY,
   RPE_VALUES,
   TIMER_KEY,
   activeProgram,
-  applyProgram,
+  clearProgram,
   buildFlatSets,
   countTotalSets,
   currentWeek,
@@ -60,7 +58,6 @@ import {
 } from './storage'
 import type {
   FlatSet,
-  Program,
   SessionLog,
   SetEntry,
   WorkoutSection,
@@ -195,12 +192,6 @@ function App() {
   const [confirmReq, setConfirmReq] = useState<ConfirmRequest | null>(null)
   const confirmResolveRef = useRef<((ok: boolean) => void) | null>(null)
   const [memo, setMemo] = useState<{ open: boolean; key: number; slot: number }>({ open: false, key: 0, slot: 1 })
-  // 루틴 온보딩: 첫 실행(기록·블록 없는 새 사용자)에 한 번, 이후엔 설정의 '루틴 바꾸기'로 다시 연다.
-  const [onboarding, setOnboarding] = useState<{ open: boolean; mode: 'first' | 'change'; key: number }>(() => ({
-    open: needsOnboarding(),
-    mode: 'first',
-    key: 0,
-  }))
 
   const wakeLockRef = useRef<WakeLockSentinelLike | null>(null)
   const wakeLockUserEnabledRef = useRef(false)
@@ -885,8 +876,7 @@ function App() {
   // ============ 오버레이 열림 시 배경 스크롤 잠금 ============
   // 모바일 브라우저는 키보드가 뜨면 인풋을 노출하려고 문서를 강제 스크롤한다.
   // 오버레이가 떠 있는 동안 body를 고정해 이 점프(덜컹임)를 차단한다.
-  const onboardingVisible = onboarding.open
-  const overlayLock = sheet !== null || memo.open || onboardingVisible
+  const overlayLock = sheet !== null || memo.open
   useEffect(() => {
     if (!overlayLock) return undefined
     const y = window.scrollY
@@ -960,51 +950,25 @@ function App() {
     [advanceAfterRest, bump, closeSheet, withDaySwitch],
   )
 
-  // ============ 루틴 온보딩 ============
-  /// 템플릿 블록을 걸고 DAY 1로 보낸다. 라우트도 직접 바꾼다 — 새 블록의 day 수가 적으면
-  /// 해시 변경이 반영되기 전 렌더에서 없는 slot을 그리게 된다.
-  const startProgram = useCallback(
-    (program: Program, start: string) => {
-      if (!applyProgram(program, start)) return
-      markOnboarded()
-      setOnboarding((o) => ({ ...o, open: false }))
-      if (focusRef.current) exitFocusMode()
-      setRoute({ view: 'today', slot: 1 })
-      navigate('#/today/1')
-      bump()
-    },
-    [bump, exitFocusMode],
-  )
-
-  const onOnboardApply = useCallback(
-    async (program: Program, start: string) => {
-      // 이미 쓰던 루틴이 있으면 한 번 묻는다. 기존 블록은 applyProgram이 보관함으로 옮기고, 기록은 건드리지 않는다.
-      const hasData = !!activeProgram() || lsGet<string[]>(LOG_INDEX_KEY, []).length > 0
-      if (onboarding.mode === 'change' && hasData) {
-        const ok = await askConfirm({
-          title: `${program.name}로 바꿀까요?`,
-          body:
-            '지금 루틴은 보관되고, 지금까지의 운동 기록은 그대로 남아요.' +
-            (focusRef.current ? ' 진행 중인 운동은 여기서 끝나요.' : ''),
-          confirmLabel: '바꾸기',
-        })
-        if (!ok) return
-      }
-      startProgram(program, start)
-    },
-    [askConfirm, onboarding.mode, startProgram],
-  )
-
-  /// 첫 실행에서 "나중에"를 고르면 작성자 개인 루틴 대신 초보 전신 템플릿을 무게 없이 건다.
-  /// 설정에서 연 경우엔 지금 루틴을 그대로 두고 닫기만 한다.
-  const onOnboardLater = useCallback(() => {
-    if (onboarding.mode === 'first') startProgram(buildProgram(DEFAULT_TEMPLATE), todayStr())
-    else setOnboarding((o) => ({ ...o, open: false }))
-  }, [onboarding.mode, startProgram])
-
-  const openRoutinePicker = useCallback(() => {
-    setOnboarding((o) => ({ open: true, mode: 'change', key: o.key + 1 }))
-  }, [])
+  // ============ 기본 루틴으로 ============
+  /// 진행 중인 블록을 내리고 routine.json(기본 루틴)으로 돌아간다. 블록은 보관함으로 가고 기록은 그대로다.
+  const onClearProgram = useCallback(async () => {
+    const p = activeProgram()
+    if (!p) return
+    const ok = await askConfirm({
+      title: '기본 루틴으로 돌아갈까요?',
+      body:
+        `'${p.name}' 블록을 내리고 기본 루틴으로 돌아가요. 운동 기록은 그대로 남아요.` +
+        (focusRef.current ? ' 진행 중인 운동은 여기서 끝나요.' : ''),
+      confirmLabel: '돌아가기',
+    })
+    if (!ok) return
+    clearProgram()
+    if (focusRef.current) exitFocusMode()
+    setRoute({ view: 'today', slot: defaultSlot() })
+    navigate('#/today/' + defaultSlot())
+    bump()
+  }, [askConfirm, bump, exitFocusMode])
 
   // ============ RENDER ============
   // 세션이 지금 어느 세트에 있는지 — 오늘 목록에서 위치와 휴식을 함께 보여준다.
@@ -1067,7 +1031,7 @@ function App() {
       {route.view === 'logDetail' && <LogDetailView date={route.date} />}
       {route.view === 'settings' && (
         <SettingsView
-          onChangeRoutine={openRoutinePicker}
+          onClearProgram={onClearProgram}
           onImport={importRecords}
         />
       )}
@@ -1114,13 +1078,6 @@ function App() {
           focus && openSheet({ slot: focus.slot, s: current.sIdx, i: current.setIdx, rest: current.section.rest, fromFocus: true })
         }
         onDone={exitFocusMode}
-      />
-      <Onboarding
-        key={'onboard' + onboarding.key}
-        open={onboardingVisible}
-        mode={onboarding.mode}
-        onApply={onOnboardApply}
-        onLater={onOnboardLater}
       />
       <ConfirmDialog request={confirmReq} onResolve={resolveConfirm} />
     </>
@@ -1819,11 +1776,11 @@ function skippedText(plan: ImportPlan): string {
 }
 
 type SettingsViewProps = {
-  onChangeRoutine: () => void
+  onClearProgram: () => void
   onImport: (file: File) => Promise<ImportResult | null>
 }
 
-function SettingsView({ onChangeRoutine, onImport }: SettingsViewProps) {
+function SettingsView({ onClearProgram, onImport }: SettingsViewProps) {
   const importInputRef = useRef<HTMLInputElement>(null)
   const [importBusy, setImportBusy] = useState(false)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
@@ -1892,13 +1849,15 @@ function SettingsView({ onChangeRoutine, onImport }: SettingsViewProps) {
         </div>
       )}
 
-      <button className="settings-item" type="button" onClick={onChangeRoutine}>
-        <span>
-          루틴 바꾸기
-          <span className="settings-item-sub">초보 전신 · 상하체 분할 · 파워빌딩 중에서 골라요</span>
-        </span>
-        <span className="chev" aria-hidden="true">›</span>
-      </button>
+      {p ? (
+        <button className="settings-item" type="button" onClick={onClearProgram}>
+          <span>
+            기본 루틴으로 돌아가기
+            <span className="settings-item-sub">블록을 내리고 기본 루틴을 써요 · 기록은 그대로예요</span>
+          </span>
+          <span className="chev" aria-hidden="true">›</span>
+        </button>
+      ) : null}
 
       <button className="settings-item" type="button" onClick={togglePlate}>
         <span>
