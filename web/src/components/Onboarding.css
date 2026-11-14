@@ -1,0 +1,254 @@
+/* ==================== 루틴 온보딩 ==================== */
+/* 로그인 게이트와 같은 전체 화면 층. 확인 창(.confirm-modal, 150)은 이 위에 뜬다. */
+.onboard {
+  /* 오늘 탭의 day 색이 새어 들어오지 않게 기본 강조색으로 고정한다 */
+  --accent: #ff2d2d;
+  --accent-dim: #8a1818;
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 80% 100%, rgba(255, 221, 0, 0.05) 0%, transparent 55%);
+  background-attachment: fixed;
+}
+
+.onboard-body {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+.onboard-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+}
+
+.onboard-back,
+.onboard-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.onboard-close {
+  font-size: 26px;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.onboard-step {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+.onboard-title { font-size: 28px; margin-top: 4px; }
+
+.onboard-lead {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 4px;
+}
+
+/* ----- 템플릿 카드 ----- */
+.onboard-cards {
+  display: flex;
+  flex-direction: column;
+}
+
+.onboard-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.onboard-card.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-card));
+}
+
+.onboard-card .pc-name { margin-bottom: 0; }
+
+.onboard-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.onboard-level {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.onboard-card.selected .onboard-level { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+
+.onboard-card-summary {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.onboard-card-main {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.onboard-card.selected .onboard-card-main { color: var(--text-dim); }
+
+.onboard-coach { margin-bottom: 0; }
+
+/* ----- 하단 버튼 ----- */
+.onboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.onboard-primary { margin-bottom: 0; }
+.onboard-primary:disabled { opacity: 0.5; }
+.onboard-primary .start-text { align-items: center; }
+
+/* ----- 무게 입력 ----- */
+.onboard-seg {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.onboard-seg button {
+  flex: 1;
+  padding: 10px 6px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.onboard-seg button.on {
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.onboard-lifts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.onboard-lift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.onboard-lift:focus-within { border-color: var(--accent-dim); }
+
+.onboard-lift-input {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.onboard-lift input {
+  width: 88px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  color-scheme: dark;
+}
+
+.onboard-lift input::placeholder { color: var(--text-faint); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 500; }
+
+/* 숫자 입력의 위아래 화살표는 좁은 칸에서 숫자를 가린다 */
+.onboard-lift input::-webkit-outer-spin-button,
+.onboard-lift input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.onboard-lift input[type='number'] { -moz-appearance: textfield; appearance: textfield; }
+
+.onboard-unit { font-size: 12px; color: var(--text-dim); }
+
+/* ----- 미리보기 ----- */
+.onboard-preview { margin-bottom: 0; }
+
+.onboard-days {
+  list-style: none;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.onboard-days li {
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  row-gap: 2px;
+  align-items: baseline;
+  font-size: 13px;
+}
+
+.onboard-days .dc-dot { margin: 0; }
+
+.onboard-day-title { font-weight: 700; }
+.onboard-faint { color: var(--text-faint); font-weight: 400; }
+
+.onboard-day-main {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.onboard-date { margin-top: 0; }
