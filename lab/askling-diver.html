@@ -4,31 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>아스클링 다이버 · 자세 보기</title>
-<style>
-  :root { --bg: #0b0b0b; --card: #151515; --ink: #ece8df; --paper: #151515; --dim: #9a968e; --faint: #66625b; --accent: #00ff88; --hs: #ff5a3c; }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; }
-  main { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
-  .kicker { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; }
-  h1 { margin: 6px 0 4px; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; }
-  .sub { margin: 0 0 14px; font-size: 13px; color: var(--dim); line-height: 1.5; }
-  .stage { background: var(--card); border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
-  svg { display: block; width: 100%; height: auto; color: var(--ink); }
-  .pp { fill: var(--paper); }
-  .cue { min-height: 52px; padding: 12px 14px 0; font-size: 16px; font-weight: 800; line-height: 1.35; }
-  .cue small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--dim); }
-  .bar { display: flex; gap: 3px; padding: 10px 14px 14px; }
-  .bar span { position: relative; height: 4px; border-radius: 2px; background: #262626; overflow: hidden; }
-  .bar span i { position: absolute; inset: 0; width: 0; background: var(--accent); }
-  .controls { display: flex; gap: 8px; margin-top: 12px; }
-  button { flex: 1; min-height: 44px; border-radius: 8px; border: 1px solid #333; background: none; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
-  button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
-  .legend { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 12px; color: var(--dim); }
-  .legend b { width: 18px; height: 3px; border-radius: 2px; background: var(--hs); }
-  ul { margin: 14px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: var(--dim); }
-  .note { margin-top: 16px; font-size: 11px; color: var(--faint); line-height: 1.5; }
-  .note a { color: var(--dim); }
-</style>
+<link rel="stylesheet" href="lineart-demo.css" />
 </head>
 <body>
 <main>
@@ -37,16 +13,32 @@
   <p class="sub">다친 다리로 서서 다이빙하듯 상체를 숙여요. 3×6 · 이틀에 한 번 · 통증 없는 범위까지만.</p>
 
   <div class="stage">
-    <svg id="scene" viewBox="44 22 156 116" role="img" aria-label="옆에서 본 아스클링 다이버 동작 반복 애니메이션"></svg>
+    <svg id="scene" role="img" aria-label="옆에서 본 아스클링 다이버 동작 반복 애니메이션"></svg>
     <div class="cue" id="cue" aria-live="polite"></div>
     <div class="bar" id="bar"></div>
   </div>
-
   <div class="controls">
     <button id="play" type="button" aria-pressed="false">일시정지</button>
     <button id="slow" type="button" aria-pressed="false">0.5배속</button>
   </div>
-  <div class="legend"><b></b> 늘어나는 곳: 선 다리(다친 쪽) 햄스트링 · 옅은 선은 끝 자세</div>
+
+  <section class="mcard" aria-label="힘이 들어가는 근육">
+    <div class="mhead">
+      <h2>힘이 들어가는 곳</h2>
+      <div class="side" role="group" aria-label="다친 다리">
+        <button type="button" data-side="left">다친 쪽 왼다리</button>
+        <button type="button" data-side="right">오른다리</button>
+      </div>
+    </div>
+    <div class="maps">
+      <figure><div class="map" id="mapF"></div><figcaption>앞</figcaption></figure>
+      <figure><div class="map" id="mapB"></div><figcaption>뒤</figcaption></figure>
+    </div>
+    <div class="roles" id="roles" aria-live="polite"></div>
+    <div class="scale"><span>약하게</span><i></i><span>세게</span></div>
+    <p class="hint">옆모습 인형에도 같은 색으로 칠해요. 점선은 늘어나면서 버티는 근육, 옅은 인형은 끝 자세예요.
+      강도는 운동역학 지식으로 정한 추정치이고 근전도 측정값이 아니에요.</p>
+  </section>
 
   <ul>
     <li>선 다리 무릎은 10~20° 살짝 굽힌 채 끝까지 고정해요. 무릎을 펴서 늘리지 않아요.</li>
@@ -54,213 +46,82 @@
     <li>골반은 바닥과 수평으로 두고 옆으로 돌리지 않아요.</li>
     <li>당기는 느낌이 2/10을 넘으면 그 직전 깊이에서 멈춰요.</li>
   </ul>
-  <p class="note">제 운동역학 지식으로 짠 근사 시범이에요. 처음에는 공식 영상과 한 번 대조해 보세요.
+  <p class="note">제 운동역학 지식으로 짠 근사 시범이에요. 처음에는 실제 영상과 한 번 대조해 보세요.
     <a href="https://www.youtube.com/results?search_query=Askling+diver+L-protocol" rel="noopener">영상 검색</a> ·
-    선 그리기 방식: <a href="https://github.com/JDhruv14/line-art-animation" rel="noopener">line-art-animation</a> (MIT)</p>
+    선 그리기: <a href="https://github.com/JDhruv14/line-art-animation" rel="noopener">line-art-animation</a> (MIT) ·
+    근육 지도: <a href="https://github.com/vulovix/body-muscles" rel="noopener">body-muscles</a> (Apache-2.0,
+    <a href="vendor/body-muscles/LICENSE">LICENSE</a> · <a href="vendor/body-muscles/NOTICE">NOTICE</a>)</p>
 </main>
-
+<script src="vendor/body-muscles/body-muscles.umd.min.js"></script>
+<script src="lineart-demo.js"></script>
 <script>
-// ---------- ink 기본기 (line-art-animation/lib/ink.ts 에서 필요한 부분만 옮김, MIT) ----------
-const NS = 'http://www.w3.org/2000/svg';
-const PEN = 1.35;
-const f = (n) => n.toFixed(2);
-const pt = (p) => `${f(p[0])} ${f(p[1])}`;
-function el(tag, attrs = {}, parent) {
-  const n = document.createElementNS(NS, tag);
-  for (const k in attrs) n.setAttribute(k, String(attrs[k]));
-  if (parent) parent.appendChild(n);
-  return n;
-}
-const pen = (parent, w = PEN, color = 'currentColor') =>
-  el('path', { fill: 'none', stroke: color, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
-const shape = (parent, w = PEN) => el('path', { class: 'pp', stroke: 'currentColor', 'stroke-width': w, 'stroke-linejoin': 'round' }, parent);
-function limb(parent, width, w = PEN) {
-  const g = el('g', {}, parent);
-  const fill = el('path', { class: 'pp' }, g);
-  const a = pen(g, w), b = pen(g, w);
-  const half = (width - w) / 2;
-  return {
-    g,
-    draw(joints, endGap = [0.4, 0.9]) {
-      const s = joints[0], e = joints[joints.length - 1];
-      let c = [(s[0] + e[0]) / 2, (s[1] + e[1]) / 2];
-      if (joints.length === 3) { const m = joints[1]; c = [m[0] + 0.55 * (m[0] - c[0]), m[1] + 0.55 * (m[1] - c[1])]; }
-      const P = [];
-      for (let i = 0; i <= 16; i++) { const t = i / 16, u = 1 - t; P.push([u * u * s[0] + 2 * u * t * c[0] + t * t * e[0], u * u * s[1] + 2 * u * t * c[1] + t * t * e[1]]); }
-      const side = (sgn) => P.map((p, i) => {
-        const q = P[Math.min(P.length - 1, i + 1)], o = P[Math.max(0, i - 1)];
-        const dx = q[0] - o[0], dy = q[1] - o[1], l = Math.hypot(dx, dy) || 1;
-        return [p[0] - (dy / l) * half * sgn, p[1] + (dx / l) * half * sgn];
-      });
-      const L = side(1), R = side(-1);
-      fill.setAttribute('d', 'M' + L.map(pt).join('L') + 'L' + R.slice().reverse().map(pt).join('L') + 'Z');
-      const cut = (arr, gap) => arr.slice(0, arr.length - Math.round(gap * 2));
-      a.setAttribute('d', 'M' + cut(L, endGap[0]).map(pt).join('L'));
-      b.setAttribute('d', 'M' + cut(R, endGap[1]).map(pt).join('L'));
-    },
-  };
-}
-function shoe(node, ankle, toe = 0) {
-  const r = (toe * Math.PI) / 180, c = Math.cos(r), s = Math.sin(r);
-  const S = (x, y) => [ankle[0] + x * c - y * s, ankle[1] + x * s + y * c];
-  node.setAttribute('d', `M${pt(S(-1.6, -0.6))} L${pt(S(4.6, -0.2))} Q${pt(S(6.6, 0.4))} ${pt(S(5.6, 1.6))} L${pt(S(-1.4, 1.5))} Q${pt(S(-2.2, 0.5))} ${pt(S(-1.6, -0.6))}Z`);
-}
-function inkFilter(svg) {
-  const defs = el('defs', {}, svg);
-  const flt = el('filter', { id: 'ink-edge', x: '-2%', y: '-2%', width: '104%', height: '104%' }, defs);
-  el('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.6', numOctaves: 1, seed: 7, result: 'n' }, flt);
-  el('feDisplacementMap', { in: 'SourceGraphic', in2: 'n', scale: 0.45, xChannelSelector: 'R', yChannelSelector: 'G', result: 'd' }, flt);
-  el('feGaussianBlur', { in: 'd', stdDeviation: 0.12 }, flt);
-  return 'url(#ink-edge)';
+const { go, lerp, L } = LineArtDemo
+// 두 마디 IK: a에서 b까지 l1·l2 길이로 잇고, bend=+1이면 가운데 관절이 앞(+x), -1이면 뒤.
+function ik(a, b, l1, l2, bend) {
+  const dx = b[0] - a[0], dy = b[1] - a[1]
+  const d = Math.min(Math.hypot(dx, dy), l1 + l2 - 0.01)
+  const th = Math.atan2(dy, dx)
+  const al = Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d))))
+  const c1 = [a[0] + l1 * Math.cos(th - al), a[1] + l1 * Math.sin(th - al)]
+  const c2 = [a[0] + l1 * Math.cos(th + al), a[1] + l1 * Math.sin(th + al)]
+  return (c1[0] - c2[0]) * bend > 0 ? c1 : c2
 }
 
-// ---------- 자세 엔진: 관절 각도 → 좌표 (옆모습, +x가 앞) ----------
-// 각도는 "아래 방향에서 앞(+x)으로 돈 각도"(도). 0 = 수직 아래, 90 = 수평 앞, 180 = 수직 위, 음수 = 뒤쪽.
-const R = Math.PI / 180;
-const go = (p, len, deg) => [p[0] + len * Math.sin(deg * R), p[1] + len * Math.cos(deg * R)];
-// 몸 치수(그림 단위, 키 약 95)
-const L = { shank: 24, thigh: 26, torso: 29, neck: 4, head: 6.2, upper: 15, fore: 14, foot: 6 };
+LineArtDemo.mount({
+  viewBox: '44 22 156 116',
+  ground: 'M48 130.6 L196 130.6',
+  sided: true,
+  ghostPose: 'end',
+  reducedAt: 4.5,
+  poses: {
+    start: { trunk: 176, arm: 12, elbow: 8, swingThigh: -4, swingKnee: 28 },
+    end: { trunk: 100, arm: 102, elbow: 2, swingThigh: -82, swingKnee: 4 },
+  },
+  phases: [
+    { key: 'set', dur: 1.2, from: 'start', to: 'start', cue: '다친 다리로 서요', sub: '무릎은 살짝 굽혀서 고정 · 반대 발은 살짝 띄우기' },
+    { key: 'dive', dur: 3.0, from: 'start', to: 'end', cue: '숙이며 팔은 앞으로, 뒷다리는 뒤로', sub: '세 동작을 동시에 · 천천히', stretch: ['S:ham'] },
+    { key: 'hold', dur: 1.2, from: 'end', to: 'end', cue: '끝에서 잠깐 멈춤', sub: '골반 수평 · 당김 2/10 넘으면 덜 숙이기', stretch: ['S:ham'] },
+    { key: 'back', dur: 2.4, from: 'end', to: 'start', cue: '천천히 돌아오기', sub: '선 다리 무릎 각도는 그대로' },
+  ],
+  // 선 다리(가까운 다리)는 발목 고정, 무릎 15° 고정. 숙일수록 정강이 기울기를 줄여 골반을 뒤로 보낸다.
+  solve(p) {
+    const depth = (176 - p.trunk) / 76
+    const ankleN = [118, 128]
+    const lean = lerp(9, 4, depth)
+    const kneeN = go(ankleN, L.shank, 180 - lean)
+    const hip = go(kneeN, L.thigh, 180 - lean + 15)
+    const shoulder = go(hip, L.torso, p.trunk)
+    const elbowN = go(shoulder, L.upper, p.arm)
+    const handN = go(elbowN, L.fore, p.arm + p.elbow)
+    const kneeF = go(hip, L.thigh, p.swingThigh)
+    const ankleF = go(kneeF, L.shank, p.swingThigh + p.swingKnee)
+    return { ankleN, kneeN, hip, shoulder, elbowN, handN, kneeF, ankleF, toeF: 12 + 58 * depth,
+      elbowF: [elbowN[0] - 1.2, elbowN[1] + 0.6], handF: [handN[0] - 1.2, handN[1] + 0.6] }
+  },
+  bands: [
+    { layer: 'far', key: 'O:ham', from: 'kneeF', to: 'hipF', off: 1.9, k0: 0.15, k1: 0.78 },
+    { layer: 'far', key: 'O:glute', from: 'kneeF', to: 'hipF', off: 2.2, k0: 0.84, k1: 1.0, w: 3.2 },
+    { layer: 'torso', key: 'B:erect', from: 'hip', to: 'shoulder', off: 3.6, k0: 0.22, k1: 0.78, w: 3 },
+    { layer: 'near', key: 'S:ham', from: 'kneeN', to: 'hip', off: 2.1, k0: 0.12, k1: 0.84, w: 2.6 },
+    { layer: 'near', key: 'S:quad', from: 'kneeN', to: 'hip', off: -2.1, k0: 0.12, k1: 0.84 },
+    { layer: 'near', key: 'S:calf', from: 'ankleN', to: 'kneeN', off: 1.7, k0: 0.3, k1: 0.82, w: 2.2 },
+    { layer: 'near', key: 'S:glute', type: 'glute', leg: 'near', w: 3.4 },
+    { layer: 'arm', key: 'B:delt', from: 'elbowN', to: 'shoulder', off: 0, k0: 0.7, k1: 1.0, w: 3.2 },
+  ],
+  loads: {
+    set: { 'S:quad': 3, 'S:gmed': 4, 'S:calf': 3, 'S:glute': 2 },
+    dive: { 'S:ham': 7, 'S:glute': 6, 'S:gmed': 5, 'B:erect': 5, 'O:glute': 6, 'O:ham': 4, 'B:delt': 3, 'S:quad': 3, 'S:calf': 3 },
+    hold: { 'S:ham': 7, 'S:glute': 6, 'S:gmed': 6, 'B:erect': 6, 'O:glute': 7, 'O:ham': 5, 'B:delt': 4, 'S:quad': 3, 'S:calf': 3 },
+    back: { 'S:glute': 7, 'S:ham': 6, 'S:gmed': 5, 'B:erect': 5, 'O:glute': 3, 'O:ham': 2, 'S:quad': 3, 'S:calf': 3 },
+  },
+  roles: {
+    set: [['주로', '선 다리 허벅지 앞·중둔근으로 균형 잡기'], ['버티기', '종아리']],
+    dive: [['주로', '선 다리 햄스트링(늘어나며 버팀)·엉덩이'], ['버티기', '허리(척추기립근)·중둔근으로 골반 수평'], ['보조', '뒷다리 엉덩이, 앞어깨']],
+    hold: [['주로', '선 다리 햄스트링·엉덩이로 자세 고정'], ['버티기', '허리·중둔근, 뒷다리 엉덩이'], ['보조', '앞어깨(팔 뻗기)']],
+    back: [['주로', '선 다리 엉덩이로 골반을 세워 올라오기'], ['보조', '선 다리 햄스트링, 허리']],
+  },
+})
 
-// 키프레임: 다이버 한 번 = 준비 → 숙이기(느리게) → 끝에서 잠깐 → 돌아오기
-//  stanceShank: 선 다리 정강이(발목→무릎, 위쪽 기준이라 180±), stanceKnee: 무릎 굽힘(고정 15°)
-//  trunk: 골반→어깨 방향, swingThigh/swingKnee: 뒷다리, arm: 어깨→손
-const POSE = {
-  start: { trunk: 176, arm: 12, elbow: 8, swingThigh: -4, swingKnee: 28 },
-  end:   { trunk: 100, arm: 102, elbow: 2, swingThigh: -82, swingKnee: 4 },
-};
-const STANCE_KNEE = 15; // 10~20° 사이 고정
-// 단계(초). 숙이는 쪽을 길게.
-const PHASES = [
-  { key: 'set',  dur: 1.2, from: 'start', to: 'start', cue: '다친 다리로 서요', sub: '무릎은 살짝 굽혀서 고정 · 반대 발은 살짝 띄우기' },
-  { key: 'dive', dur: 3.0, from: 'start', to: 'end',   cue: '숙이며 팔은 앞으로, 뒷다리는 뒤로', sub: '세 동작을 동시에 · 천천히' },
-  { key: 'hold', dur: 1.2, from: 'end',   to: 'end',   cue: '끝에서 잠깐 멈춤', sub: '골반 수평 · 당김 2/10 넘으면 덜 숙이기' },
-  { key: 'back', dur: 2.4, from: 'end',   to: 'start', cue: '천천히 돌아오기', sub: '선 다리 무릎 각도는 그대로' },
-];
-const CYCLE = PHASES.reduce((a, p) => a + p.dur, 0);
-const ease = (u) => u * u * (3 - 2 * u); // smoothstep: 끝에서 부드럽게 멈춤
-const lerp = (a, b, u) => a + (b - a) * u;
-
-function poseAt(t) {
-  let x = ((t % CYCLE) + CYCLE) % CYCLE, i = 0;
-  while (x > PHASES[i].dur && i < PHASES.length - 1) { x -= PHASES[i].dur; i++; }
-  const ph = PHASES[i], u = ease(Math.min(1, x / ph.dur));
-  const A = POSE[ph.from], B = POSE[ph.to], p = {};
-  for (const k in A) p[k] = lerp(A[k], B[k], u);
-  // 0 = 선 자세, 1 = 끝 자세 — 햄스트링 강조와 균형 이동에 쓴다
-  p.depth = (POSE.start.trunk - p.trunk) / (POSE.start.trunk - POSE.end.trunk);
-  return { p, i, frac: Math.min(1, x / ph.dur) };
-}
-
-// 선 다리(오른쪽에서 보는 쪽): 발목 고정. 숙일수록 무게중심을 맞추려 골반이 뒤로 간다 → 정강이·허벅지 각도를 함께 조금 바꾼다.
-function solve(p) {
-  const ankle = [118, 128];
-  // 정강이는 앞으로 약간 기울고(발목 위 무릎), 숙일수록 덜 기운다. 무릎 굽힘은 STANCE_KNEE로 고정.
-  const shankLean = lerp(9, 4, p.depth);                 // 위쪽 기준 앞 기울기
-  const knee = go(ankle, L.shank, 180 - shankLean);
-  const thighDir = 180 - shankLean + STANCE_KNEE;        // 허벅지는 무릎에서 뒤로 STANCE_KNEE 만큼 꺾임
-  const hip = go(knee, L.thigh, thighDir);
-  const shoulder = go(hip, L.torso, p.trunk);
-  const neckTop = go(shoulder, L.neck, p.trunk);
-  const head = go(neckTop, L.head, p.trunk);
-  // 팔: 어깨에서. 팔꿈치는 거의 편 상태
-  const elbow = go(shoulder, L.upper, p.arm);
-  const hand = go(elbow, L.fore, p.arm + p.elbow);
-  // 뒷다리: 골반에서 뒤로. 무릎은 숙일수록 펴진다
-  const sKnee = go(hip, L.thigh, p.swingThigh);
-  const sAnkle = go(sKnee, L.shank, p.swingThigh + p.swingKnee);
-  return { ankle, knee, hip, shoulder, head, elbow, hand, sKnee, sAnkle, thighDir };
-}
-
-// ---------- 그리기 ----------
-const svg = document.getElementById('scene');
-const filter = inkFilter(svg);
-const ground = pen(svg, 1.1);
-ground.setAttribute('d', 'M48 130.6 L196 130.6');
-ground.setAttribute('opacity', '0.55');
-const ghost = el('g', { opacity: 0.09 }, svg);         // 끝 자세를 옅게 미리 보여 준다
-const fig = el('g', { filter }, svg);
-
-function buildFigure(parent) {
-  return {
-    backLeg: limb(parent, 6.4),
-    backShoe: el('path', { fill: 'currentColor' }, parent),
-    backArm: limb(parent, 3.6),
-    torso: limb(parent, 11.5),
-    stanceLeg: limb(parent, 7),
-    hs: pen(parent, 2.2, 'var(--hs)'),
-    stanceShoe: el('path', { fill: 'currentColor' }, parent),
-    arm: limb(parent, 3.8),
-    head: shape(parent), // 머리를 팔 뒤에 그려 팔이 귀 옆으로 지나가게 보이게 한다
-  };
-}
-const F = buildFigure(fig);
-const G = buildFigure(ghost);
-G.hs.remove();
-
-function render(Fig, j, depth) {
-  Fig.backLeg.draw([j.hip, j.sKnee, j.sAnkle]);
-  shoe(Fig.backShoe, j.sAnkle, 12 + 58 * depth); // 뒷발은 뻗을수록 발끝이 아래로
-  Fig.backArm.draw([j.shoulder, j.elbow, [j.hand[0] - 1.2, j.hand[1] + 0.6]]);
-  Fig.torso.draw([j.hip, j.shoulder], [0.2, 0.2]);
-  Fig.stanceLeg.draw([j.hip, j.knee, j.ankle]);
-  shoe(Fig.stanceShoe, j.ankle, 0);
-  Fig.head.setAttribute('d', circle(j.head, L.head));
-  Fig.arm.draw([j.shoulder, j.elbow, j.hand]);
-  if (Fig.hs) {
-    // 선 다리 허벅지 뒤쪽(무릎 뒤 → 엉덩이 아래)에 붙는 선. 숙일수록 진해진다.
-    const nx = Math.cos(j.thighDir * R), ny = -Math.sin(j.thighDir * R); // 허벅지 방향의 수직(뒤쪽)
-    const off = 4.6;
-    const a = [j.knee[0] - nx * off * -1, j.knee[1] - ny * off * -1];
-    const b = [j.hip[0] - nx * off * -1, j.hip[1] - ny * off * -1];
-    const k0 = 0.12, k1 = 0.86;
-    const P = (k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k)];
-    Fig.hs.setAttribute('d', `M${pt(P(k0))} L${pt(P(k1))}`);
-    Fig.hs.setAttribute('opacity', f(0.15 + 0.85 * Math.max(0, Math.min(1, depth))));
-  }
-}
-const circle = (c, r) => `M${f(c[0] - r)} ${f(c[1])} a${f(r)} ${f(r)} 0 1 0 ${f(2 * r)} 0 a${f(r)} ${f(r)} 0 1 0 ${f(-2 * r)} 0Z`;
-
-// 끝 자세 고스트는 한 번만
-render(G, solve({ ...POSE.end, depth: 1 }), 1);
-
-// ---------- 큐·진행 바 ----------
-const cueEl = document.getElementById('cue');
-const bar = document.getElementById('bar');
-const fills = PHASES.map((ph) => {
-  const span = document.createElement('span'); span.style.flex = String(ph.dur);
-  const i = document.createElement('i'); span.appendChild(i); bar.appendChild(span); return i;
-});
-let lastPhase = -1;
-
-// ---------- 루프 (?t=초 로 고정, ?debug 로 수동 진행) ----------
-let speed = 1, playing = true, t = 0, prev = performance.now();
-const q = new URLSearchParams(location.search);
-function frame(time) {
-  const j = poseAt(time);
-  render(F, solve(j.p), j.p.depth);
-  if (j.i !== lastPhase) {
-    lastPhase = j.i;
-    cueEl.innerHTML = `${PHASES[j.i].cue}<small>${PHASES[j.i].sub}</small>`;
-  }
-  fills.forEach((fi, k) => (fi.style.width = (k < j.i ? 100 : k === j.i ? j.frac * 100 : 0) + '%'));
-}
-if (q.has('t')) { frame(Number(q.get('t'))); }
-else {
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) { playing = false; t = PHASES[0].dur + PHASES[1].dur; }
-  window.__step = (s) => { t += s; frame(t); return t; };
-  const tick = (now) => {
-    const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
-    if (playing && !q.has('debug')) t += dt * speed;
-    frame(t);
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}
-const playBtn = document.getElementById('play');
-playBtn.addEventListener('click', () => { playing = !playing; playBtn.textContent = playing ? '일시정지' : '재생'; playBtn.setAttribute('aria-pressed', String(!playing)); });
-const slowBtn = document.getElementById('slow');
-slowBtn.addEventListener('click', () => { speed = speed === 1 ? 0.5 : 1; slowBtn.setAttribute('aria-pressed', String(speed !== 1)); });
 </script>
 </body>
 </html>
