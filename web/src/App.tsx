@@ -1,3 +1,7 @@
+import { DemoContext, exerciseDemo } from './demos'
+import type { ExerciseDemo } from './demos'
+import { DemoButton } from './components/DemoButton'
+import { DemoSheet } from './components/DemoSheet'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { ConfirmDialog } from './components/ConfirmDialog'
@@ -186,6 +190,8 @@ function App() {
   const [focus, setFocus] = useState<FocusState | null>(null)
   const [focusAlert, setFocusAlert] = useState(false)
   const [focusCollapsed, setFocusCollapsed] = useState(false)
+  const [demo, setDemo] = useState<ExerciseDemo | null>(null)
+  const closeDemo = useCallback(() => setDemo(null), [])
   const [sheet, setSheet] = useState<SheetCtx | null>(null)
   const [sheetKey, setSheetKey] = useState(0)
 
@@ -882,7 +888,7 @@ function App() {
   // ============ 오버레이 열림 시 배경 스크롤 잠금 ============
   // 모바일 브라우저는 키보드가 뜨면 인풋을 노출하려고 문서를 강제 스크롤한다.
   // 오버레이가 떠 있는 동안 body를 고정해 이 점프(덜컹임)를 차단한다.
-  const overlayLock = sheet !== null || memo.open
+  const overlayLock = sheet !== null || memo.open || demo !== null
   useEffect(() => {
     if (!overlayLock) return undefined
     const y = window.scrollY
@@ -1064,7 +1070,7 @@ function App() {
   }
 
   return (
-    <>
+    <DemoContext.Provider value={setDemo}>
       {route.view === 'today' && (
         <TodayView
           slot={route.slot}
@@ -1149,7 +1155,8 @@ function App() {
         onDone={exitFocusMode}
       />
       <ConfirmDialog request={confirmReq} onResolve={resolveConfirm} />
-    </>
+      <DemoSheet demo={demo} onClose={closeDemo} />
+    </DemoContext.Provider>
   )
 }
 
@@ -1376,6 +1383,12 @@ type TodaySectionProps = {
 }
 
 function TodaySection({ slot, section, sIdx, log, onToggle, onOpenSheet, onTimerStart, mark }: TodaySectionProps) {
+  // 제목은 코치가 바꿀 수 있다. 실제 세트 이름을 기준으로 찾고 같은 시범은 한 번만 둔다.
+  const demos = [...new Map(section.sets.flatMap((set) => {
+    const demo = exerciseDemo(set.name)
+    return demo ? [[`${demo.id}:${demo.variant || ''}`, demo] as const] : []
+  })).values()]
+
   const sectionActive = !!mark && mark.slot === slot && mark.sIdx === sIdx
   const sectionDone = section.sets.every((_, i) => {
     const en = getEntry(log, sIdx, i)
@@ -1387,7 +1400,7 @@ function TodaySection({ slot, section, sIdx, log, onToggle, onOpenSheet, onTimer
       <div className="section-head">
         <div className="section-num">{String(sIdx + 1).padStart(2, '0')}</div>
         <div className="section-info">
-          <div className="section-title">{section.title}</div>
+          <div className="section-title demo-title-row"><span>{section.title}</span>{demos.map((demo) => <DemoButton key={`${demo.id}:${demo.variant || ''}`} name={demo.name} />)}</div>
           <div className="section-meta">
             {section.rest > 0 ? (
               <>

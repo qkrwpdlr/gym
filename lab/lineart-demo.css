@@ -40,33 +40,7 @@ ul.tips li + li { margin-top: 2px; }
 .note { margin: 0 4px; font-size: 10px; color: var(--faint); line-height: 1.4; }
 .note a { color: var(--dim); }
 
-/* ---------- 시안별 배치 ---------- */
-.info1, .cuebox { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-.cuebox { padding: 6px 0 0; }
 
-/* B 앞·옆·뒤 */
-.L-b .trip { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
-.L-b .trip .maps figure { width: 70px; }
-.L-b .trip .stage { border: 0; background: none; }
-.L-b #scene { height: clamp(190px, 36svh, 240px); }
-
-/* C 겹쳐 보기 */
-.L-c #scene { height: clamp(240px, 46svh, 320px); }
-.L-c .inset { position: absolute; left: 8px; top: 8px; padding: 4px; border-radius: 10px; background: rgba(11, 11, 11, 0.55); }
-.L-c .inset .maps figure { width: 50px; }
-
-/* D 탭 */
-.L-d .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
-.L-d .tabs button { min-height: 34px; border: 0; border-radius: 8px; background: none; color: var(--dim); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
-.L-d .tabs button[aria-selected='true'] { background: #262626; color: var(--ink); }
-.L-d .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: auto 1fr; gap: 10px; min-height: 188px; }
-.L-d .panel[data-panel='t'] { display: flex; flex-direction: column; gap: 10px; }
-.L-d .panel[hidden] { display: none; }
-.L-d .panel .maps figure { width: 62px; }
-.L-d #scene { height: clamp(200px, 37svh, 250px); }
-
-/* E 좌우 분할 */
-.L-e .split { display: grid; grid-template-columns: 1fr 72px; gap: 6px; }
-.L-e .maps.col { flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px 2px; }
-.L-e .maps.col figure { width: 64px; }
-.L-e #scene { height: clamp(210px, 38svh, 280px); }
+/* 앱 시트의 닫기 줄을 제외한 높이에도 시범·지도·요점이 함께 들어간다. */
+main.embed { padding-top: 2px; }
+main.embed #scene { height: clamp(150px, 31svh, 240px); }

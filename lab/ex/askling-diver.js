@@ -16,8 +16,8 @@ const META = {
   ],
   "tips": [
     "선 다리 무릎은 10~20° 굽힌 채 고정해요.",
-    "숙이기·팔 뻗기·뒷다리 뻗기를 동시에, 골반은 수평으로.",
-    "당김이 2/10을 넘으면 그 직전 깊이에서 멈춰요."
+    "골반은 수평으로, 공중 다리 무릎은 90°로 유지해요.",
+    "통증 전에 멈춰요. 회복 중 통증은 2/10 이하로 해요."
   ]
 }
 const { go, lerp, L } = LineArtDemo
@@ -32,7 +32,7 @@ function ik(a, b, l1, l2, bend) {
   return (c1[0] - c2[0]) * bend > 0 ? c1 : c2
 }
 
-LineArtDemo.mount({
+LineArtDemo.mount(window.__demoConfig = {
   meta: META,
   summary: META.summary,
   viewBox: '44 22 156 116',
@@ -41,8 +41,8 @@ LineArtDemo.mount({
   ghostPose: 'end',
   reducedAt: 4.5,
   poses: {
-    start: { trunk: 176, arm: 12, elbow: 8, swingThigh: -4, swingKnee: 28 },
-    end: { trunk: 100, arm: 102, elbow: 2, swingThigh: -82, swingKnee: 4 },
+    start: { trunk: 176, arm: 12, elbow: 8, swingThigh: -4, swingKnee: -90 },
+    end: { trunk: 100, arm: 102, elbow: 2, swingThigh: -82, swingKnee: -90 },
   },
   phases: [
     { key: 'set', dur: 1.2, from: 'start', to: 'start', cue: '다친 다리로 서요', sub: '무릎은 살짝 굽혀서 고정 · 반대 발은 살짝 띄우기' },

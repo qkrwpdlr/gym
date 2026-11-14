@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-pwa-8f5a780a9c';
+const CACHE_NAME = 'gym-pwa-eadad077c0';
 const ASSETS = [
   './',
   './index.html',
@@ -30,8 +30,25 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // lab/ 실험 페이지는 앱과 따로 배포된다. 서비스워커가 끼어들면 예전 스크립트가 남으므로 건드리지 않는다.
-  if (new URL(e.request.url).pathname.includes('/lab/')) return;
+  // lab HTML·JS·CSS·근육 지도 모두 네트워크 우선. 실패하면 같은 버전의 캐시로 연다.
+  // 쿼리를 무시하면 새 HTML에 예전 엔진이 섞이므로 스크립트 버전은 정확히 일치해야 한다.
+  if (new URL(e.request.url).pathname.includes('/lab/') && e.request.method === 'GET') {
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const url = new URL(e.request.url);
+      // HTML의 embed/t는 같은 문서다. 오프라인 첫 시트 열기도 방문했던 HTML을 쓴다.
+      const key = url.pathname.endsWith('.html') ? new Request(url.origin + url.pathname) : e.request;
+      try {
+        const response = await fetch(e.request, { cache: 'no-cache' });
+        if (!response.ok) throw new Error('lab request failed');
+        await cache.put(key, response.clone());
+        return response;
+      } catch {
+        return (await cache.match(key)) || new Response('시범을 먼저 온라인에서 열어 주세요.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
+    })());
+    return;
+  }
   // 페이지는 네트워크 우선: 새 배포가 바로 보이고, 오프라인이면 캐시로 연다.
   if (e.request.mode === 'navigate') {
     e.respondWith(

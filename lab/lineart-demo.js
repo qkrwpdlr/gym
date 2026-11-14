@@ -84,15 +84,10 @@
   const ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>'
   const ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>'
 
-  // ---------- 화면 구성(시안 A~E, ?layout=로 고름) ----------
-  const LAYOUTS = {
-    a: '스택', b: '앞·옆·뒤', c: '겹쳐 보기', d: '탭', e: '좌우 분할',
-  }
+  // 스택: 시범 → [앞·뒤 지도 | 근육 설명] → 요점.
   function buildLayout(meta, sided) {
-    const q = new URLSearchParams(location.search)
-    const lay = LAYOUTS[(q.get('layout') || 'a').toLowerCase()] ? (q.get('layout') || 'a').toLowerCase() : 'a'
     const app = document.getElementById('app')
-    app.className = 'L-' + lay
+    app.classList.toggle('embed', new URLSearchParams(location.search).get('embed') === '1')
     document.title = `${meta.title} · 자세 보기`
     const P = {
       head: `<header class="top"><h1>${meta.title}</h1><span class="kicker">${meta.kicker}</span></header><p class="sub">${meta.sub}</p>`,
@@ -108,32 +103,8 @@
       note: `<p class="note">근사 시범이에요. 근육 강도는 추정치예요 · <a href="https://www.youtube.com/results?search_query=${meta.yt}" rel="noopener">영상 검색</a> · <a href="credits.html">출처·라이선스</a></p>`,
     }
     const maps = `<div class="maps">${P.mapF}${P.mapB}</div>`
-    const html = {
-      // A 스택: 시범 → [지도 | 근육 설명] → 요점
-      a: `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
-          <section class="info">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>${P.tips}${P.note}`,
-      // B 앞·옆·뒤: 앞 지도 | 옆모습 시범 | 뒤 지도를 한 줄에
-      b: `${P.head}<section class="trip"><div class="maps">${P.mapF}</div><div class="stage">${P.fig}${P.ctl}</div><div class="maps">${P.mapB}</div></section>
-          <section class="cuebox">${P.cue}</section><section class="info1">${P.roles}${P.scale}${P.side}</section>${P.tips}${P.note}`,
-      // C 겹쳐 보기: 큰 시범 위에 지도를 작게 얹는다
-      c: `${P.head}<section class="stage">${P.fig}${P.ctl}<div class="inset">${maps}</div>${P.cue}</section>
-          <section class="info1">${P.roles}${P.side}</section>${P.tips}${P.note}`,
-      // D 탭: 시범 아래를 '근육 / 요령' 탭으로 나눈다
-      d: `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
-          <div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-tab="m">근육</button><button type="button" role="tab" aria-selected="false" data-tab="t">요령</button></div>
-          <section class="panel" data-panel="m">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>
-          <section class="panel" data-panel="t" hidden>${P.tips}${P.note}</section>`,
-      // E 좌우 분할: 왼쪽 시범(크게) | 오른쪽 앞·뒤 지도 세로
-      e: `${P.head}<section class="split"><div class="stage">${P.fig}${P.ctl}${P.cue}</div><div class="maps col">${P.mapF}${P.mapB}</div></section>
-          <section class="info1">${P.roles}${P.scale}${P.side}</section>${P.tips}${P.note}`,
-    }[lay]
-    app.innerHTML = html
-    if (lay === 'd') {
-      app.querySelectorAll('[role=tab]').forEach((t) => t.addEventListener('click', () => {
-        app.querySelectorAll('[role=tab]').forEach((x) => x.setAttribute('aria-selected', String(x === t)))
-        app.querySelectorAll('.panel').forEach((pn) => (pn.hidden = pn.dataset.panel !== t.dataset.tab))
-      }))
-    }
+    app.innerHTML = `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
+      <section class="info">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>${P.tips}${P.note}`
   }
 
   function mount(X) {
@@ -185,7 +156,7 @@
     function draw(F, j, P) {
       F.farLeg.draw([j.hipF, j.kneeF, j.ankleF]); shoe(F.farShoe, j.ankleF, j.toeF || 0)
       F.farArm.draw([j.shoulderF, j.elbowF, j.handF])
-      F.torso.draw([j.hip, j.shoulder], [0.2, 0.2])
+      F.torso.draw(j.torsoMid ? [j.hip, j.torsoMid, j.shoulder] : [j.hip, j.shoulder], [0.2, 0.2])
       F.nearLeg.draw([j.hip, j.kneeN, j.ankleN]); shoe(F.nearShoe, j.ankleN, j.toeN || 0)
       F.nearArm.draw([j.shoulder, j.elbowN, j.handN])
       F.head.setAttribute('d', circle(j.head, L.head))
@@ -277,14 +248,19 @@
       const j = full(X.solve(p))
       if (props) props.update(j, p)
       draw(Fg, j, { load: PEAK, stretch: STRETCH })
-      if (i !== lastPhase) {
+      if (i !== lastPhase || PH[i].count) {
         lastPhase = i
-        cueEl.innerHTML = `${PH[i].cue}<small>${PH[i].sub}</small>`
+        cueEl.innerHTML = `${PH[i].cue}${PH[i].count ? ` · ${Math.min(PH[i].dur, Math.floor(frac * PH[i].dur) + 1)} / ${PH[i].dur}초` : ''}<small>${PH[i].sub}</small>`
       }
       fills.forEach((fi, k) => (fi.style.width = (k < i ? 100 : k === i ? frac * 100 : 0) + '%'))
     }
 
     // ---------- 루프 (?t=초 로 고정) ----------
+    if (new URLSearchParams(location.search).get('embed') === '1') {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') parent.postMessage({ type: 'gym-demo-close' }, location.origin)
+      })
+    }
     const q = new URLSearchParams(location.search)
     let speed = 1, playing = true, t = 0, prev = performance.now()
     if (q.has('t')) frame(Number(q.get('t')))
@@ -299,6 +275,7 @@
       requestAnimationFrame(tick)
     }
     const playBtn = $('play'), slowBtn = $('slow')
+    if (!playing) { playBtn.innerHTML = ICON_PLAY; playBtn.setAttribute('aria-label', '재생') }
     playBtn.addEventListener('click', () => {
       playing = !playing
       playBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY

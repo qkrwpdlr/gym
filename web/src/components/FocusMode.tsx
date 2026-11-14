@@ -1,3 +1,4 @@
+import { DemoButton } from './DemoButton'
 import type { ReactNode } from 'react'
 import { formatRestShort, formatTime, isNumericWeight, repsText } from '../storage'
 import type { FlatSet } from '../types'
@@ -68,7 +69,7 @@ export function FocusMode({
           </svg>
         </button>
         <div className="focus-header-center">
-          <div className="focus-section">{sectionName}</div>
+          <div className="focus-section">{sectionName}{current && focus?.phase !== 'complete' ? <DemoButton name={current.set.name} /> : null}</div>
           <div className="focus-progress-text">
             <span className="current">{currentCount}</span> / {totalCount}세트
           </div>
@@ -123,7 +124,7 @@ function FocusExercise({
   return (
     <div className="focus-content">
       <div className="focus-label">{set.label}</div>
-      <div className="focus-exercise">{set.name}</div>
+      <div className="focus-exercise demo-title-row"><span>{set.name}</span><DemoButton name={set.name} /></div>
       {section.meta ? <div className="focus-cue">{section.meta}</div> : null}
       {hasWeight ? (
         <>

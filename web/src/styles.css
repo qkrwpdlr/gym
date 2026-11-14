@@ -1828,3 +1828,19 @@
   -webkit-tap-highlight-color: transparent;
 }
 .recovery-card .rc-btn.primary { border-color: var(--accent); color: var(--accent); font-weight: 800; }
+
+/* 운동 시범: 세션 위의 독립 dialog라 타이머와 현재 세트를 유지한다. */
+.demo-title-row, .focus-section { display: flex; align-items: center; gap: 2px; }
+.focus-exercise.demo-title-row, .focus-section { justify-content: center; }
+.demo-button { display: inline-grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: var(--muted, #9a968e); vertical-align: middle; cursor: pointer; }
+.demo-button span { display: grid; place-items: center; width: 17px; height: 17px; border: 1px solid currentColor; border-radius: 50%; font: 700 11px/1 sans-serif; }
+.demo-button:focus-visible, .demo-close:focus-visible { outline: 2px solid var(--accent, #00ff88); outline-offset: -3px; }
+.demo-sheet { position: fixed; inset: auto 0 0; width: min(100%, 480px); max-width: 100%; height: calc(100dvh - 8px); max-height: calc(100dvh - 8px); margin: 0 auto; padding: 0; border: 1px solid #303030; border-bottom: 0; border-radius: 18px 18px 0 0; background: #0b0b0b; color: #ece8df; overflow: hidden; }
+.demo-sheet[open] { display: flex; flex-direction: column; animation: demo-rise 180ms ease-out; }
+.demo-sheet::backdrop { background: rgb(0 0 0 / 65%); }
+.demo-sheet-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 0 8px 0 16px; border-bottom: 1px solid #262626; }
+.demo-sheet-header h2 { margin: 0; font-size: 14px; line-height: 1.3; }
+.demo-close { min-width: 44px; min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #ece8df; font: inherit; font-size: 13px; cursor: pointer; }
+.demo-sheet iframe { display: block; border: 0; width: 100%; flex: 1; min-height: 0; background: #0b0b0b; }
+@keyframes demo-rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .demo-sheet[open] { animation: none; } }

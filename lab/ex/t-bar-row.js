@@ -43,7 +43,7 @@ function torsoFrame(p) {
   const shoulder = go(hip, L.torso, p.trunk)
   return { ankleN, kneeN, hip, shoulder }
 }
-LineArtDemo.mount({
+LineArtDemo.mount(window.__demoConfig = {
   meta: META,
   summary: META.summary,
   viewBox: '36 40 136 96',

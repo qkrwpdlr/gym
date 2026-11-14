@@ -20,7 +20,7 @@ const META = {
   ],
   "tips": [
     "시작할 때 날개뼈를 살짝 내리고 매달려요.",
-    "다리 차지 말고, 팔이 거의 펴질 때까지 천천히 내려가요."
+    "다리 차지 말고 천천히 내려요. 통증은 2/10 이하로 해요."
   ]
 }
 const { go, lerp, L } = LineArtDemo
@@ -37,7 +37,7 @@ function ik(a, b, l1, l2, bend) {
 
 // 손은 바에 고정. 어깨 위치를 매달림 → 바 높이로 옮기고 팔은 IK(팔꿈치는 앞쪽)로 푼다. 몸통·다리는 어깨에 매달린다.
 const BAR = [112, 24]
-LineArtDemo.mount({
+LineArtDemo.mount(window.__demoConfig = {
   meta: META,
   summary: META.summary,
   viewBox: '56 6 112 132',
