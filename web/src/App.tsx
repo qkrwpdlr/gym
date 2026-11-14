@@ -1150,7 +1150,11 @@ function App() {
           finished={focusDone}
           show={miniActive}
           alert={focusAlert}
-          onExpand={() => setFocusCollapsed(false)}
+          onExpand={() => {
+            const audio = getAudioCtx()
+            if (audio?.state === 'suspended') void audio.resume()
+            setFocusCollapsed(false)
+          }}
           onSetDone={onFocusNext}
           onSkipRest={onSkipRest}
           onFinish={exitFocusMode}
@@ -1169,7 +1173,12 @@ function App() {
       <FocusMode
         focus={focus}
         exerciseTimer={exerciseTimer}
-        onToggleExerciseTimer={toggleExerciseTimer}
+        onToggleExerciseTimer={() => {
+          // 새로고침 뒤에도 시작/재개를 누른 사용자 동작으로 알림음을 준비한다.
+          const audio = getAudioCtx()
+          if (audio?.state === 'suspended') void audio.resume()
+          toggleExerciseTimer()
+        }}
         onResetExerciseTimer={resetExerciseTimer}
         next={focusNext}
         position={focusPos}
