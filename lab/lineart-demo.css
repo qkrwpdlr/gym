@@ -10,10 +10,10 @@ h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; whit
 .sub { margin: -4px 4px 0; font-size: 12px; color: var(--dim); line-height: 1.4; }
 
 .stage { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-#scene { display: block; width: 100%; height: clamp(190px, 37.5svh, 260px); color: var(--ink); }
+#scene { display: block; width: 100%; height: clamp(175px, 34svh, 240px); color: var(--ink); }
 .pp { fill: var(--paper); }
-.ctl { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
-.ctl button { width: 36px; height: 36px; padding: 0; border-radius: 50%; border: 1px solid #333; background: rgba(21, 21, 21, 0.85); color: var(--ink); font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; display: grid; place-items: center; }
+.ctl { display: flex; gap: 4px; flex-shrink: 0; }
+.ctl button { width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid #333; background: rgba(21, 21, 21, 0.85); color: var(--ink); font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; display: grid; place-items: center; }
 .ctl button svg { width: 16px; height: 16px; }
 .ctl button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
 .cue { min-height: 44px; padding: 2px 12px 0; font-size: 15px; font-weight: 800; line-height: 1.3; }
@@ -21,6 +21,10 @@ h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; whit
 .bar { display: flex; gap: 3px; padding: 8px 12px 10px; }
 .bar span { position: relative; height: 3px; border-radius: 2px; background: #262626; overflow: hidden; }
 .bar span i { position: absolute; inset: 0; width: 0; background: var(--accent); }
+.timeline { display: flex; align-items: center; gap: 8px; padding: 0 12px; }
+.timeline input { min-width: 0; flex: 1; height: 44px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.timeline output { color: var(--dim); font-size: 10px; font-variant-numeric: tabular-nums; min-width: 69px; text-align: right; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .info { display: grid; grid-template-columns: auto 1fr; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
 .maps { display: flex; gap: 2px; }
@@ -42,5 +46,6 @@ ul.tips li + li { margin-top: 2px; }
 
 
 /* 앱 시트의 닫기 줄을 제외한 높이에도 시범·지도·요점이 함께 들어간다. */
-main.embed { padding-top: 2px; }
-main.embed #scene { height: clamp(150px, 31svh, 240px); }
+/* 임베드에서는 부모 시트가 safe area를 이미 제외한다. */
+main.embed { padding-top: 2px; padding-bottom: 6px; gap: 6px; }
+main.embed #scene { height: clamp(144px, 27svh, 210px); }

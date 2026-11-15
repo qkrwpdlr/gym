@@ -1,5 +1,5 @@
-// lineart-demo.js — 옆모습 라인아트 운동 시범 + 근육 강도 표시 공통 엔진.
-// 펜 선 그리기(limb·shoe·잉크 필터)는 line-art-animation/lib/ink.ts(MIT)에서 옮겼다.
+// lineart-demo.js — 관절 SVG 운동 시범 + 근육 강도 표시 공통 엔진.
+// 소품용 legacy limb helper는 line-art-animation/lib/ink.ts(MIT)에서 옮겼다.
 // 근육 지도는 body-muscles(Apache-2.0)를 vendor/에서 읽는다.
 //
 // 각도 규약: "아래 방향에서 앞(+x)으로 돈 각도(도)". 0 = 수직 아래, 90 = 수평 앞, 180 = 수직 위, 음수 = 뒤.
@@ -50,20 +50,6 @@
       },
     }
   }
-  function shoe(node, ankle, toe = 0) {
-    const r = toe * R, c = Math.cos(r), s = Math.sin(r)
-    const S = (x, y) => [ankle[0] + x * c - y * s, ankle[1] + x * s + y * c]
-    node.setAttribute('d', `M${pt(S(-1.6, -0.6))} L${pt(S(4.6, -0.2))} Q${pt(S(6.6, 0.4))} ${pt(S(5.6, 1.6))} L${pt(S(-1.4, 1.5))} Q${pt(S(-2.2, 0.5))} ${pt(S(-1.6, -0.6))}Z`)
-  }
-  const circle = (c, r) => `M${f(c[0] - r)} ${f(c[1])} a${f(r)} ${f(r)} 0 1 0 ${f(2 * r)} 0 a${f(r)} ${f(r)} 0 1 0 ${f(-2 * r)} 0Z`
-  function inkFilter(svg) {
-    const defs = el('defs', {}, svg)
-    const flt = el('filter', { id: 'ink-edge', x: '-2%', y: '-2%', width: '104%', height: '104%' }, defs)
-    el('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.6', numOctaves: 1, seed: 7, result: 'n' }, flt)
-    el('feDisplacementMap', { in: 'SourceGraphic', in2: 'n', scale: 0.45, xChannelSelector: 'R', yChannelSelector: 'G', result: 'd' }, flt)
-    el('feGaussianBlur', { in: 'd', stdDeviation: 0.12 }, flt)
-    return 'url(#ink-edge)'
-  }
   // a→b 선분을 따라 off만큼 옆으로 띄운 [시작, 끝]. off 양수 = b에서 a를 볼 때 기준 뒤쪽 면.
   function seg(a, b, off, k0, k1) {
     const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1
@@ -93,7 +79,8 @@
       head: `<header class="top"><h1>${meta.title}</h1><span class="kicker">${meta.kicker}</span></header><p class="sub">${meta.sub}</p>`,
       fig: `<svg id="scene" role="img" aria-label="옆에서 본 ${meta.title} 동작 반복 애니메이션"></svg>`,
       ctl: `<div class="ctl"><button id="play" type="button" aria-label="일시정지">${ICON_PAUSE}</button><button id="slow" type="button" aria-pressed="false" aria-label="0.5배속으로 보기">½</button></div>`,
-      cue: `<div class="cue" id="cue" aria-live="polite"></div><div class="bar" id="bar"></div>`,
+      cue: `<div class="cue" id="cue" aria-live="polite"></div>`,
+      timeline: `<input id="seek" type="range" min="0" step="0.01" value="0" aria-label="동작 구간 이동" /><output id="time" for="seek"></output>`,
       mapF: `<figure><div class="map" id="mapF"></div><figcaption>앞</figcaption></figure>`,
       mapB: `<figure><div class="map" id="mapB"></div><figcaption>뒤</figcaption></figure>`,
       roles: `<div class="roles" id="roles"></div>`,
@@ -103,7 +90,7 @@
       note: `<p class="note">근사 시범이에요. 근육 강도는 추정치예요 · <a href="https://www.youtube.com/results?search_query=${meta.yt}" rel="noopener">영상 검색</a> · <a href="credits.html">출처·라이선스</a></p>`,
     }
     const maps = `<div class="maps">${P.mapF}${P.mapB}</div>`
-    app.innerHTML = `${P.head}<section class="stage">${P.fig}${P.ctl}${P.cue}</section>
+    app.innerHTML = `${P.head}<section class="stage">${P.fig}${P.cue}<div class="timeline">${P.ctl}${P.timeline}</div><div class="bar" id="bar"></div></section>
       <section class="info">${maps}<div class="text">${P.roles}${P.scale}${P.side}</div></section>${P.tips}${P.note}`
   }
 
@@ -112,29 +99,22 @@
     const $ = (id) => document.getElementById(id)
     const svg = $('scene')
     svg.setAttribute('viewBox', X.viewBox)
-    const filter = inkFilter(svg)
     const back = el('g', {}, svg) // 기구 뒤쪽
     const ground = pen(back, 1.1)
     if (X.ground !== false) { ground.setAttribute('d', X.ground); ground.setAttribute('opacity', '0.55') }
     const ghost = el('g', { opacity: 0.09 }, svg)
-    const fig = el('g', { filter }, svg)
-    const front = el('g', { filter }, svg) // 기구 앞쪽(손잡이·원판 등)
+    const fig = el('g', { 'data-renderer': 'articulated-v1' }, svg)
+    const front = el('g', {}, svg) // 기구 앞쪽(손잡이·원판 등)
 
     const BAND = (parent, w) => el('path', { fill: 'none', stroke: '#94a3b8', 'stroke-width': w, 'stroke-linecap': 'round', opacity: 0 }, parent)
     function build(parent, withBands) {
-      const F = {}
-      F.farLeg = limb(parent, 6.4); F.farShoe = el('path', { fill: 'currentColor' }, parent)
-      F.farArm = limb(parent, 3.6)
+      const F = { figure: ArticulatedFigure.create(parent) }
       F.bands = { far: [], torso: [], near: [], arm: [] }
-      const mk = (layer) => { if (!withBands) return; for (const b of X.bands.filter((b) => b.layer === layer)) F.bands[layer].push({ spec: b, node: BAND(parent, b.w || 2.4) }) }
-      mk('far')
-      F.torso = limb(parent, 11.5)
-      mk('torso')
-      F.nearLeg = limb(parent, 7); F.nearShoe = el('path', { fill: 'currentColor' }, parent)
-      mk('near')
-      F.nearArm = limb(parent, 3.8)
-      mk('arm')
-      F.head = el('path', { class: 'pp', stroke: 'currentColor', 'stroke-width': PEN }, parent)
+      if (withBands) for (const layer of Object.keys(F.bands)) {
+        for (const b of X.bands.filter((b) => b.layer === layer)) {
+          F.bands[layer].push({ spec: b, node: BAND(F.figure.layers[layer], b.w || 2.4) })
+        }
+      }
       return F
     }
     const Fg = build(fig, true)
@@ -154,12 +134,7 @@
       return j
     }
     function draw(F, j, P) {
-      F.farLeg.draw([j.hipF, j.kneeF, j.ankleF]); shoe(F.farShoe, j.ankleF, j.toeF || 0)
-      F.farArm.draw([j.shoulderF, j.elbowF, j.handF])
-      F.torso.draw(j.torsoMid ? [j.hip, j.torsoMid, j.shoulder] : [j.hip, j.shoulder], [0.2, 0.2])
-      F.nearLeg.draw([j.hip, j.kneeN, j.ankleN]); shoe(F.nearShoe, j.ankleN, j.toeN || 0)
-      F.nearArm.draw([j.shoulder, j.elbowN, j.handN])
-      F.head.setAttribute('d', circle(j.head, L.head))
+      F.figure.draw(j)
       if (!P) return
       for (const layer in F.bands) for (const { spec, node } of F.bands[layer]) {
         if (spec.type === 'glute') {
@@ -183,6 +158,8 @@
     // ---------- 시간 → 자세 ----------
     const PH = X.phases
     const CYCLE = PH.reduce((a, p) => a + p.dur, 0)
+    const seekInput = $('seek'), timeOutput = $('time')
+    if (seekInput) seekInput.max = String(CYCLE)
     function phaseAt(t) {
       let x = ((t % CYCLE) + CYCLE) % CYCLE, i = 0
       while (x > PH[i].dur && i < PH.length - 1) { x -= PH[i].dur; i++ }
@@ -238,7 +215,7 @@
     function paintMaps() { if (charts) { const st = bodyState(PEAK); charts.forEach((c) => c.update({ bodyState: st })) } }
     paintMaps()
     const fills = PH.map((ph) => { const s = document.createElement('span'); s.style.flex = String(ph.dur); const i = document.createElement('i'); s.appendChild(i); bar.appendChild(s); return i })
-    let lastPhase = -1
+    let lastCue = ''
 
     if (Gh) draw(Gh, full(X.solve(X.poses[X.ghostPose])), null)
 
@@ -248,11 +225,17 @@
       const j = full(X.solve(p))
       if (props) props.update(j, p)
       draw(Fg, j, { load: PEAK, stretch: STRETCH })
-      if (i !== lastPhase || PH[i].count) {
-        lastPhase = i
-        cueEl.innerHTML = `${PH[i].cue}${PH[i].count ? ` · ${Math.min(PH[i].dur, Math.floor(frac * PH[i].dur) + 1)} / ${PH[i].dur}초` : ''}<small>${PH[i].sub}</small>`
+      const cue = `${PH[i].cue}${PH[i].count ? ` · ${Math.min(PH[i].dur, Math.floor(frac * PH[i].dur) + 1)} / ${PH[i].dur}초` : ''}<small>${PH[i].sub}</small>`
+      if (cue !== lastCue) {
+        lastCue = cue
+        cueEl.innerHTML = cue
       }
       fills.forEach((fi, k) => (fi.style.width = (k < i ? 100 : k === i ? frac * 100 : 0) + '%'))
+      if (seekInput) {
+        seekInput.value = String(time)
+        seekInput.setAttribute('aria-valuetext', `${time.toFixed(1)}초, ${PH[i].cue}`)
+      }
+      if (timeOutput) timeOutput.textContent = `${time.toFixed(1)} / ${CYCLE.toFixed(1)}초`
     }
 
     // ---------- 루프 (?t=초 로 고정) ----------
@@ -262,26 +245,60 @@
       })
     }
     const q = new URLSearchParams(location.search)
-    let speed = 1, playing = true, t = 0, prev = performance.now()
-    if (q.has('t')) frame(Number(q.get('t')))
-    else {
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { playing = false; t = X.reducedAt || 0 }
-      const tick = (now) => {
-        const dt = Math.min(0.05, (now - prev) / 1000); prev = now
-        if (playing) t += dt * speed
-        frame(t)
-        requestAnimationFrame(tick)
-      }
-      requestAnimationFrame(tick)
-    }
     const playBtn = $('play'), slowBtn = $('slow')
-    if (!playing) { playBtn.innerHTML = ICON_PLAY; playBtn.setAttribute('aria-label', '재생') }
-    playBtn.addEventListener('click', () => {
-      playing = !playing
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+    const requestedTime = Number(q.get('t'))
+    let speed = 1, playing = !q.has('t') && !reducedMotion.matches
+    let t = q.has('t') && Number.isFinite(requestedTime) ? Math.max(0, Math.min(CYCLE, requestedTime)) : reducedMotion.matches ? (X.reducedAt || 0) : 0
+    let prev = performance.now(), raf = 0
+    function syncControls() {
       playBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY
       playBtn.setAttribute('aria-label', playing ? '일시정지' : '재생')
+      playBtn.setAttribute('aria-pressed', String(playing))
+      slowBtn.setAttribute('aria-pressed', String(speed !== 1))
+      slowBtn.setAttribute('aria-label', speed === 1 ? '0.5배속으로 보기' : '기본 배속으로 보기')
+    }
+    function schedule() {
+      if (!raf && playing && !document.hidden) {
+        prev = performance.now()
+        raf = requestAnimationFrame(tick)
+      }
+    }
+    function tick(now) {
+      raf = 0
+      if (!playing || document.hidden) return
+      t = (t + Math.min(0.1, (now - prev) / 1000) * speed) % CYCLE
+      frame(t)
+      prev = now
+      raf = requestAnimationFrame(tick)
+    }
+    const timeline = {
+      get duration() { return CYCLE },
+      get currentTime() { return t },
+      get playing() { return playing },
+      get speed() { return speed },
+      seek(seconds) {
+        if (!Number.isFinite(seconds)) throw new TypeError('Time must be finite')
+        t = Math.max(0, Math.min(CYCLE, seconds)); prev = performance.now(); frame(t)
+      },
+      play() { playing = true; syncControls(); schedule() },
+      pause() { playing = false; cancelAnimationFrame(raf); raf = 0; syncControls() },
+      setSpeed(value) {
+        if (!Number.isFinite(value) || value <= 0 || value > 4) throw new RangeError('Speed must be in (0, 4]')
+        speed = value; syncControls()
+      },
+    }
+    window.__motion = timeline
+    frame(t); syncControls(); schedule()
+    playBtn.addEventListener('click', () => playing ? timeline.pause() : timeline.play())
+    slowBtn.addEventListener('click', () => timeline.setSpeed(speed === 1 ? 0.5 : 1))
+    seekInput?.addEventListener('input', () => { timeline.pause(); timeline.seek(Number(seekInput.value)) })
+    document.addEventListener('visibilitychange', () => {
+      cancelAnimationFrame(raf); raf = 0; schedule()
     })
-    slowBtn.addEventListener('click', () => { speed = speed === 1 ? 0.5 : 1; slowBtn.setAttribute('aria-pressed', String(speed !== 1)) })
+    reducedMotion.addEventListener('change', (event) => { if (event.matches) timeline.pause() })
+    window.addEventListener('pagehide', () => { cancelAnimationFrame(raf); raf = 0 })
+    window.addEventListener('pageshow', schedule)
   }
 
   window.LineArtDemo = { mount, go, lerp, add, seg, L, R }

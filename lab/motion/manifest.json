@@ -1,0 +1,398 @@
+{
+  "format": "articulated-svg-smil-v1",
+  "fps": 20,
+  "visualReference": "https://bryllim.github.io/workout-guide/exercises/",
+  "geometry": "Original joint-local contours; no upstream paths copied",
+  "exercises": [
+    {
+      "id": "askling-diver",
+      "variant": null,
+      "file": "askling-diver.svg",
+      "title": "아스클링 다이버",
+      "duration": 7.800000000000001,
+      "bytes": 166579,
+      "sha256": "1a6b8a9e96873041731fd52f976ca386daa3b6ba4a3094bf573737499b3a2ac5",
+      "tracks": 41
+    },
+    {
+      "id": "askling-extender",
+      "variant": null,
+      "file": "askling-extender.svg",
+      "title": "아스클링 익스텐더",
+      "duration": 6,
+      "bytes": 24770,
+      "sha256": "6f7a6db293d88532cf9292933a82f0900286c0a0073d6af2c4959a56359282ba",
+      "tracks": 4
+    },
+    {
+      "id": "askling-glider",
+      "variant": null,
+      "file": "askling-glider.svg",
+      "title": "아스클링 글라이더",
+      "duration": 6.5,
+      "bytes": 149741,
+      "sha256": "fd54257d12956eeb2d1205ba9116d20ac43036795fb33e33c972fa127bc8b98e",
+      "tracks": 46
+    },
+    {
+      "id": "barbell-rdl",
+      "variant": null,
+      "file": "barbell-rdl.svg",
+      "title": "바벨 RDL",
+      "duration": 6.5,
+      "bytes": 162009,
+      "sha256": "4f4859726fc4955eae88f80217eec223641c0eea120eaacf0ca6c3bc58f4fe2d",
+      "tracks": 41
+    },
+    {
+      "id": "barbell-row",
+      "variant": null,
+      "file": "barbell-row.svg",
+      "title": "바벨 로우",
+      "duration": 5,
+      "bytes": 44349,
+      "sha256": "90bf616d48ca1781419d8f923bb95a69bc806de5bf728cb2746e04111330c293",
+      "tracks": 17
+    },
+    {
+      "id": "bench-press",
+      "variant": null,
+      "file": "bench-press.svg",
+      "title": "벤치프레스",
+      "duration": 5.5,
+      "bytes": 52986,
+      "sha256": "337abedf68da0d903f60be0daa9a6262e7f24d1e1a30f35cf8b1c0811ff5db44",
+      "tracks": 17
+    },
+    {
+      "id": "bulgarian-split-squat",
+      "variant": null,
+      "file": "bulgarian-split-squat.svg",
+      "title": "불가리안 스플릿 스쿼트",
+      "duration": 5.8,
+      "bytes": 101182,
+      "sha256": "f7f5db1093a9b34fca3c87085592773aad21a7ebb420d14e21e72498b316a1ac",
+      "tracks": 37
+    },
+    {
+      "id": "cable-lateral-raise",
+      "variant": null,
+      "file": "cable-lateral-raise.svg",
+      "title": "케이블 레터럴 레이즈",
+      "duration": 5,
+      "bytes": 91171,
+      "sha256": "ae4788886fb4d8f961150fa1fd47d32f92da5a96ca13708cbbd19f89e44b8021",
+      "tracks": 23
+    },
+    {
+      "id": "calf-raise",
+      "variant": null,
+      "file": "calf-raise.svg",
+      "title": "카프 레이즈",
+      "duration": 5,
+      "bytes": 76350,
+      "sha256": "9d0c21d9807180923eb9e1b2da325df1d511a6814c38ceab2a454ead034cac3a",
+      "tracks": 33
+    },
+    {
+      "id": "chest-supported-row",
+      "variant": null,
+      "file": "chest-supported-row.svg",
+      "title": "체스트 서포티드 로우",
+      "duration": 5,
+      "bytes": 43685,
+      "sha256": "a75f568d540132105f14d9ea13900e4269508f09ea5e9dc264cd2602af225847",
+      "tracks": 17
+    },
+    {
+      "id": "close-grip-bench",
+      "variant": null,
+      "file": "close-grip-bench.svg",
+      "title": "클로즈그립 벤치",
+      "duration": 5.5,
+      "bytes": 53008,
+      "sha256": "ffa6feb8dfa40017e19b705e6e047808ba29f2592c555da2f45d23258a2faff0",
+      "tracks": 17
+    },
+    {
+      "id": "deadlift",
+      "variant": null,
+      "file": "deadlift.svg",
+      "title": "데드리프트",
+      "duration": 5.1,
+      "bytes": 129537,
+      "sha256": "f6ed34ff0844ffbde84c2ca565cd29f5f64a718d240e7ffad45ccdb5d351d138",
+      "tracks": 47
+    },
+    {
+      "id": "dumbbell-rdl",
+      "variant": null,
+      "file": "dumbbell-rdl.svg",
+      "title": "덤벨 RDL",
+      "duration": 6.5,
+      "bytes": 161315,
+      "sha256": "192a03d5fcf4fdcffb8e6f3c2c110dc5edf6083a282286d080a7df1d5ca98202",
+      "tracks": 41
+    },
+    {
+      "id": "ez-curl",
+      "variant": null,
+      "file": "ez-curl.svg",
+      "title": "EZ 컬",
+      "duration": 5,
+      "bytes": 27846,
+      "sha256": "647fe602903f5beb59f1702f66870c86414139b95e4c6689ccfbd7e41a292554",
+      "tracks": 8
+    },
+    {
+      "id": "glute-bridge",
+      "variant": null,
+      "file": "glute-bridge.svg",
+      "title": "브릿지",
+      "duration": 5,
+      "bytes": 105157,
+      "sha256": "88f15fb1b58337f5de341dd53e3ec8ffb96ec8d80a35166e5c8aab3b5909d2de",
+      "tracks": 29
+    },
+    {
+      "id": "glute-bridge",
+      "variant": "hold",
+      "file": "glute-bridge--hold.svg",
+      "title": "브릿지 홀드",
+      "duration": 34,
+      "bytes": 131397,
+      "sha256": "a4a65d821ab65d217400f213c9e489233fb97571fd7b7ecc835d3de468e1baa9",
+      "tracks": 29
+    },
+    {
+      "id": "hamstring-curl",
+      "variant": null,
+      "file": "hamstring-curl.svg",
+      "title": "햄스트링 컬",
+      "duration": 5,
+      "bytes": 28586,
+      "sha256": "84ef44ab173a993b80964f959488dcdff146e3c3c45aede3aa569583a14692eb",
+      "tracks": 6
+    },
+    {
+      "id": "hanging-leg-raise",
+      "variant": null,
+      "file": "hanging-leg-raise.svg",
+      "title": "행잉 레그레이즈",
+      "duration": 5,
+      "bytes": 61161,
+      "sha256": "da74764d7bb624c45d0fe289f53eb4e868c1a8de4f4cdc6267c30106d88a2b11",
+      "tracks": 18
+    },
+    {
+      "id": "heel-dig",
+      "variant": null,
+      "file": "heel-dig.svg",
+      "title": "힐 디그 · 무릎 90°",
+      "duration": 13,
+      "bytes": 15687,
+      "sha256": "7ef41d5e7464860e8d78a6d5d2cdb731b387b29f96b99e8f4b9f3a3a2fb6bee2",
+      "tracks": 0
+    },
+    {
+      "id": "heel-dig",
+      "variant": "30",
+      "file": "heel-dig--30.svg",
+      "title": "힐 디그 · 무릎 30°",
+      "duration": 13,
+      "bytes": 15687,
+      "sha256": "c584d2e8a52adecf3e46c6e21544f18d6c2f860e57d892a243cfd43a6c1be88c",
+      "tracks": 0
+    },
+    {
+      "id": "hip-hinge-drill",
+      "variant": null,
+      "file": "hip-hinge-drill.svg",
+      "title": "힙힌지 연습",
+      "duration": 6.5,
+      "bytes": 167797,
+      "sha256": "5266711e0f205e48c79bef300d72ac417acbc409d10a18df69aa64b48f117f91",
+      "tracks": 46
+    },
+    {
+      "id": "incline-bench",
+      "variant": null,
+      "file": "incline-bench.svg",
+      "title": "인클라인 벤치",
+      "duration": 5.5,
+      "bytes": 53369,
+      "sha256": "4886ecf4ebc7f3d0b11b392dc4d41a44474146e3a41c2c89ae3dea8c0e8ffa84",
+      "tracks": 17
+    },
+    {
+      "id": "incline-dumbbell-curl",
+      "variant": null,
+      "file": "incline-dumbbell-curl.svg",
+      "title": "인클라인 덤벨 컬",
+      "duration": 5,
+      "bytes": 26932,
+      "sha256": "b1e93167f47f677b2b929742dff5f1747cf23d2f0cfe36dc1d3a596625e3bc3e",
+      "tracks": 8
+    },
+    {
+      "id": "leg-extension",
+      "variant": null,
+      "file": "leg-extension.svg",
+      "title": "레그 익스텐션",
+      "duration": 5,
+      "bytes": 28303,
+      "sha256": "d67187dcb8b230aa4e596ecf510982924db6d1c93586d35f3da85f5f3caf6256",
+      "tracks": 6
+    },
+    {
+      "id": "leg-press",
+      "variant": null,
+      "file": "leg-press.svg",
+      "title": "레그 프레스",
+      "duration": 5.8,
+      "bytes": 77500,
+      "sha256": "1f67f22b86dced3978d275b04d3aaf2e60bc830aa5d2b1a34df6e0f4a165fa8c",
+      "tracks": 17
+    },
+    {
+      "id": "low-bar-squat",
+      "variant": null,
+      "file": "low-bar-squat.svg",
+      "title": "로우바 스쿼트",
+      "duration": 5.5,
+      "bytes": 133963,
+      "sha256": "f4d154ed3e9dffba17f9b58ca9538cc297c10e5f09d39266832ea98d42840965",
+      "tracks": 41
+    },
+    {
+      "id": "nordic-curl",
+      "variant": null,
+      "file": "nordic-curl.svg",
+      "title": "노르딕컬",
+      "duration": 7.5,
+      "bytes": 179655,
+      "sha256": "e01c00e3041ddadecc1bd48394d5bda41dc9d62ea3fbbb9cb7a8852ecca6c7a3",
+      "tracks": 41
+    },
+    {
+      "id": "ohp",
+      "variant": null,
+      "file": "ohp.svg",
+      "title": "OHP",
+      "duration": 5,
+      "bytes": 44808,
+      "sha256": "be4e5a27b24ff44a8faa50c817df550d2b19fce7e8daccd1484d1792cb160d4b",
+      "tracks": 17
+    },
+    {
+      "id": "overhead-triceps-extension",
+      "variant": null,
+      "file": "overhead-triceps-extension.svg",
+      "title": "오버헤드 익스텐션",
+      "duration": 5,
+      "bytes": 28557,
+      "sha256": "07e15fbd955d45286e02ee976a6de1ca37c84452999f951581935478d682bb3d",
+      "tracks": 8
+    },
+    {
+      "id": "paused-squat",
+      "variant": null,
+      "file": "paused-squat.svg",
+      "title": "포즈 로우바 스쿼트",
+      "duration": 6.8,
+      "bytes": 134635,
+      "sha256": "e85336524e8a8ba6bb864fe8c290d0076b1c7bf03ea15cec92f9a4daad680547",
+      "tracks": 41
+    },
+    {
+      "id": "pendlay-row",
+      "variant": null,
+      "file": "pendlay-row.svg",
+      "title": "펜들레이 로우",
+      "duration": 5,
+      "bytes": 45256,
+      "sha256": "ae50ff40b7fb88c07ad0a46460e97d373776fdb0cadd4dbb458a65d4fc0e0af0",
+      "tracks": 17
+    },
+    {
+      "id": "pull-up",
+      "variant": null,
+      "file": "pull-up.svg",
+      "title": "풀업",
+      "duration": 4.6,
+      "bytes": 101689,
+      "sha256": "0a88c4af74fc1a162da886093bd121f1a4d9ce99bfabbce2753b6b1ce960f067",
+      "tracks": 34
+    },
+    {
+      "id": "rear-delt-machine",
+      "variant": null,
+      "file": "rear-delt-machine.svg",
+      "title": "리어델트 머신",
+      "duration": 5,
+      "bytes": 89924,
+      "sha256": "15a40983b6456ca2b0103a6ddbf890122c716753af884e810315f599de5fd304",
+      "tracks": 23
+    },
+    {
+      "id": "single-leg-rdl",
+      "variant": null,
+      "file": "single-leg-rdl.svg",
+      "title": "한 발 RDL",
+      "duration": 6.5,
+      "bytes": 128692,
+      "sha256": "57cf88c973a14db2e9e04a0e46df32830ab819c0098634f6a1a08afcecba18a6",
+      "tracks": 40
+    },
+    {
+      "id": "slider-leg-curl",
+      "variant": null,
+      "file": "slider-leg-curl.svg",
+      "title": "슬라이더 레그컬",
+      "duration": 6.8,
+      "bytes": 167171,
+      "sha256": "efc82e0b36d5cde9f741df31554744af501f7ef9b9769dc6d2fcd63d1f8d6601",
+      "tracks": 32
+    },
+    {
+      "id": "slider-leg-curl",
+      "variant": "single",
+      "file": "slider-leg-curl--single.svg",
+      "title": "슬라이더 · 한 발 내리기",
+      "duration": 6.6,
+      "bytes": 150642,
+      "sha256": "49ca95627fefac933f29bfa5e9df4587f1ccf15c25b4f7d180b70f3082f8ddc1",
+      "tracks": 36
+    },
+    {
+      "id": "stiff-leg-deadlift",
+      "variant": null,
+      "file": "stiff-leg-deadlift.svg",
+      "title": "스티프 레그 데드",
+      "duration": 6.5,
+      "bytes": 161931,
+      "sha256": "4483f3f6f5573858b32138dcdbb99a2003c865cf389cad6f3941f6c77b2d5bfe",
+      "tracks": 41
+    },
+    {
+      "id": "t-bar-row",
+      "variant": null,
+      "file": "t-bar-row.svg",
+      "title": "T-바 로우",
+      "duration": 4.6,
+      "bytes": 134089,
+      "sha256": "a59690f7327900f8f67100d215c3a96d05bc12b6cbbe9839047ac2915634f761",
+      "tracks": 28
+    },
+    {
+      "id": "walking-lunge",
+      "variant": null,
+      "file": "walking-lunge.svg",
+      "title": "워킹 런지",
+      "duration": 9,
+      "bytes": 168501,
+      "sha256": "1da9c7a76f0e47c52761f2ae67cfb214a5e050e16822b8e2740c8e6d4756ca4d",
+      "tracks": 42
+    }
+  ]
+}

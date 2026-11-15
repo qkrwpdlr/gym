@@ -144,7 +144,7 @@
   }
   function equipment(c) {
     return ({back,front,el,pen}) => {
-      const fixed=pen(back,1.6), moving=pen(c.kind==='rear-delt-machine'?back:front,1.8),weight=pen(back,2.5),pad=pen(back,4)
+      const fixed=pen(back,1.6), moving=pen(c.kind==='rear-delt-machine'?back:front,1.8),pad=pen(back,4)
       const plateRadius=c.kind==='deadlift'?130.6-solvers.hinge({u:1},c).handN[1]:c.kind==='pendlay-row'?130.6-solvers.row({u:0},c).handN[1]:13
       let d='',pd=''
       switch(c.family) {
@@ -166,16 +166,39 @@
         case 'hinge':if(c.kind==='hip-hinge-drill') d='M85 126 L85 42';break
       }
       fixed.setAttribute('d',d);pad.setAttribute('d',pd)
-      const dumbbell=(h)=>`M${h[0]-5} ${h[1]} h10 M${h[0]-4} ${h[1]-4} v8 M${h[0]+4} ${h[1]-4} v8`
-      const barbell=(h,r=9)=>`M${h[0]-7} ${h[1]} h14 M${h[0]+4} ${h[1]-r} v${r*2} M${h[0]+7} ${h[1]-r+2} v${r*2-4}`
-      return {update(j,p) {
-        let m='',w=''
-        if(['bench','ohp','row','curl'].includes(c.family)) {
-          const db=['incline-dumbbell-curl','chest-supported-row'].includes(c.kind)
-          w=db?dumbbell(j.handN):barbell(j.handN,c.family==='row'?plateRadius:9)
+      // A fixed local plate construction follows the grip with one translation.
+      // Front/back elliptical faces make the weight readable from this side view;
+      // the hand is drawn above the shaft by the figure's occlusion layer.
+      const weight=el('g',{'data-part':'freeweight'},back)
+      const outlined=(d,parent=weight,w=1)=>el('path',{d,class:'pp',stroke:'currentColor','stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round'},parent)
+      const ellipse=(x,rx,ry)=>`M${x-rx} 0 C${x-rx} ${-ry*.5523} ${x-rx*.5523} ${-ry} ${x} ${-ry} C${x+rx*.5523} ${-ry} ${x+rx} ${-ry*.5523} ${x+rx} 0 C${x+rx} ${ry*.5523} ${x+rx*.5523} ${ry} ${x} ${ry} C${x-rx*.5523} ${ry} ${x-rx} ${ry*.5523} ${x-rx} 0 Z`
+      const dumbbell=['incline-dumbbell-curl','chest-supported-row','dumbbell-rdl','single-leg-rdl'].includes(c.kind)
+      const hasWeight=['bench','ohp','row','curl','squat'].includes(c.family)||(c.family==='hinge'&&c.kind!=='hip-hinge-drill')
+      if(hasWeight) {
+        const radius=dumbbell?3.8:c.family==='squat'?10:c.family==='row'||c.kind==='deadlift'?plateRadius:c.family==='hinge'?12:c.family==='curl'?6:9
+        const shaft=pen(weight,dumbbell?1.3:1.5)
+        shaft.setAttribute('d',dumbbell?'M-6.1 0 L6.1 0':c.kind==='ez-curl'?'M-8.4 0 L-3.2 0 L-1.5 -.8 L1.5 .8 L3.2 0 L13 0':'M-8.4 0 L13 0')
+        if(dumbbell) {
+          for(const sign of [-1,1]) {
+            outlined(ellipse(sign*4.8,1.15,radius),weight,.85)
+            const edge=pen(weight,.6);edge.setAttribute('d',`M${sign*4.8} ${-radius+1} C${sign*4.8+.75} ${-radius*.55} ${sign*4.8+.75} ${radius*.55} ${sign*4.8} ${radius-1}`)
+          }
+        } else {
+          // Far-side plate and the near stack remain separate persistent paths.
+          const far=outlined(ellipse(-5.7,2.05,radius*.93),weight,.9);far.setAttribute('opacity','.66')
+          outlined(ellipse(8.7,2.75,radius),weight,1)
+          outlined(ellipse(6.3,2.75,radius),weight,1.05)
+          const rim=pen(weight,.6);rim.setAttribute('d',ellipse(6.3,1.75,radius-1.4));rim.setAttribute('opacity','.55')
+          outlined(ellipse(6.3,.95,1.5),weight,.65)
+          const sleeve=pen(weight,1.35);sleeve.setAttribute('d','M9.6 0 L13 0')
         }
-        if(c.family==='hinge'&&c.kind!=='hip-hinge-drill') w=c.kind.includes('dumbbell')||c.kind==='single-leg-rdl'?dumbbell(j.handN):barbell(j.handN,c.kind==='deadlift'?plateRadius:12)
-        if(c.family==='squat')w=barbell([j.shoulder[0]-4,j.shoulder[1]+3],10)
+      } else weight.setAttribute('display','none')
+      return {update(j,p) {
+        let m=''
+        if(hasWeight) {
+          const grip=c.family==='squat'?[j.shoulder[0]-4,j.shoulder[1]+3]:j.handN
+          weight.setAttribute('transform',`translate(${grip[0].toFixed(3)} ${grip[1].toFixed(3)})`)
+        }
         if(c.family==='triceps')m=path([j.handN,[64,20]])+' M61 20 h6'
         if(c.family==='shoulder') {
           if(c.kind==='rear-delt-machine')m=path([[139,56],j.handN])
@@ -187,7 +210,7 @@
         if(c.family==='heel')m=`M${j.ankleN[0]} 133 v4 m-2 -2 l2 2 l2 -2`
         if(c.family==='glider')m=path([[j.ankleF[0]-3,131],[j.ankleF[0]+8,131]])
         if(c.family==='nordic')m='M66 122 L66 129'
-        moving.setAttribute('d',m);weight.setAttribute('d',w)
+        moving.setAttribute('d',m)
       }}
     }
   }
@@ -202,8 +225,11 @@
   window.ExerciseKit={mount(c) {
     const q=new URLSearchParams(location.search),variant=q.get('variant')||''
     if(c.variants?.[variant])c={...c,...c.variants[variant],meta:{...c.meta,...c.variants[variant].meta}}
+    const viewBox=c.viewBox||'42 8 126 134'
+    const [cameraX,,cameraWidth]=viewBox.split(' ').map(Number)
+    const floorY=c.family==='calf'?138:130.6
     const config={
-      viewBox:c.viewBox||'42 8 126 134',ground:c.family==='hanging'?false:c.family==='calf'?'M44 138 L165 138':'M44 130.6 L165 130.6',farOffset:[-1.6,-.7],
+      viewBox,ground:c.family==='hanging'?false:`M${cameraX+2} ${floorY} L${cameraX+cameraWidth-2} ${floorY}`,farOffset:[-1.6,-.7],
       poses:{start:{u:0},end:{u:1}},...c,summary:c.meta.summary,
       solve:p=>solvers[c.family](p,c),props:equipment(c),bands,
     }

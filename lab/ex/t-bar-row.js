@@ -89,8 +89,9 @@ LineArtDemo.mount(window.__demoConfig = {
         bar.setAttribute('d', `M${P[0]} ${P[1]} L${end[0].toFixed(2)} ${end[1].toFixed(2)}`)
         grip.setAttribute('d', `M${(H[0] - 2.4).toFixed(2)} ${(H[1] + 1).toFixed(2)} L${(H[0] + 2.4).toFixed(2)} ${(H[1] - 1).toFixed(2)}`)
         const c = [end[0] + (dx / l) * 1.5, end[1] + (dy / l) * 1.5], r = 12
-        plate.setAttribute('d', `M${(c[0] - 2).toFixed(2)} ${(c[1] - r).toFixed(2)} h4 v${2 * r} h-4 Z`)
-        plate2.setAttribute('d', `M${(c[0] + 3).toFixed(2)} ${(c[1] - r + 2).toFixed(2)} v${2 * r - 4}`)
+        const ellipse=(cx,rx,ry)=>`M${cx-rx} ${c[1]} C${cx-rx} ${c[1]-ry*.5523} ${cx-rx*.5523} ${c[1]-ry} ${cx} ${c[1]-ry} C${cx+rx*.5523} ${c[1]-ry} ${cx+rx} ${c[1]-ry*.5523} ${cx+rx} ${c[1]} C${cx+rx} ${c[1]+ry*.5523} ${cx+rx*.5523} ${c[1]+ry} ${cx} ${c[1]+ry} C${cx-rx*.5523} ${c[1]+ry} ${cx-rx} ${c[1]+ry*.5523} ${cx-rx} ${c[1]} Z`
+        plate.setAttribute('d', ellipse(c[0],2.8,r))
+        plate2.setAttribute('d', ellipse(c[0]+2.4,2.8,r))
       },
     }
   },

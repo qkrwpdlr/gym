@@ -1,0 +1,799 @@
+{
+  "browser": "chromium",
+  "viewport": "375x572",
+  "exercises": [
+    {
+      "name": "askling-diver",
+      "duration": 7.800000000000001,
+      "samples": 107,
+      "paths": 99,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "askling-extender",
+      "duration": 6,
+      "samples": 82,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "askling-glider",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "barbell-rdl",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "barbell-row",
+      "duration": 5,
+      "samples": 73,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "bench-press",
+      "duration": 5.5,
+      "samples": 79,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "bulgarian-split-squat",
+      "duration": 5.8,
+      "samples": 83,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "cable-lateral-raise",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "calf-raise",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "chest-supported-row",
+      "duration": 5,
+      "samples": 73,
+      "paths": 69,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "close-grip-bench",
+      "duration": 5.5,
+      "samples": 79,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "deadlift",
+      "duration": 5.1,
+      "samples": 75,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "dumbbell-rdl",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 69,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "ez-curl",
+      "duration": 5,
+      "samples": 73,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "glute-bridge",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "glute-bridge--hold",
+      "duration": 34,
+      "samples": 418,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "hamstring-curl",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "hanging-leg-raise",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "heel-dig",
+      "duration": 13,
+      "samples": 163,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "heel-dig--30",
+      "duration": 13,
+      "samples": 163,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "hip-hinge-drill",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "incline-bench",
+      "duration": 5.5,
+      "samples": 79,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "incline-dumbbell-curl",
+      "duration": 5,
+      "samples": 73,
+      "paths": 69,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "leg-extension",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "leg-press",
+      "duration": 5.8,
+      "samples": 83,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "low-bar-squat",
+      "duration": 5.5,
+      "samples": 79,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "nordic-curl",
+      "duration": 7.5,
+      "samples": 103,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "ohp",
+      "duration": 5,
+      "samples": 73,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "overhead-triceps-extension",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "paused-squat",
+      "duration": 6.8,
+      "samples": 95,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "pendlay-row",
+      "duration": 5,
+      "samples": 73,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "pull-up",
+      "duration": 4.6,
+      "samples": 69,
+      "paths": 98,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "rear-delt-machine",
+      "duration": 5,
+      "samples": 73,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "single-leg-rdl",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 69,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "slider-leg-curl",
+      "duration": 6.8,
+      "samples": 95,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "slider-leg-curl--single",
+      "duration": 6.6,
+      "samples": 93,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "stiff-leg-deadlift",
+      "duration": 6.5,
+      "samples": 91,
+      "paths": 71,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "t-bar-row",
+      "duration": 4.6,
+      "samples": 69,
+      "paths": 104,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    },
+    {
+      "name": "walking-lunge",
+      "duration": 9,
+      "samples": 127,
+      "paths": 64,
+      "errors": [],
+      "clipped": 0,
+      "maxOverflow": 0,
+      "pageHeight": 572,
+      "width": 375,
+      "articulated": true
+    }
+  ],
+  "controls": {
+    "play": true,
+    "pause": true,
+    "seek": true,
+    "halfSpeed": true,
+    "fixedTimeCanPlay": true,
+    "reducedMotionInitialAndChange": true,
+    "liveCueOnlyOnTextChange": true
+  },
+  "consoleErrors": [],
+  "nativeExports": 39,
+  "nativeComparison": [
+    {
+      "file": "askling-diver.svg",
+      "meanPixelDifference": [
+        0.0216,
+        0.0,
+        0.0156
+      ]
+    },
+    {
+      "file": "askling-extender.svg",
+      "meanPixelDifference": [
+        0.0181,
+        0.0142,
+        0.0212
+      ]
+    },
+    {
+      "file": "askling-glider.svg",
+      "meanPixelDifference": [
+        0.0062,
+        0.0,
+        0.0082
+      ]
+    },
+    {
+      "file": "barbell-rdl.svg",
+      "meanPixelDifference": [
+        0.0086,
+        0.0,
+        0.009
+      ]
+    },
+    {
+      "file": "barbell-row.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0205
+      ]
+    },
+    {
+      "file": "bench-press.svg",
+      "meanPixelDifference": [
+        0.0078,
+        0.0138,
+        0.0155
+      ]
+    },
+    {
+      "file": "bulgarian-split-squat.svg",
+      "meanPixelDifference": [
+        0.0177,
+        0.0027,
+        0.004
+      ]
+    },
+    {
+      "file": "cable-lateral-raise.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0002,
+        0.0065
+      ]
+    },
+    {
+      "file": "calf-raise.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "file": "chest-supported-row.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0165
+      ]
+    },
+    {
+      "file": "close-grip-bench.svg",
+      "meanPixelDifference": [
+        0.0125,
+        0.0044,
+        0.0153
+      ]
+    },
+    {
+      "file": "deadlift.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0194
+      ]
+    },
+    {
+      "file": "dumbbell-rdl.svg",
+      "meanPixelDifference": [
+        0.0066,
+        0.0,
+        0.0051
+      ]
+    },
+    {
+      "file": "ez-curl.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0046,
+        0.0046
+      ]
+    },
+    {
+      "file": "glute-bridge.svg",
+      "meanPixelDifference": [
+        0.0118,
+        0.0146,
+        0.0155
+      ]
+    },
+    {
+      "file": "glute-bridge--hold.svg",
+      "meanPixelDifference": [
+        0.0134,
+        0.0154,
+        0.0194
+      ]
+    },
+    {
+      "file": "hamstring-curl.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0032,
+        0.0032
+      ]
+    },
+    {
+      "file": "hanging-leg-raise.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0025,
+        0.0019
+      ]
+    },
+    {
+      "file": "heel-dig.svg",
+      "meanPixelDifference": [
+        0.0184,
+        0.0214,
+        0.0214
+      ]
+    },
+    {
+      "file": "heel-dig--30.svg",
+      "meanPixelDifference": [
+        0.0492,
+        0.0509,
+        0.0509
+      ]
+    },
+    {
+      "file": "hip-hinge-drill.svg",
+      "meanPixelDifference": [
+        0.0045,
+        0.0,
+        0.0038
+      ]
+    },
+    {
+      "file": "incline-bench.svg",
+      "meanPixelDifference": [
+        0.0078,
+        0.0021,
+        0.0132
+      ]
+    },
+    {
+      "file": "incline-dumbbell-curl.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0143,
+        0.0162
+      ]
+    },
+    {
+      "file": "leg-extension.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0012
+      ]
+    },
+    {
+      "file": "leg-press.svg",
+      "meanPixelDifference": [
+        0.0757,
+        0.0526,
+        0.0561
+      ]
+    },
+    {
+      "file": "low-bar-squat.svg",
+      "meanPixelDifference": [
+        0.0157,
+        0.0,
+        0.0281
+      ]
+    },
+    {
+      "file": "nordic-curl.svg",
+      "meanPixelDifference": [
+        0.0232,
+        0.0061,
+        0.0646
+      ]
+    },
+    {
+      "file": "ohp.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0062,
+        0.0053
+      ]
+    },
+    {
+      "file": "overhead-triceps-extension.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0058
+      ]
+    },
+    {
+      "file": "paused-squat.svg",
+      "meanPixelDifference": [
+        0.009,
+        0.0,
+        0.0105
+      ]
+    },
+    {
+      "file": "pendlay-row.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0125
+      ]
+    },
+    {
+      "file": "pull-up.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0,
+        0.0112
+      ]
+    },
+    {
+      "file": "rear-delt-machine.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0088,
+        0.0154
+      ]
+    },
+    {
+      "file": "single-leg-rdl.svg",
+      "meanPixelDifference": [
+        0.0088,
+        0.0,
+        0.0099
+      ]
+    },
+    {
+      "file": "slider-leg-curl.svg",
+      "meanPixelDifference": [
+        0.0182,
+        0.0486,
+        0.0215
+      ]
+    },
+    {
+      "file": "slider-leg-curl--single.svg",
+      "meanPixelDifference": [
+        0.0468,
+        0.0821,
+        0.0263
+      ]
+    },
+    {
+      "file": "stiff-leg-deadlift.svg",
+      "meanPixelDifference": [
+        0.0067,
+        0.0,
+        0.0087
+      ]
+    },
+    {
+      "file": "t-bar-row.svg",
+      "meanPixelDifference": [
+        0.0,
+        0.0101,
+        0.0199
+      ]
+    },
+    {
+      "file": "walking-lunge.svg",
+      "meanPixelDifference": [
+        0.0164,
+        0.0,
+        0.0396
+      ]
+    }
+  ]
+}
